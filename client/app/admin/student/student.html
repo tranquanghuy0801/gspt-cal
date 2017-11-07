@@ -1,0 +1,156 @@
+<div class="row">
+  <div class="col-sm-9">
+    <h1>Students</h1>
+  </div>
+  <div class="col-sm-3 text-right">
+    <button type="button" ng-click="admin.addYear()" class="btn btn-default btn-lg" style="margin-top: 20px">Add Student Year</button>
+  </div>
+</div>
+<br>
+<hr>
+<form ng-submit="admin.addStudent(newStudent); newStudent={}; notes = false;" ng-init="newStudent = {}">
+  <div class="row">
+    <div class="col-sm-4">
+      <div class="form-group">
+        <label>First Name</label>
+        <input type="text" class="form-control" required ng-model="newStudent.firstName" placeholder="First Name">
+      </div>
+    </div>
+    <div class="col-sm-4">
+      <div class="form-group">
+        <label>Last Name</label>
+        <input type="text" class="form-control" required ng-model="newStudent.lastName" placeholder="First Name">
+      </div>
+    </div>
+    <div class="col-sm-2">
+      <div class="form-group">
+        <label>Data</label>
+        <div class="data-button-wrap">
+          <button type="button" ng-init="newStudent.var1 = false" ng-click="newStudent.var1 =! newStudent.var1" ng-class="{'active': newStudent.var1}"><i class="fa fa-graduation-cap" aria-hidden="true"></i></button>
+          <button type="button" ng-init="newStudent.var2 = false" ng-click="newStudent.var2 =! newStudent.var2" ng-class="{'active': newStudent.var2}"><i class="fa fa-graduation-cap" aria-hidden="true"></i></button>
+          <button type="button" ng-init="newStudent.var3 = false" ng-click="newStudent.var3 =! newStudent.var3" ng-class="{'active': newStudent.var3}"><i class="fa fa-graduation-cap" aria-hidden="true"></i></button>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-2">
+      <div class="form-group">
+        <label>Grade</label>
+        <div class="input-group">
+          <input type="number" class="form-control" ng-min="1" ng-max="12" placeholder="Grade" ng-model="newStudent.grade" ng-disabled="newStudent.isTertiary" ng-required="!newStudent.isTertiary">
+          <span class="input-group-addon tertiary" ng-click="newStudent.isTertiary = !newStudent.isTertiary" ng-class="{'active': newStudent.isTertiary}" title="Is this a tertiary student?">
+            <i class="fa fa-graduation-cap" aria-hidden="true"></i>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-4">
+      <div class="form-group">
+        <label>Client First Name</label>
+        <input type="text" class="form-control" ng-model="newStudent.clientFirstName" placeholder="Client First Name">
+      </div>
+    </div>
+    <div class="col-sm-4">
+      <div class="form-group">
+        <label>Client Last Name</label>
+        <input type="text" class="form-control" ng-model="newStudent.clientLastName" placeholder="Client Last Name">
+      </div>
+  </div>
+  <div class="col-sm-4">
+      <div class="form-group">
+        <label>CRM ID</label>
+        <input type="text" class="form-control" ng-model="newStudent.crmID" placeholder="CRM ID">
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    
+    <div class="col-sm-4">
+      <div class="form-group">
+        <label>Contact Email</label>
+        <input type="email" class="form-control" ng-model="newStudent.clientEmail" placeholder="Contact Email">
+      </div>
+    </div>
+    <div class="col-sm-4">
+      <div class="form-group">
+        <label>Contact PH</label>
+        <input type="text" class="form-control" ng-model="newStudent.clientPh" placeholder="Contact PH">
+      </div>
+    </div>
+    <div class="col-sm-4">
+      <div class="form-group add-notes-group">
+        <button type="button" class="btn btn-primary btn-lg btn-block" ng-init="notes = false" ng-click="notes =! notes">Add Notes</button>
+      </div>
+    </div>
+  </div>
+  <div class="row" ng-show="notes">
+    <div class="col-sm-12">
+      <div class="form-group">
+        <label>Student Notes</label>
+        <textarea class="form-control" ng-model="newStudent.studentNotes" rows="4"></textarea>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-12">
+      <button type="submit" class="btn btn-success btn-lg btn-block">Add Student</button>
+    </div>
+    
+  </div>
+</form>
+<hr>
+<div class="row">
+  <div class="col-sm-9">
+    <div class="form-group">
+      <input type="search" class="form-control" ng-model="admin.search" placeholder="Search here...">
+    </div>
+  </div>
+  <div class="col-sm-3 text-right">
+    <div ng-init="currentPage = 0; pageSize = 100;">
+      <button class="btn" ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1">
+        Previous
+      </button>
+      {{currentPage + 1}}/{{(admin.students.length/pageSize | roundUp) || 1}}
+      <button class="btn" ng-disabled="currentPage >= admin.students.length/pageSize - 1" ng-click="currentPage=currentPage+1">
+        Next
+      </button>
+    </div>
+  </div>
+</div>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Student Name</th>
+      <th>Client Name</th>
+      <th>CRM ID</th>
+      <th>Grade
+        <span class="glyphicon glyphicon-arrow-up" aria-hidden="true" ng-click="tableOrder = 'grade'"></span>
+        <span class="glyphicon glyphicon-arrow-down" aria-hidden="true" ng-click="tableOrder = '-grade'"></span></th>
+      <th>Email</th>
+      <th>Phone</th>
+      <th>Data</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody ng-init="tableOrder = '-dateCreated'">
+    <tr ng-repeat="student in admin.students | filter: admin.search | startFrom:currentPage*pageSize | limitTo:pageSize | orderBy: tableOrder">
+      <th scope="row">{{$index + 1}}</th>
+      <td>{{student.firstName + ' ' + student.lastName}}</td>
+      <td>{{student.clientFirstName + ' ' + student.clientLastName}}</td>
+      <td>{{student.crmID}}</td>
+      <td>{{student.isTertiary ? 'T' : student.grade}}</td>
+      <td>{{student.clientEmail}}</td>
+      <td>{{student.clientPh}}</td>
+      <td>
+        <div class="data-button-wrap">
+          <div ng-class="{'active': student.var1}"><i class="fa fa-graduation-cap" aria-hidden="true"></i></div>
+          <div ng-class="{'active': student.var2}"><i class="fa fa-graduation-cap" aria-hidden="true"></i></div>
+          <div ng-class="{'active': student.var3}"><i class="fa fa-graduation-cap" aria-hidden="true"></i></div>
+        </div>
+      </td>
+      <td><button class="btn btn-default edit-button" ng-click="admin.openModal(student)">Edit</button></td>
+    </tr>
+  </tbody>
+</table>

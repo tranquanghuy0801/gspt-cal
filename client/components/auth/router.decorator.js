@@ -19,7 +19,7 @@ export function routerDecorator($rootScope, $state, Auth) {
           event.preventDefault();
           return Auth.isLoggedIn()
             .then(is => {
-              $state.go(is ? 'main' : 'login');
+              $state.go(is ? 'calendar' : 'main');
             });
         });
     } else {
@@ -31,7 +31,7 @@ export function routerDecorator($rootScope, $state, Auth) {
 
           event.preventDefault();
 
-          $state.go('login');
+          $state.go('main');
         });
     }
   });

@@ -1,0 +1,73 @@
+<div class="row">
+  <div class="col-sm-9">
+    <h1>Tutors</h1>
+  </div>
+</div>
+<br>
+<hr>
+<form ng-submit="admin.addTutor(newTutor); newTutor={}; notes = false;" ng-init="newTutor = {}">
+  <div class="row">
+    <div class="col-sm-4">
+      <div class="form-group">
+        <label>First Name</label>
+        <input type="text" class="form-control" required ng-model="newTutor.firstName" placeholder="First Name">
+      </div>
+    </div>
+    <div class="col-sm-4">
+      <div class="form-group">
+        <label>Last Name</label>
+        <input type="text" class="form-control" required ng-model="newTutor.lastName" placeholder="First Name">
+      </div>
+    </div>
+    <div class="col-sm-4">
+      <div class="form-group">
+        <label>Phone</label>
+        <input type="text" class="form-control" ng-model="newTutor.phone" placeholder="Phone">
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-12">
+      <button type="submit" class="btn btn-success btn-lg btn-block">Add Tutor</button>
+    </div> 
+  </div>
+</form>
+<hr>
+<div class="row">
+  <div class="col-sm-9">
+    <div class="form-group">
+      <input type="search" class="form-control" ng-model="admin.search" placeholder="Search here...">
+    </div>
+  </div>
+  <div class="col-sm-3 text-right">
+    <div ng-init="currentPage = 0; pageSize = 100;">
+      <button class="btn" ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1">
+        Previous
+      </button>
+      {{currentPage + 1}}/{{(admin.tutors.length/pageSize | roundUp) || 1}}
+      <button class="btn" ng-disabled="currentPage >= admin.tutors.length/pageSize - 1" ng-click="currentPage=currentPage+1">
+        Next
+      </button>
+    </div>
+  </div>
+</div>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Name</th>
+      <th>Phone</th>
+      <th>Date Added</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr ng-repeat="tutor in admin.tutors | filter: admin.search | startFrom:currentPage*pageSize | limitTo:pageSize | orderBy: 'dateCreated'">
+      <th scope="row">{{$index + 1}}</th>
+      <td>{{tutor.firstName + ' ' + tutor.lastName}}</td>
+      <td>{{tutor.phone}}</td>
+      <td>{{tutor.dateCreated | date:'dd/MM/yyyy'}}</td>
+      <td><button class="btn btn-default edit-button" ng-click="admin.openModal(tutor)">Edit</button></td>
+    </tr>
+  </tbody>
+</table>

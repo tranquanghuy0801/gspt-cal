@@ -74,8 +74,19 @@ var LessonSchema = new mongoose.Schema({
   },
   addText: {
     type: mongoose.Schema.Types.Mixed
-  }
+  },
+  dateCreated:{
+    type: Date,
+    default: Date.now()
+  },
+  dateModified: Date
 });
+
+LessonSchema
+  .pre('save', function(next) {
+    this.dateModified = Date.now();
+    next();
+  });
 
 registerEvents(LessonSchema);
 export default mongoose.model('Lesson', LessonSchema);

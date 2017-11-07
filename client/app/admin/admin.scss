@@ -1,20 +1,48 @@
-.trash { color:rgb(209, 91, 71); }
+.tertiary.active{
+	color: #fff;
+    background-color: #286090;
+    border-color: #204d74;
+}
 
-.user-list {
-	li {
-		display: flex;
-		border: none;
-		border-bottom: 1px lightgray solid;
-		margin-bottom: 0;
-		&:last-child { border-bottom: none; }
+.add-notes-group{
+	margin-top: 12px;
+}
 
-		.user-info {
-			flex-grow: 1;
-		}
-		.trash {
-			display: flex;
-			align-items: center;
-			text-decoration: none;
-		}
+.data-button-wrap{
+
+	button{
+		line-height: 34px;
+		height: 34px;
+	    width: 34px;
+	    border: none;
+	    border-radius: 3px;
+	    background-color: #d2d2d2;
+	    outline: none !important;
 	}
+
+	button.active{
+		background-color: #333;
+		color: white;
+	}
+
+	>div{
+		opacity: 0.4;
+		display: inline-block;
+	}
+
+	>div.active{
+		opacity: 1;
+		color: #bb0a0a;
+	}
+}
+
+.student-modal.modal > .modal-dialog{
+	width: 950px;
+}
+
+.edit-button{
+	font-size: 12px;
+    line-height: 1;
+    margin-top: -4px;
+    margin-bottom: -2px;
 }

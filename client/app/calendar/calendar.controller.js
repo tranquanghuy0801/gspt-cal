@@ -1,6 +1,9 @@
-export default class CalendarController {
-	constructor(){
+'use strict';
 
+export default class CalendarController {
+	/*@ngInject*/
+	constructor(Modal){
+		this.Modal = Modal;
 	}
 
 	$onInit(){
@@ -32,5 +35,11 @@ export default class CalendarController {
 
 		return hours + mins + end;
 
+	}
+
+	createSession(segment, room){
+		//pass through days too maybe?
+		//maybe location too?
+		this.Modal.addSession(segment, room);
 	}
 }

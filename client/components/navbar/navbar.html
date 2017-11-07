@@ -1,14 +1,13 @@
 <div class="navbar navbar-default navbar-static-top">
   <div class="container">
     <div class="navbar-header">
-      <button class="navbar-toggle" type="button" ng-click="$ctrl.isCollapsed = !$ctrl.isCollapsed">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <a href="/" class="navbar-brand">GSPT Calendar</a>
+      <a ui-sref="calendar" class="navbar-brand">GSPT Calendar</a>
     </div>
+    <ul class="nav navbar-nav">
+      <li ui-sref-active="active"><a ui-sref="admin.student">Students</a></li>
+      <li ui-sref-active="active"><a ui-sref="admin.tutor">Tutors</a></li>
+      <li ui-sref-active="active"><a ui-sref="admin.student">Sessions</a></li>
+    </ul>
     <div uib-collapse="$ctrl.isCollapsed" class="navbar-collapse collapse" id="navbar-main">
       <ul class="nav navbar-nav navbar-right">
         <li ng-hide="$ctrl.isLoggedIn()" ui-sref-active="active"><a ui-sref="main">Login</a></li>

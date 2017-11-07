@@ -28,13 +28,29 @@ var StudentSchema = new mongoose.Schema({
   	type: Boolean,
   	default: false
   },
+  clientFirstName: String,
+  clientLastName: String,
   clientEmail: String,
   clientPh: String,
   studentNotes: String,
+  var1: Boolean,
+  var2: Boolean,
+  var3: Boolean,
   backupLink: {
   	type: mongoose.Schema.Types.ObjectId
-  }
+  },
+  dateCreated:{
+    type: Date,
+    default: Date.now()
+  },
+  dateModified: Date
 });
+
+StudentSchema
+  .pre('save', function(next) {
+    this.dateModified = Date.now();
+    next();
+  });
 
 registerEvents(StudentSchema);
 export default mongoose.model('Student', StudentSchema);

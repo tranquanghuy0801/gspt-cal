@@ -1,0 +1,103 @@
+<div class="modal-body">
+	<button type="button" class="close" aria-label="Close" ng-click="$dismiss()"><span aria-hidden="true">&times;</span></button>
+<form ng-submit="admin.patchStudent($resolve.data); $dismiss();">
+  <div class="row">
+    <div class="col-sm-4">
+      <div class="form-group">
+        <label>First Name</label>
+        <input type="text" class="form-control" required ng-model="$resolve.data.firstName" placeholder="First Name">
+      </div>
+    </div>
+    <div class="col-sm-4">
+      <div class="form-group">
+        <label>Last Name</label>
+        <input type="text" class="form-control" required ng-model="$resolve.data.lastName" placeholder="Last Name">
+      </div>
+    </div>
+    <div class="col-sm-2">
+      <div class="form-group">
+        <label>Data</label>
+        <div class="data-button-wrap">
+          <button type="button"  ng-click="$resolve.data.var1 =! $resolve.data.var1" ng-class="{'active': $resolve.data.var1}"><i class="fa fa-graduation-cap" aria-hidden="true"></i></button>
+          <button type="button" ng-click="$resolve.data.var2 =! $resolve.data.var2" ng-class="{'active': $resolve.data.var2}"><i class="fa fa-graduation-cap" aria-hidden="true"></i></button>
+          <button type="button" ng-click="$resolve.data.var3 =! $resolve.data.var3" ng-class="{'active': $resolve.data.var3}"><i class="fa fa-graduation-cap" aria-hidden="true"></i></button>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-2">
+      <div class="form-group">
+        <label>Grade</label>
+        <div class="input-group">
+          <input type="number" class="form-control" ng-min="1" ng-max="12" placeholder="Grade" ng-model="$resolve.data.grade" ng-disabled="$resolve.data.isTertiary" ng-required="!$resolve.data.isTertiary">
+          <span class="input-group-addon tertiary" ng-click="$resolve.data.isTertiary = !$resolve.data.isTertiary" ng-class="{'active': $resolve.data.isTertiary}" title="Is this a tertiary student?">
+            <i class="fa fa-graduation-cap" aria-hidden="true"></i>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-4">
+      <div class="form-group">
+        <label>Client First Name</label>
+        <input type="text" class="form-control" ng-model="$resolve.data.clientFirstName" placeholder="Client First Name">
+      </div>
+    </div>
+    <div class="col-sm-4">
+      <div class="form-group">
+        <label>Client Last Name</label>
+        <input type="text" class="form-control" ng-model="$resolve.data.clientLastName" placeholder="Client Last Name">
+      </div>
+  </div>
+  <div class="col-sm-4">
+      <div class="form-group">
+        <label>CRM ID</label>
+        <input type="text" class="form-control" ng-model="$resolve.data.crmID" placeholder="CRM ID">
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    
+    <div class="col-sm-4">
+      <div class="form-group">
+        <label>Contact Email</label>
+        <input type="email" class="form-control" ng-model="$resolve.data.clientEmail" placeholder="Contact Email">
+      </div>
+    </div>
+    <div class="col-sm-4">
+      <div class="form-group">
+        <label>Contact PH</label>
+        <input type="text" class="form-control" ng-model="$resolve.data.clientPh" placeholder="Contact PH">
+      </div>
+    </div>
+    <div class="col-sm-4">
+      <div class="form-group add-notes-group">
+        <button type="button" class="btn btn-primary btn-lg btn-block" ng-click="editNotes =! editNotes">Edit Notes</button>
+      </div>
+    </div>
+  </div>
+  <div class="row" ng-show="editNotes">
+    <div class="col-sm-12">
+      <div class="form-group">
+        <label>Student Notes</label>
+        <textarea class="form-control" ng-model="$resolve.data.studentNotes" rows="4"></textarea>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+  	<div class="col-sm-12">
+  		<div class="checkbox">
+		    <label>
+		      <input type="checkbox" ng-model="$resolve.data.isActive"> Student is active
+		    </label>
+	  	</div>
+  	</div>
+  </div>
+  <div class="row">
+    <div class="col-sm-12">
+      <button type="submit" class="btn btn-success btn-lg btn-block">Save Student</button>
+    </div>
+    
+  </div>
+</form>
+</div>

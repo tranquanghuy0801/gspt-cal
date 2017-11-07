@@ -2,9 +2,11 @@
 
 import angular from 'angular';
 import routes from './admin.routes';
-import AdminController from './admin.controller';
+import StudentController from './student/student.controller';
+import TutorController from './tutor/tutor.controller';
 
 export default angular.module('calApp.admin', ['calApp.auth', 'ui.router'])
   .config(routes)
-  .controller('AdminController', AdminController)
+  .controller('StudentController', StudentController)
+  .controller('TutorController', TutorController)
   .name;

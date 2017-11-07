@@ -1,7 +1,5 @@
 import angular from 'angular';
 import uiRouter from 'angular-ui-router';
-import routing from './main.routes';
-import CalendarController from './calendar/calendar.controller';
 
 export class MainController {
   user = {
@@ -41,16 +39,20 @@ export class MainController {
   }
 }
 
-export default angular.module('calApp.main', [uiRouter])
-  .config(routing)
-  .component('main', {
+
+function routes($stateProvider) {
+  'ngInject';
+
+  $stateProvider.state('main', {
+    url: '/',
     template: require('./main.html'),
-    controller: MainController,
+    controller: 'MainController',
     controllerAs: 'vm'
-  })
-  .component('calendar', {
-    template: require('./calendar/calendar.html'),
-    controller: CalendarController,
-    controllerAs: 'vm'
-  })
+  });
+}
+
+
+export default angular.module('calApp.main', [uiRouter])
+  .config(routes)
+  .controller('MainController', MainController)
   .name;

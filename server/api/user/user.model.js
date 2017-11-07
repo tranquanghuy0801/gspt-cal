@@ -24,6 +24,10 @@ var UserSchema = new Schema({
   salt: String,
   backupLink: {
     type: mongoose.Schema.Types.ObjectId
+  },
+  dateCreated:{
+    type: Date,
+    default: Date.now()
   }
 });
 

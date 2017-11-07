@@ -3,6 +3,7 @@
 import angular from 'angular';
 
 export function Modal($rootScope, $uibModal) {
+  'ngInject';
   /**
    * Opens a modal
    * @param  {Object} scope      - an object to be merged with modal's scope
@@ -25,6 +26,47 @@ export function Modal($rootScope, $uibModal) {
   return {
 
     /* Confirmation modals */
+    editStudent(student){
+      $uibModal.open({
+        template: require('./edit-student/edit-student.html'),
+        controller: 'StudentController',
+        controllerAs: 'admin',
+        windowClass: 'student-modal',
+        resolve:{
+          data: function(){
+            return student
+          }
+        } 
+      });
+    },
+    editTutor(tutor){
+      $uibModal.open({
+        template: require('./edit-tutor/edit-tutor.html'),
+        controller: 'TutorController',
+        controllerAs: 'admin',
+        windowClass: 'student-modal',
+        resolve:{
+          data: function(){
+            return tutor
+          }
+        } 
+      });
+    },
+    addSession(segment, room){
+      $uibModal.open({
+        template: require('./add-session/add-session.html'),
+        controller: 'CalendarController',
+        controllerAs: 'admin',
+        resolve:{
+          data: function(){
+            return {
+              segment: segment,
+              room: room
+            }
+          }
+        } 
+      });
+    },
     confirm: {
 
       /**
