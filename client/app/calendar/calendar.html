@@ -1,0 +1,16 @@
+<button class="btn btn-lg" ng-invalid="vm.isPaddington" ng-click="vm.rooms = vm.paddington">Paddington</button>
+<button class="btn btn-lg" ng-invalid="vm.isCannonHill" ng-click="vm.rooms = vm.cannonHill">Cannon Hill</button>
+<table class="table table-striped">
+	<thead>
+		<tr>
+			<th>Time</th>
+			<th ng-repeat="room in vm.rooms">Room {{room + 1}}</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr ng-repeat="segment in vm.segments">
+			<th>{{vm.convertSegment(segment)}}</th>
+		  	<td ng-repeat="room in vm.rooms"></td>
+		</tr>
+	</tbody>
+</table>
