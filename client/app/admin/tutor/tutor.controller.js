@@ -22,15 +22,30 @@ export default class TutorController {
 
   addTutor(newTutor) {
     if(newTutor) {
-      this.$http.post('/api/tutors', newTutor);
-      this.grab();
+      newTutor.fullName = newTutor.firstName + ' ' + newTutor.lastName;
+      this.$http.post('/api/tutors', newTutor)
+      .then(res => {
+        this.grab();
+        this.error = '';
+      })
+      .catch(res => {
+        this.error = JSON.stringify(res.data, null, '\t');
+      });
     }
   }
 
-  patchTutor(tutor){
+  patchTutor(tutor, callback){
     if(tutor) {
-      this.$http.put('/api/tutors/' + String(tutor._id), tutor);
-      this.grab();
+      tutor.fullName = tutor.firstName + ' ' + tutor.lastName;
+      this.$http.put('/api/tutors/' + String(tutor._id), tutor)
+        .then(res => {
+          this.grab();
+          this.error = '';
+          callback();
+        })
+        .catch(res => {
+          this.error = JSON.stringify(res.data, null, '\t');
+        });
     }
   }
 

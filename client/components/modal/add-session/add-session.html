@@ -1,14 +1,66 @@
+<form>
 <div class="modal-header">
-	<h4 class="modal-title">Create New Session</h4>
+	<h4 class="modal-title">Create New Session - {{$resolve.data.segment | segmentConvert}}</h4>
 	<button type="button" class="close" aria-label="Close" ng-click="$dismiss()"><span aria-hidden="true">&times;</span></button>
 </div>
 <div class="modal-body">
 	<form>
-		<div class="form-control">
-			<label>Hello</label>
+		<div class="form-group">
+			<label>Student</label>
+			<div class="select-wrap">
+				<tags-input ng-model="vm.selectedStudent"
+				ng-disabled="vm.selectedStudent" 
+	                  name="selectedStudent"
+	                  placeholder=" "
+	                  add-from-autocomplete-only="true"
+	                  replace-spaces-with-dashes="false"
+	                  display-property="fullName">
+		        	<auto-complete source="vm.returnFilter(vm.students, $query)" 
+		                       min-length="1" ></auto-complete>
+		      	</tags-input>
+		      	<button class="btn btn-danger" ng-click="vm.selectedStudent = null" ng-show="vm.selectedStudent">Edit</button>
+	      	</div>
+		</div>
+		<div class="form-group">
+			<label>Tutor</label>
+			<div class="select-wrap">
+				<tags-input ng-model="vm.selectedTutor"
+				ng-disabled="vm.selectedTutor" 
+	                  name="selectedTutor"
+	                  placeholder=" "
+	                  add-from-autocomplete-only="true"
+	                  replace-spaces-with-dashes="false"
+	                  display-property="fullName">
+		        	<auto-complete source="vm.returnFilter(vm.tutors, $query)" 
+		                       min-length="1" ></auto-complete>
+		      	</tags-input>
+		      	<button class="btn btn-danger" ng-click="vm.selectedTutor = null" ng-show="vm.selectedTutor">Edit</button>
+	      	</div>
+		</div>
+		<div class="form-group duration-group">
+			<label>Duration</label>
+			<div>
+				<button class="btn btn-default" ng-repeat="duration in [30,60,90,120,150,180,210,240]" ng-click="vm.newSession.duration = duration" ng-class="{'btn-primary': vm.newSession.duration == duration}">{{duration}} m</button>
+			</div>
+		</div>
+		<div class="form-group color-group">
+			<label>Color</label>
+			<div>
+				<span class="color-box aa{{color}}" ng-repeat="color in vm.colors" ng-click="vm.newSession.color = color" ng-class="{'active': vm.newSession.color == color}"></span>
+			</div>
+			<div>
+				<span class="color-box dark aa{{color}}" ng-repeat="color in vm.colors" ng-click="vm.newSession.color = 'dark ' + color" ng-class="{'active': vm.newSession.color == 'dark ' + color}"></span>
+			</div>
+			<div>
+				<span class="color-box striped aa{{color}}" ng-repeat="color in vm.colors" ng-click="vm.newSession.color = 'striped ' + color" ng-class="{'active': vm.newSession.color == 'striped ' + color}"></span>
+			</div>
+		</div>
+		<div class="form-group">
+			
 		</div>
 	</form>
 </div>
 <div class="modal-footer">
-	<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	<button type="submit" class="btn btn-success">Create</button>
 </div>
+</form>

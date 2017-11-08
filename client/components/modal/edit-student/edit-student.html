@@ -1,6 +1,6 @@
 <div class="modal-body">
 	<button type="button" class="close" aria-label="Close" ng-click="$dismiss()"><span aria-hidden="true">&times;</span></button>
-<form ng-submit="admin.patchStudent($resolve.data); $dismiss();">
+<form ng-submit="admin.patchStudent($resolve.data, $dismiss);">
   <div class="row">
     <div class="col-sm-4">
       <div class="form-group">
@@ -98,6 +98,10 @@
       <button type="submit" class="btn btn-success btn-lg btn-block">Save Student</button>
     </div>
     
+  </div>
+  <div class="alert alert-danger" ng-show="admin.error">
+    There was an error:<br>
+    <code>{{admin.error}}</code>
   </div>
 </form>
 </div>

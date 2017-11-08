@@ -55,8 +55,8 @@ export function Modal($rootScope, $uibModal) {
     addSession(segment, room){
       $uibModal.open({
         template: require('./add-session/add-session.html'),
-        controller: 'CalendarController',
-        controllerAs: 'admin',
+        controller: 'SessionController',
+        controllerAs: 'vm',
         resolve:{
           data: function(){
             return {

@@ -20,17 +20,43 @@ export default class StudentController {
       });
   }
 
+  mergeNames(student){
+    var name = student.firstName + ' ' + student.lastName;
+    if(student.clientFirstName || student.clientLastName){
+      name += ' - ' + student.clientFirstName + ' ' + student.clientLastName;
+    }
+    return name;
+  }
+
   addStudent(newStudent) {
     if(newStudent) {
-      this.$http.post('/api/students', newStudent);
-      this.grab();
+      newStudent.fullName = this.mergeNames(newStudent);
+      this.$http.post('/api/students', newStudent)
+      .then(res => {
+        this.grab();
+        this.error = '';
+      })
+      .catch(res => {
+        console.log(res);
+        this.error = JSON.stringify(res.data, null, '\t');
+      });
+      
     }
   }
 
-  patchStudent(student){
+  patchStudent(student, callback){
     if(student) {
-      this.$http.put('/api/students/' + String(student._id), student);
-      this.grab();
+      student.fullName = this.mergeNames(student);
+      this.$http.put('/api/students/' + String(student._id), student)
+        .then(res => {
+          this.grab();
+          this.error = '';
+          callback();
+        })
+        .catch(res => {
+          console.log(res);
+          this.error = JSON.stringify(res.data, null, '\t');
+        });
     }
   }
 

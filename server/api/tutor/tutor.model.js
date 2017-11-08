@@ -12,6 +12,10 @@ var TutorSchema = new mongoose.Schema({
   	type: String,
   	required: true
   },
+  fullName:{
+    type: String,
+    required: true
+  },
   isActive:{
   	type: Boolean,
   	default: true

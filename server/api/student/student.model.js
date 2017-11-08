@@ -12,6 +12,10 @@ var StudentSchema = new mongoose.Schema({
   	type: String,
   	required: true
   },
+  fullName:{
+    type: String,
+    required: true
+  },
   crmID: String,
   isActive:{
   	type: Boolean,

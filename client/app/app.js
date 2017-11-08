@@ -9,6 +9,7 @@ import ngSanitize from 'angular-sanitize';
 import uiRouter from 'angular-ui-router';
 import uiBootstrap from 'angular-ui-bootstrap';
 import 'angular-validation-match';
+import ngTagsInput from 'ng-tags-input';
 
 import {
   routeConfig
@@ -28,7 +29,7 @@ import filters from '../components/filters/';
 import './app.scss';
 
 angular.module('calApp', [ngCookies, ngResource, ngSanitize, uiRouter, uiBootstrap, _Auth, account,
-  admin, 'validation.match', navbar, main, constants, util, calendar, filters, Modal
+  admin, 'validation.match', navbar, main, constants, util, calendar, filters, Modal, 'ngTagsInput'
 ])
   .config(routeConfig)
   .run(function($rootScope, $location, Auth) {
