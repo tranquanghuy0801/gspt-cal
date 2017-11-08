@@ -10,7 +10,7 @@
 		</thead>
 		<tbody>
 			<tr ng-repeat="segment in vm.segments">
-				<th>{{vm.convertSegment(segment)}}</th>
+				<th>{{segment | segmentConvert}}</th>
 			  	<td ng-repeat="room in vm.rooms[vm.location]" ng-click="vm.createSession(segment, room)"></td>
 			</tr>
 		</tbody>

@@ -23,14 +23,12 @@ import main from './main/main.component';
 import constants from './app.constants';
 import util from '../components/util/util.module';
 import Modal from '../components/modal/modal.service';
-//FILTERS
-import startFrom from '../components/filters/startFrom';
-import roundUp from '../components/filters/roundUp';
+import filters from '../components/filters/';
 
 import './app.scss';
 
 angular.module('calApp', [ngCookies, ngResource, ngSanitize, uiRouter, uiBootstrap, _Auth, account,
-  admin, 'validation.match', navbar, main, constants, util, calendar, startFrom, roundUp, Modal
+  admin, 'validation.match', navbar, main, constants, util, calendar, filters, Modal
 ])
   .config(routeConfig)
   .run(function($rootScope, $location, Auth) {
