@@ -7,13 +7,19 @@ export default class CalendarController {
 	}
 
 	$onInit(){
-		this.paddington =  this.createArray(9);
-		this.isPaddington = true;
-		this.cannonHill =  this.createArray(6);
-		this.isCannonHill = false;
+		//defaults to paddington
+		this.location = 'paddington';
+		//setting locations and number of rooms with [0,1,2] arrays to loop through
+		//a bit hacky but is OK
+		this.rooms = {
+			'paddington': this.createArray(9),
+			'cannonHill': this.createArray(6)
+		};
+		//creates segments for the days
 		this.segments = this.createArray(48);
-		this.rooms = this.paddington;
 	}
+
+
 
 	createArray(length){
 		return Array.apply(null, Array(length)).map(function (x, i) { return i; })

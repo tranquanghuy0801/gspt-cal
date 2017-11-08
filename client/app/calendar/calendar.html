@@ -1,17 +1,17 @@
-<div class="fluid-container">
-	<button class="btn btn-lg" ng-invalid="vm.isPaddington" ng-click="vm.rooms = vm.paddington">Paddington</button>
-	<button class="btn btn-lg" ng-invalid="vm.isCannonHill" ng-click="vm.rooms = vm.cannonHill">Cannon Hill</button>
+<div class="container-fluid">
+	<button class="btn btn-lg" ng-click="vm.location = 'paddington'">Paddington</button>
+	<button class="btn btn-lg" ng-click="vm.location = 'cannonHill'">Cannon Hill</button>
 	<table class="table table-striped a-calendar">
 		<thead>
 			<tr>
 				<th>Time</th>
-				<th ng-repeat="room in vm.rooms">Room {{room + 1}}</th>
+				<th ng-repeat="room in vm.rooms[vm.location]">Room {{room + 1}}</th>
 			</tr>
 		</thead>
 		<tbody>
 			<tr ng-repeat="segment in vm.segments">
 				<th>{{vm.convertSegment(segment)}}</th>
-			  	<td ng-repeat="room in vm.rooms" ng-click="vm.createSession(segment, room)"></td>
+			  	<td ng-repeat="room in vm.rooms[vm.location]" ng-click="vm.createSession(segment, room)"></td>
 			</tr>
 		</tbody>
 	</table>
