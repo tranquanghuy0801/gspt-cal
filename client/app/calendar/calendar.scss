@@ -1,0 +1,158 @@
+.date-group{
+  max-width: 250px;
+  float: left;
+  margin-right: 20px;
+}
+
+.search-group{
+  float: left;
+  margin-right: 20px;
+  max-width: 300px;
+}
+
+.free-col{
+  position: relative;
+
+  &.drag-cell{
+    /*when its about to have something dragged to it*/
+    background-color: #aaa;
+  }
+} 
+
+.session-cell{
+    width: 50%;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    z-index: 10;
+    padding: 5px;
+
+    &:only-child{
+      width: 100%;
+    }
+
+    &:nth-child(2) {
+      left: auto;
+      right: 0px;
+    }
+
+  .a-bg{
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      bottom: 0px;
+      right: 0px;
+      opacity: 0.5;
+      z-index: -1;
+      border: 1px solid rgba(0,0,0,0.5);
+  }
+
+  span.student{
+    display: block;
+    font-size: 16px;
+  }
+}
+
+
+
+.a-calendar td{
+  border-left: 1px solid #ccc;
+  cursor: pointer;
+
+  &:hover{
+    background-color: rgba(0,0,0,0.1);
+  }
+}
+
+.date-input{
+  pointer-events: none;
+}
+
+.date-group .uib-clear{
+  display: none;
+}
+
+.time-col{
+  width: 90px;
+}
+
+.select-wrap{
+  position: relative;
+
+  button.btn{
+    position: absolute;
+    top: 0px;
+    right: 0px;
+  }
+
+  .remove-button{
+    display: none;
+  }
+
+  li.tag-item{
+    background-color: transparent !important;
+    border: 0px !important;
+    color: #333 !important;
+  }
+
+  tags-input .tags.focused {
+    border: 1px solid #ccc;
+    -webkit-box-shadow: none !important;
+            box-shadow: none !important;
+  }
+
+  div.tags:focus{
+    outline: none !important;
+  }
+
+  *:focus{
+    outline: none !important;
+  }
+} 
+
+.duration-group{
+
+  button{
+    margin-right: 8px;
+  }
+}
+
+.color-group{
+  > div{
+    margin-bottom: 12px;
+    text-align: center;
+  }
+
+  span.color-box{
+    width: 50px;
+    height: 50px;
+    display: inline-block;
+    text-align: center;
+    margin: 0 12px;
+    border-radius: 3px;
+    vertical-align: bottom;
+
+    &.active{
+      border: 3px solid #ccc;
+    }
+  }
+}
+
+.a-calendar tbody{
+
+  th, td{
+    border-top: none !important;
+  }
+}
+
+table.in-drag .session-cell:not(.in-drag){
+  z-index: -1;
+}
+
+.table-striped.a-calendar > tbody > tr:nth-of-type(odd) {
+    background-color: rgba(221, 220, 220, 0.35);
+}
+
+.table-striped.a-calendar > tbody > tr:nth-of-type(even) {
+    background-color: rgba(255, 255, 255, 0.35);
+}

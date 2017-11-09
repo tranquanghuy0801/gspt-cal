@@ -52,23 +52,6 @@ export function Modal($rootScope, $uibModal) {
         } 
       });
     },
-    addSession(startTime, room, location, date){
-      $uibModal.open({
-        template: require('./add-session/add-session.html'),
-        controller: 'SessionController',
-        controllerAs: 'vm',
-        resolve:{
-          data: function(){
-            return {
-              startTime: startTime,
-              room: room,
-              location: location,
-              date: date
-            }
-          }
-        } 
-      });
-    },
     confirm: {
 
       /**

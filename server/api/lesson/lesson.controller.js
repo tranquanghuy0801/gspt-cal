@@ -99,6 +99,7 @@ export function upsert(req, res) {
 
 // Updates an existing Lesson in the DB
 export function patch(req, res) {
+  console.log(req.body);
   if(req.body._id) {
     Reflect.deleteProperty(req.body, '_id');
   }

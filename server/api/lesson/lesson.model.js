@@ -28,15 +28,20 @@ var LessonSchema = new mongoose.Schema({
         max: 2400,
         required: true
     },
-    room:{
+    location:{
+        type: String,
+        required: true
+    },
+    room:{ // zero based rooms
         type: Number,
         min: 0,
-        required: true
+        required: true,
+        lowercase: true
     },
     isHidden:{
         type: Boolean,
         default: false
-        //unused rn
+        //hide throughout all of the cal
     },
     date:{ //starting date
         type: String, //dd/mm/yyyy

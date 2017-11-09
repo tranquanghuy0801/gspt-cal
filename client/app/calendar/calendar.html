@@ -1,25 +1,29 @@
 <div class="container-fluid">
 	<div class="row">
-		<div class="col-md-4">
+		<div class="col-lg-9">
 			<div class="input-group date-group">
-	          <input type="text" class="form-control date-input input-lg" uib-datepicker-popup="dd-MMMM-yyyy" ng-model="vm.calendarDate" is-open="opened" close-text="Close" style="pointer-events: none" />
-	          <span class="input-group-btn">
-	            <button type="button" class="btn btn-lg btn-default" ng-click="opened = true"><i class="glyphicon glyphicon-calendar"></i></button>
-	          </span>
+	         	<input type="text" class="form-control date-input input-lg" ng-change="vm.clearCal()" uib-datepicker-popup="dd-MMMM-yyyy" ng-model="vm.calendarDate" is-open="opened" close-text="Close" style="pointer-events: none" />
+	         	<span class="input-group-btn">
+	            	<button type="button" class="btn btn-lg btn-default" ng-click="opened = true"><i class="glyphicon glyphicon-calendar"></i></button>
+	          	</span>
 	        </div>
-		</div>
-		<div class="col-md-4 text-center">
+	        <div class="input-group search-group">
+	         	<input type="text" class="form-control input-lg" ng-model="vm.searchFilter" ng-change="vm.clearCal()" placeholder="Search here..." />
+	         	<span class="input-group-btn">
+	            	<button type="button" class="btn btn-lg btn-default" ng-click="vm.searchFilter = ''; vm.clearCal()"><i class="fa fa-close"></i></button>
+	          	</span>
+	        </div>
 			<span class="btn-group">
 				<button class="btn btn-lg btn-default" ng-click="vm.addDays(-7)"><i class="fa fa-angle-double-left" aria-hidden="true"></i></button>
 				<button class="btn btn-lg btn-default" ng-click="vm.addDays(-1)"><i class="fa fa-angle-left" aria-hidden="true"></i></button>
-				<button class="btn btn-lg btn-default" ng-click="vm.intDay()">Today</button>
+				<button class="btn btn-lg btn-default" ng-click="vm.intDay(); vm.clearCal();">Today</button>
 				<button class="btn btn-lg btn-default" ng-click="vm.addDays(1)"><i class="fa fa-angle-right" aria-hidden="true"></i></button>
 				<button class="btn btn-lg btn-default" ng-click="vm.addDays(7)"><i class="fa fa-angle-double-right" aria-hidden="true"></i></button>
 			</span>
 		</div>
-		<div class="col-md-4 text-right">
-			<button class="btn btn-lg btn-default" ng-class="{'btn-primary': vm.location == 'paddington'}" ng-click="vm.location = 'paddington'">Paddington</button>
-			<button class="btn btn-lg btn-default" ng-class="{'btn-primary': vm.location == 'cannonHill'}" ng-click="vm.location = 'cannonHill'">Cannon Hill</button>
+		<div class="col-lg-3 text-right">
+			<button class="btn btn-lg btn-default" ng-class="{'btn-primary': vm.location == 'paddington'}" ng-click="vm.changeLocation('paddington')">Paddington</button>
+			<button class="btn btn-lg btn-default" ng-class="{'btn-primary': vm.location == 'cannon hill'}" ng-click="vm.changeLocation('cannon hill')">Cannon Hill</button>
 		</div>
 	</div>
 	<hr>
@@ -33,7 +37,7 @@
 		<tbody>
 			<tr ng-repeat="segment in vm.segments">
 				<th>{{segment | segmentConvert}}</th>
-			  	<td ng-repeat="room in vm.rooms[vm.location]" ng-click="vm.Modal.addSession((1440 / vm.segments.length * segment), room, vm.location, vm.calendarDate)"></td>
+			  	<td ng-repeat="room in vm.rooms[vm.location]" class="free-col" id="{{ 't' + (1440 / vm.segments.length * segment) + 'r' + room }}" data-room="{{room}}" data-time="{{1440 / vm.segments.length * segment}}" ng-click="vm.addSessionModal((1440 / vm.segments.length * segment), room)" ng-right-click="console.log('hello');"></td>
 			</tr>
 		</tbody>
 	</table>

@@ -25,6 +25,7 @@ import constants from './app.constants';
 import util from '../components/util/util.module';
 import Modal from '../components/modal/modal.service';
 import filters from '../components/filters/';
+import directives from '../components/directives/';
 
 import './app.scss';
 
