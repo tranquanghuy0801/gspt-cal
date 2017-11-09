@@ -1,10 +1,9 @@
-<form>
+<form ng-submit="vm.submit($resolve.data, $dismiss)">
 <div class="modal-header">
-	<h4 class="modal-title">Create New Session - {{$resolve.data.segment | segmentConvert}}</h4>
+	<h4 class="modal-title">Create New Session</h4>
 	<button type="button" class="close" aria-label="Close" ng-click="$dismiss()"><span aria-hidden="true">&times;</span></button>
 </div>
 <div class="modal-body">
-	<form>
 		<div class="form-group">
 			<label>Student</label>
 			<div class="select-wrap">
@@ -14,7 +13,7 @@
 	                  placeholder=" "
 	                  add-from-autocomplete-only="true"
 	                  replace-spaces-with-dashes="false"
-	                  display-property="fullName">
+	                  display-property="fullName" required>
 		        	<auto-complete source="vm.returnFilter(vm.students, $query)" 
 		                       min-length="1" ></auto-complete>
 		      	</tags-input>
@@ -30,17 +29,17 @@
 	                  placeholder=" "
 	                  add-from-autocomplete-only="true"
 	                  replace-spaces-with-dashes="false"
-	                  display-property="fullName">
+	                  display-property="fullName" required>
 		        	<auto-complete source="vm.returnFilter(vm.tutors, $query)" 
 		                       min-length="1" ></auto-complete>
 		      	</tags-input>
-		      	<button class="btn btn-danger" ng-click="vm.selectedTutor = null" ng-show="vm.selectedTutor">Edit</button>
+		      	<button type="button" class="btn btn-danger" ng-click="vm.selectedTutor = null" ng-show="vm.selectedTutor">Edit</button>
 	      	</div>
 		</div>
 		<div class="form-group duration-group">
 			<label>Duration</label>
 			<div>
-				<button class="btn btn-default" ng-repeat="duration in [30,60,90,120,150,180,210,240]" ng-click="vm.newSession.duration = duration" ng-class="{'btn-primary': vm.newSession.duration == duration}">{{duration}} m</button>
+				<button type="button" class="btn btn-default" ng-repeat="duration in [30,60,90,120,150,180,210,240]" ng-click="vm.newSession.duration = duration" ng-class="{'btn-primary': vm.newSession.duration == duration}">{{duration}} m</button>
 			</div>
 		</div>
 		<div class="form-group color-group">
@@ -55,12 +54,39 @@
 				<span class="color-box striped aa{{color}}" ng-repeat="color in vm.colors" ng-click="vm.newSession.color = 'striped ' + color" ng-class="{'active': vm.newSession.color == 'striped ' + color}"></span>
 			</div>
 		</div>
+		<hr>
 		<div class="form-group">
-			
+			<div class="row">
+				<div class="col-md-8">
+					<label>Frequency</label>
+					<div>
+						<button type="button" class="btn btn-default" ng-click="vm.newSession.frequency = 0" ng-class="{'btn-primary': vm.newSession.frequency == 0}">One Off</button>
+						<button type="button" class="btn btn-default" ng-click="vm.newSession.frequency = 7" ng-class="{'btn-primary': vm.newSession.frequency == 7}">Weekly</button>
+						<button type="button" class="btn btn-default" ng-click="vm.newSession.frequency = 14" ng-class="{'btn-primary': vm.newSession.frequency == 14}">Fortnightly</button>
+					</div>
+				</div>
+				<div class="col-md-4" ng-show="vm.newSession.frequency">
+					<label>Occurences</label>
+					<div class="input-group">
+			          <input type="number" class="form-control" min="2" placeholder="Occurences" ng-model="vm.newSession.instances" ng-disabled="vm.inf" ng-required="!vm.inf && vm.newSession.frequency">
+			          <span class="input-group-addon tertiary" ng-click="vm.inf = !vm.inf" ng-class="{'active': vm.inf}">∞
+			          </span>
+			        </div>
+				</div>
+			</div>
 		</div>
-	</form>
+		<div class="form-group" ng-show="notes">
+			<hr>
+			<label>Notes</label>
+			<textarea class="form-control" ng-model="vm.newSession.globalNotes" rows="4"></textarea>
+		</div>
+		<div class="alert alert-danger" ng-show="vm.error">
+    		There was an error:<br>
+    		<code>{{vm.error}}</code>
+  		</div>
 </div>
 <div class="modal-footer">
+	<button type="button" class="btn btn-default" ng-click="notes = !notes" ng-bind="notes ? 'Hide Notes' : 'Add Notes'"></button>
 	<button type="submit" class="btn btn-success">Create</button>
 </div>
 </form>

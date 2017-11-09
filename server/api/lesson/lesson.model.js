@@ -36,20 +36,17 @@ var LessonSchema = new mongoose.Schema({
     isHidden:{
         type: Boolean,
         default: false
+        //unused rn
     },
-    date:{
-        type: Date,
+    date:{ //starting date
+        type: String, //dd/mm/yyyy
         required: true
     },
-    isRecurring:{
-        type: Boolean,
-        default: true
-    },
-    endDate:{
-        type: Date,
-        required() {
-            return this.isRecurring;
-        }
+    instances:{
+        type: Number,
+        default: 0
+        //0 means it's inf
+        //1 is a one off
     },
     frequency:{
         type: Number,
@@ -67,6 +64,7 @@ var LessonSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.Mixed
     },
     overwriteStart: {
+        //overwrite for time of day
         type: mongoose.Schema.Types.Mixed
     },
     overwriteRoom:{

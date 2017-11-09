@@ -18,8 +18,8 @@
 			</span>
 		</div>
 		<div class="col-md-4 text-right">
-			<button class="btn btn-lg" ng-class="{'btn-primary': vm.location == 'paddington'}" ng-click="vm.location = 'paddington'">Paddington</button>
-			<button class="btn btn-lg" ng-class="{'btn-primary': vm.location == 'cannonHill'}" ng-click="vm.location = 'cannonHill'">Cannon Hill</button>
+			<button class="btn btn-lg btn-default" ng-class="{'btn-primary': vm.location == 'paddington'}" ng-click="vm.location = 'paddington'">Paddington</button>
+			<button class="btn btn-lg btn-default" ng-class="{'btn-primary': vm.location == 'cannonHill'}" ng-click="vm.location = 'cannonHill'">Cannon Hill</button>
 		</div>
 	</div>
 	<hr>
@@ -33,7 +33,7 @@
 		<tbody>
 			<tr ng-repeat="segment in vm.segments">
 				<th>{{segment | segmentConvert}}</th>
-			  	<td ng-repeat="room in vm.rooms[vm.location]" ng-click="vm.Modal.addSession(segment, room)"></td>
+			  	<td ng-repeat="room in vm.rooms[vm.location]" ng-click="vm.Modal.addSession((1440 / vm.segments.length * segment), room, vm.location, vm.calendarDate)"></td>
 			</tr>
 		</tbody>
 	</table>

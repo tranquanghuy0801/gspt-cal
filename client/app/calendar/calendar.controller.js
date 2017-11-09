@@ -2,9 +2,9 @@
 
 export default class CalendarController {
 	/*@ngInject*/
-	constructor(Modal){
+	constructor(Modal, $http){
 		this.Modal = Modal;
-
+		this.$http = $http;
 	}
 
 	$onInit(){
@@ -21,11 +21,21 @@ export default class CalendarController {
 
 		//int date
 		this.intDay();
+
+		this.$http.get('/api/lessons').then(response => {
+        	this.sessions = response.data;
+      	});
 	}
 
 	intDay(){
 		this.calendarDate = new Date();
 	}
+
+	// filterSessions(){
+	// 	this.filteredSessions = this.sessions.filter(session =>{
+			
+	// 	})
+	// }
 
 	createArray(length){
 		return Array.apply(null, Array(length)).map(function (x, i) { return i; })
