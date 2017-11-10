@@ -123,6 +123,28 @@ export default class CalendarController {
 		this.addDropAndDrag();
 	}
 
+	handleClick($event){
+		console.log('click');
+
+		var _targ = $event.target.classList.contains('free-col') ? $event.target : $event.target.closest('.free-col');
+		var _startTime = _targ.dataset.time;
+		var _room = _targ.dataset.time;
+
+		//$event.which == 1 is left click
+		//$event.which == 3 is right click
+		if($event.which == 1){
+			this.addSessionModal(_startTime, _room);
+		}
+
+		if($event.which == 3 && _targ.childElementCount){
+			var _edit = _targ.firstChild;
+			var _uid = _edit.dataset.id;
+			var _instance = +_edit.dataset.instance;
+			console.log(_edit, _uid);
+			this.editSessionModal(_uid, _instance);
+		}
+	}
+
 	addDropAndDrag(){
 		var drop = ev => {
 		    ev.preventDefault();
@@ -201,9 +223,7 @@ export default class CalendarController {
       	});
 	}
 
-	addSessionModal(segment, room, $event){
-		var _targ = $event.target;
-
+	addSessionModal(startTime, room){
 
 		var modalInstance = this.$uibModal.open({
 	        template: require('./modal/add-session.html'),
@@ -212,7 +232,7 @@ export default class CalendarController {
 	        resolve:{
 	          data: () => {
 	            return {
-	              startTime: segment,
+	              startTime: startTime,
 	              room: room,
 	              location: this.location,
 	              date: this.calendarDate
@@ -273,10 +293,11 @@ export default class CalendarController {
 		//identified applied to table cell,
 		// 'a-' + identified to session div
 		
-		var color = session.color; //re-int color everytime
+		var specificNotes = (session.overwriteNotes && instance in session.overwriteNotes) ? session.overwriteNotes[instance] : null;
+		var color = (session.overwriteColor && instance in session.overwriteColor) ? session.overwriteColor[instance] : session.color;
 		var _div = document.createElement('div');
-		if(session.color.indexOf(' ') != -1){
-			var _temp = session.color.split(' ');
+		if(color.indexOf(' ') != -1){
+			var _temp = color.split(' ');
 			color = _temp[1] + ' ' + _temp[0]
 		}
 		_div.className = 'session-cell';
@@ -284,9 +305,14 @@ export default class CalendarController {
 		_div.setAttribute('draggable', 'true');
 		_div.setAttribute('data-id', session._id);
 		_div.setAttribute('data-instance', instance);
-		_div.style.height = String(100 * (session.duration/30)) + '%';
+		var _duration = (session.overwriteDuration && instance in session.overwriteDuration) ? session.overwriteDuration[instance] : session.duration;
+		_div.style.height = String(100 * (_duration/30)) + '%';
 		_div.innerHTML = '<span class="student">' + session.student.firstName + ' ' + session.student.lastName + '</span>';
 		_div.innerHTML += '<span>' + session.tutor.firstName + ' ' + session.tutor.lastName + '</span>';
+		if(session.globalNotes)
+			_div.innerHTML += '<br><span class="global-notes">' + session.globalNotes + '</span>';
+		if(specificNotes)
+			_div.innerHTML += '<br><span class="specific-notes">' + specificNotes + '</span>';
 		_div.innerHTML += '<div class="a-bg ' + 'aa' + color + '"></div>';
 		var _start = (session.overwriteStart && instance in session.overwriteStart) ? session.overwriteStart[instance] : session.startTime;
 		var _room = (session.overwriteRoom && instance in session.overwriteRoom) ? session.overwriteRoom[instance] : session.room;

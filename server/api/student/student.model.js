@@ -21,7 +21,6 @@ var StudentSchema = new mongoose.Schema({
   	type: Boolean,
   	default: true
   },
-  dob: String,
   grade:{
   	type: Number,
   	required() {

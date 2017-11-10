@@ -10,6 +10,7 @@ import uiRouter from 'angular-ui-router';
 import uiBootstrap from 'angular-ui-bootstrap';
 import 'angular-validation-match';
 import ngTagsInput from 'ng-tags-input';
+import 'angular-bootstrap-contextmenu';
 
 import {
   routeConfig
@@ -25,12 +26,12 @@ import constants from './app.constants';
 import util from '../components/util/util.module';
 import Modal from '../components/modal/modal.service';
 import filters from '../components/filters/';
-import directives from '../components/directives/';
 
 import './app.scss';
 
 angular.module('calApp', [ngCookies, ngResource, ngSanitize, uiRouter, uiBootstrap, _Auth, account,
-  admin, 'validation.match', navbar, main, constants, util, calendar, filters, Modal, 'ngTagsInput'
+  admin, 'validation.match', navbar, main, constants, util, calendar, filters, Modal, 'ngTagsInput',
+   'ui.bootstrap.contextMenu'
 ])
   .config(routeConfig)
   .run(function($rootScope, $location, Auth) {

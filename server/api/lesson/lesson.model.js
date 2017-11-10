@@ -68,6 +68,10 @@ var LessonSchema = new mongoose.Schema({
     overwriteVisibility: {
         type: mongoose.Schema.Types.Mixed
     },
+    overwriteDuration: {
+        //overwrite for time of day
+        type: mongoose.Schema.Types.Mixed
+    },
     overwriteStart: {
         //overwrite for time of day
         type: mongoose.Schema.Types.Mixed
@@ -75,7 +79,7 @@ var LessonSchema = new mongoose.Schema({
     overwriteRoom:{
         type: mongoose.Schema.Types.Mixed
     },
-    addText: {
+    overwriteNotes: {
         type: mongoose.Schema.Types.Mixed
     },
     dateCreated:{

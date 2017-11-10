@@ -33,7 +33,7 @@ export default class {
 	    })
 	}
 
-	submit(data, callback, clearCal){
+	submit(data, callback){
 		if(!this.selectedStudent || !this.selectedTutor || !data){
 			this.error = 'Incomplete form or front-end bug. Refresh browser.';
 			return;

@@ -37,7 +37,8 @@
 		<tbody>
 			<tr ng-repeat="segment in vm.segments">
 				<th>{{segment | segmentConvert}}</th>
-			  	<td ng-repeat="room in vm.rooms[vm.location]" class="free-col" id="{{ 't' + (1440 / vm.segments.length * segment) + 'r' + room }}" data-room="{{room}}" data-time="{{1440 / vm.segments.length * segment}}" ng-click="vm.addSessionModal((1440 / vm.segments.length * segment), room)" ng-right-click="console.log('hello');"></td>
+			  	<td ng-repeat="room in vm.rooms[vm.location]" class="free-col" id="{{ 't' + (1440 / vm.segments.length * segment) + 'r' + room }}" data-room="{{room}}" data-time="{{1440 / vm.segments.length * segment}}" ng-mouseup="vm.handleClick($event)" ></td>
+
 			</tr>
 		</tbody>
 	</table>

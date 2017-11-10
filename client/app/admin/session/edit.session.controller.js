@@ -4,57 +4,42 @@ export default class {
 	/*@ngInject*/
 	constructor($http, $filter) {
     	this.$http = $http;
-    	this.$filter = $filter;
   	}
 
   	$onInit(){
-  		this.inf = true;
-  		this.newSession = {
-  			instances: 0,
-  			duration: 60,
-  			color: 'blue',
-  			frequency: 7
-  		};
-  		this.$http.get('/api/students')
-	      .then(response => {
-	        this.students = response.data;
-	    });
-	    this.$http.get('/api/tutors')
-	      .then(response => {
-	        this.tutors = response.data;
-	    });
-
 	    this.colors = ['blue', 'orange', 'red', 'purple', 'grey', 'green', 'yellow'];
   	}
 
-  	returnFilter(results, $query){
-	    return results.filter(function(item){
-	    	return item.fullName.toLowerCase().indexOf($query.toLowerCase()) != -1;
-	    })
-	}
-
-	submit(data, callback, clearCal){
-		if(!this.selectedStudent || !this.selectedTutor || !data){
-			this.error = 'Incomplete form or front-end bug. Refresh browser.';
-			return;
+	submit(data, callback){
+		var instance = data.aInstance;
+		var changes = {};
+		if(this.newDuration != data.duration){
+			data.overwriteDuration = data.overwriteDuration || {};
+			data.overwriteDuration[instance] = this.newDuration;
+			changes.overwriteDuration = data.overwriteDuration;
 		}
-			
-		this.newSession.startTime = data.startTime;
-		this.newSession.room = data.room;
-		this.newSession.location = data.location;
-		this.newSession.date = this.$filter('date')(data.date, 'dd/MM/yyyy');
-		this.newSession.clientUID = this.selectedStudent[0]._id;
-		this.newSession.tutorUID = this.selectedTutor[0]._id;
 
-		//if one off, set instances to 1
-		if(!this.newSession.frequency)
-			this.newSession.instances = 1;
-		//if not a one off and infinite, set instances to 0
-		if(this.newSession.frequency && this.inf)
-			this.newSession.instances = 0;
-		//(implied) if not inf then allow the instances to pass
+		if(this.newColor != data.color){
+			data.overwriteColor = data.overwriteColor || {};
+			data.overwriteColor[instance] = this.newColor;
+			changes.overwriteColor = data.overwriteColor;
+		}
 
-		this.$http.post('/api/lessons', this.newSession)
+		changes.globalNotes = this.globalNotes;
+
+		if(this.specificNotes){
+			data.overwriteNotes = data.overwriteNotes || {};
+			data.overwriteNotes[instance] = this.specificNotes;
+			changes.overwriteNotes = data.overwriteNotes;
+		}
+
+		if(this.lastInstance){
+			changes.instances = instance + 1;
+		}
+
+		console.log(changes);
+
+		this.$http.put('/api/lessons/' + data._id, changes)
 		  .then(res => {
 		    this.error = '';
 		    callback({reason: 'success'});
