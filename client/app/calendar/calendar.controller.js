@@ -7,6 +7,8 @@ export default class CalendarController {
 		this.$http = $http;
 		this.$filter = $filter;
 		this.$uibModal = $uibModal;
+
+
 	}
 
 	$onInit(){
@@ -43,10 +45,56 @@ export default class CalendarController {
         	this.finishedLoad();
       	});
 
+
+      	this.menuOptions = [{
+	        text: 'Add New',
+	        hasBottomDivider: true,
+	        click: ($itemScope, $event) => {
+	           console.log($itemScope, $event);
+	           var _time = (1440 / this.segments.length) * $itemScope.$parent.segment;
+	           this.addSessionModal(_time, $itemScope.room)
+	        }
+	    },
+	    {
+	        text: 'Edit',
+	        click: ($itemScope, $event) => {
+	            var _targ = $event.target.classList.contains('session-cell') ? $event.target : $event.target.closest('.session-cell');
+				if(!_targ)
+					return;
+				var _uid = _targ.dataset.id;
+				var _instance = +_targ.dataset.instance;
+				this.editSessionModal(_uid, _instance);
+	        }
+	    },
+	    {
+	        text: 'Hide Instance',
+	        click: ($itemScope, $event) => {
+	            var _targ = $event.target.classList.contains('session-cell') ? $event.target : $event.target.closest('.session-cell');
+				if(!_targ)
+					return;
+				var _uid = _targ.dataset.id;
+				var _instance = +_targ.dataset.instance;
+				this.overwriteHide(_uid, _instance);
+	        }
+	    }];
 	}
 
 	intDay(){
 		this.calendarDate = new Date();
+	}
+
+	overwriteHide(id, instance){
+		this.sessions.forEach(session =>{
+			if(id == session._id){
+				session.overwriteVisibility = session.overwriteVisibility || {};
+				session.overwriteVisibility[instance] = true;
+				this.$http.put('/api/lessons/' + id, {
+					overwriteVisibility: session.overwriteVisibility
+				}).then(response => {
+		        	this.reloadCal();
+		      	});
+			}
+		})
 	}
 
 	finishedLoad(){
@@ -128,19 +176,16 @@ export default class CalendarController {
 
 		var _targ = $event.target.classList.contains('free-col') ? $event.target : $event.target.closest('.free-col');
 		var _startTime = _targ.dataset.time;
-		var _room = _targ.dataset.time;
+		var _room = _targ.dataset.room;
 
-		//$event.which == 1 is left click
-		//$event.which == 3 is right click
-		if($event.which == 1){
+		if(_targ.childElementCount == 0){
 			this.addSessionModal(_startTime, _room);
 		}
 
-		if($event.which == 3 && _targ.childElementCount){
+		if(_targ.childElementCount){
 			var _edit = _targ.firstChild;
 			var _uid = _edit.dataset.id;
 			var _instance = +_edit.dataset.instance;
-			console.log(_edit, _uid);
 			this.editSessionModal(_uid, _instance);
 		}
 	}
@@ -289,6 +334,9 @@ export default class CalendarController {
 	addCalendar(session, instance){
 		//takes zero-based instances
 
+		if(session.overwriteVisibility && session.overwriteVisibility[instance])
+			return
+
 		var identifier = 't' + session.startTime + 'r' + session.room;
 		//identified applied to table cell,
 		// 'a-' + identified to session div
@@ -310,10 +358,25 @@ export default class CalendarController {
 		_div.innerHTML = '<span class="student">' + session.student.firstName + ' ' + session.student.lastName + '</span>';
 		_div.innerHTML += '<span>' + session.tutor.firstName + ' ' + session.tutor.lastName + '</span>';
 		if(session.globalNotes)
-			_div.innerHTML += '<br><span class="global-notes">' + session.globalNotes + '</span>';
+			_div.innerHTML += '<br><span class="notes global-notes">' + session.globalNotes + '</span>';
 		if(specificNotes)
-			_div.innerHTML += '<br><span class="specific-notes">' + specificNotes + '</span>';
+			_div.innerHTML += '<br><span class="notes specific-notes">' + specificNotes + '</span>';
+		
+
+		var _icons = '';
+		if(session.student.grade == 12)
+			_icons += '<i class="fa fa-star grade-12" aria-hidden="true"></i>';
+		if(session.student.var1)
+			_icons += '<i class="fa fa-id-card norm-icon" aria-hidden="true"></i>';
+		if(session.student.var2)
+			_icons += '<i class="fa fa-usd norm-icon" aria-hidden="true"></i>';
+		if(session.student.var3)
+			_icons += '<i class="fa fa-check norm-icon" aria-hidden="true"></i>';
+		if(_icons)
+			_div.innerHTML += '<div class="icon-row">' + _icons + '</div>';
+
 		_div.innerHTML += '<div class="a-bg ' + 'aa' + color + '"></div>';
+
 		var _start = (session.overwriteStart && instance in session.overwriteStart) ? session.overwriteStart[instance] : session.startTime;
 		var _room = (session.overwriteRoom && instance in session.overwriteRoom) ? session.overwriteRoom[instance] : session.room;
 		var _targ = document.getElementById('t' + _start + 'r' + _room);
