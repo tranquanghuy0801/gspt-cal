@@ -112,11 +112,11 @@
   </div>
   <div class="col-sm-3 text-right">
     <div ng-init="currentPage = 0; pageSize = 100;">
-      <button class="btn" ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1">
+      <button class="btn btn-default" ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1">
         Previous
       </button>
       {{currentPage + 1}}/{{(admin.students.length/pageSize | roundUp) || 1}}
-      <button class="btn" ng-disabled="currentPage >= admin.students.length/pageSize - 1" ng-click="currentPage=currentPage+1">
+      <button class="btn btn-default" ng-disabled="currentPage >= admin.students.length/pageSize - 1" ng-click="currentPage=currentPage+1">
         Next
       </button>
     </div>
