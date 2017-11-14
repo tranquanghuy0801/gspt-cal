@@ -7,7 +7,7 @@ module.exports = {
 
   // MongoDB connection options
   mongo: {
-    uri: 'mongodb://admin:adminpassword@ds147421.mlab.com:47421/calendar'
+    uri: 'mongodb://localhost/cal-dev'
   },
 
   // Seed database on startup
