@@ -1,4 +1,4 @@
-<div class="container-fluid">
+<div class="container-fluid" ng-click="vm.clearMessages()">
 	<div class="row">
 		<div class="col-lg-9">
 			<div class="input-group date-group">
@@ -27,26 +27,36 @@
 		</div>
 	</div>
 	<hr>
-	<table class="table table-striped a-calendar" ng-class="{'loading': vm.loading}">
-		<thead>
-			<tr>
-				<th class="time-col">Time</th>
-				<th ng-repeat="room in vm.rooms[vm.location]">Room {{room + 1}}</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr ng-repeat="segment in vm.segments">
-				<th>{{segment | segmentConvert}}</th>
-			  	<td ng-repeat="room in vm.rooms[vm.location]" class="free-col" id="{{ 't' + (1440 / vm.segments.length * segment) + 'r' + room }}" data-room="{{room}}" data-time="{{1440 / vm.segments.length * segment}}" ng-click="vm.handleClick($event)" context-menu="vm.menuOptions" ></td>
-			</tr>
-		</tbody>
-	</table>
+	<div class="table-wrap">
+		<table class="table table-striped a-calendar" ng-class="{'loading': vm.loading}">
+			<thead>
+				<tr>
+					<th class="time-col">Time</th>
+					<th ng-repeat="room in vm.rooms[vm.location]">Room {{room + 1}}</th>
+				</tr>
+			</thead>
+		</table>
+		<table class="table table-striped a-calendar" ng-class="{'loading': vm.loading}">
+			<tbody>
+				<tr ng-repeat="segment in vm.segments">
+					<th class="time-col">{{segment | segmentConvert}}</th>
+				  	<td ng-repeat="room in vm.rooms[vm.location]" class="free-col" id="{{ 't' + (1440 / vm.segments.length * segment) + 'r' + room }}" data-room="{{room}}" data-time="{{1440 / vm.segments.length * segment}}" ng-click="vm.handleClick($event)" context-menu="vm.menuOptions" ></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
 </div>
 <div class="a-success-wrap" ng-show="vm.tempSuccess">
 	<div class="a-success-circle"><i class="fa fa-check" aria-hidden="true"></i></div>
 	<div class="a-success-message">Action successful.</div>
 </div>
-<div class="a-success-wrap fail" ng-show="vm.tempError">
+<!-- unused rn -->
+<!-- <div class="a-success-wrap fail" ng-show="vm.tempError">
 	<div class="a-success-circle"><i class="fa fa-close" aria-hidden="true"></i></div>
 	<div class="a-success-message">Error. Refresh browser.</div>
+</div> -->
+<div class="loading-wrap" ng-show="vm.loading">
+	<svg id="load" x="0px" y="0px" viewBox="0 0 150 150">
+	    <circle id="loading-inner" cx="75" cy="75" r="60"/>
+	</svg>
 </div>

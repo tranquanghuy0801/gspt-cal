@@ -127,6 +127,10 @@ export default class CalendarController {
 		this.calendarDate = new Date();
 	}
 
+	clearMessages(){
+		this.tempSuccess = null;
+	}
+
 	editIcon(id, instance, icon, perm){
 		if(perm){
 			//only works for current setup right now
@@ -393,8 +397,10 @@ export default class CalendarController {
 	      });
 
 		modalInstance.result.then(res => {
-			if(res.reason == 'success')
+			if(res.reason == 'success'){
+				this.tempSuccess = true;
 				this.reloadCal();
+			}
 		})
 		
 	}
@@ -423,8 +429,10 @@ export default class CalendarController {
 	      });
 
 		modalInstance.result.then(res => {
-			if(res.reason == 'success')
+			if(res.reason == 'success'){
+				this.tempSuccess = true;
 				this.reloadCal();
+			}
 		})
 		
 	}
@@ -460,17 +468,20 @@ export default class CalendarController {
 		_div.setAttribute('draggable', 'true');
 		_div.setAttribute('data-id', session._id);
 		_div.setAttribute('data-instance', instance);
+
 		var _duration = (session.overwriteDuration && instance in session.overwriteDuration) ? session.overwriteDuration[instance] : session.duration;
 		_div.style.height = String(100 * (_duration/30)) + '%';
 		if(_duration == 30)
 			_div.className += ' single-cell';
 		_div.innerHTML = '<span class="student">' + session.student.firstName + ' ' + session.student.lastName + '</span>';
 		_div.innerHTML += '<span>' + session.tutor.firstName + ' ' + session.tutor.lastName + '</span>';
-		if(session.globalNotes)
+
+		if(session.globalNotes){
 			_div.innerHTML += '<br><span class="notes global-notes">' + session.globalNotes + '</span>';
-		if(specificNotes)
+		}
+		if(specificNotes){
 			_div.innerHTML += '<br><span class="notes specific-notes">' + specificNotes + '</span>';
-		
+		}
 
 		var _icons = '';
 		if(session.student.grade == 12)
