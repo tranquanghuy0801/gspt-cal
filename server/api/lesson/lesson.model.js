@@ -82,6 +82,12 @@ var LessonSchema = new mongoose.Schema({
     overwriteNotes: {
         type: mongoose.Schema.Types.Mixed
     },
+    overwriteVar1: {
+        type: mongoose.Schema.Types.Mixed
+    },
+    overwriteVar2: {
+        type: mongoose.Schema.Types.Mixed
+    },
     dateCreated:{
         type: Date,
         default: Date.now()

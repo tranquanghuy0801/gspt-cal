@@ -27,6 +27,9 @@ export default class CalendarController {
 		this.intDay();
 
 
+		
+		this.loading = true; //defaults to loading
+
 		//hacky code but waits to be 3 to call updateCal()/show loaded screen
 		this.loaded = 0;
 
@@ -68,6 +71,7 @@ export default class CalendarController {
 	    },
 	    {
 	        text: 'Hide Instance',
+	        hasBottomDivider: true,
 	        click: ($itemScope, $event) => {
 	            var _targ = $event.target.classList.contains('session-cell') ? $event.target : $event.target.closest('.session-cell');
 				if(!_targ)
@@ -76,11 +80,101 @@ export default class CalendarController {
 				var _instance = +_targ.dataset.instance;
 				this.overwriteHide(_uid, _instance);
 	        }
-	    }];
+	    },
+	    {
+	        text: 'Temp First Icon',
+	        click: ($itemScope, $event) => {
+	            var _targ = $event.target.classList.contains('session-cell') ? $event.target : $event.target.closest('.session-cell');
+				if(!_targ)
+					return;
+				var _uid = _targ.dataset.id;
+				var _instance = +_targ.dataset.instance;
+				var _perm = false;
+				var _icon = 1;
+				this.editIcon(_uid, _instance, _icon, _perm);
+	        }
+	    },
+	    {
+	        text: 'Temp Second Icon',
+	        click: ($itemScope, $event) => {
+	            var _targ = $event.target.classList.contains('session-cell') ? $event.target : $event.target.closest('.session-cell');
+				if(!_targ)
+					return;
+				var _uid = _targ.dataset.id;
+				var _instance = +_targ.dataset.instance;
+				var _perm = false;
+				var _icon = 2;
+				this.editIcon(_uid, _instance, _icon, _perm);
+	        }
+	    },
+	    {
+	        text: 'Perm Third Icon',
+	        click: ($itemScope, $event) => {
+	            var _targ = $event.target.classList.contains('session-cell') ? $event.target : $event.target.closest('.session-cell');
+				if(!_targ)
+					return;
+				var _uid = _targ.dataset.id;
+				var _instance = +_targ.dataset.instance;
+				var _perm = true;
+				var _icon = 3;
+				this.editIcon(_uid, _instance, _icon, _perm);
+	        }
+	    }
+	    ];
 	}
 
 	intDay(){
 		this.calendarDate = new Date();
+	}
+
+	editIcon(id, instance, icon, perm){
+		if(perm){
+			//only works for current setup right now
+			//that is, if perm we assume icon = 3
+			this.sessions.forEach(session =>{
+					if(id == session._id){
+						this.$http.put('/api/students/' + session.student._id, {
+							var3: true
+						}).then(response => {
+				        	this.reloadStudents();
+				      	});
+				    }
+				});
+			return;
+		}
+		if(icon == 1){
+
+			this.sessions.forEach(session =>{
+				if(id == session._id){
+					session.overwriteVar1 = session.overwriteVar1 || {};
+					session.overwriteVar1[instance] = true;
+					this.$http.put('/api/lessons/' + id, {
+						overwriteVar1: session.overwriteVar1
+					}).then(response => {
+			        	this.reloadCal();
+			      	});
+				}
+			})
+			return;
+
+		}
+		if(icon == 2){
+			this.sessions.forEach(session =>{
+				if(id == session._id){
+					session.overwriteVar2 = session.overwriteVar2 || {};
+					session.overwriteVar2[instance] = true;
+					this.$http.put('/api/lessons/' + id, {
+						overwriteVar2: session.overwriteVar2
+					}).then(response => {
+			        	this.reloadStudents();
+			      	});
+				}
+			})
+			return;
+		}
+
+		//Shouldn't be able to reach here with current setup
+
 	}
 
 	overwriteHide(id, instance){
@@ -122,6 +216,7 @@ export default class CalendarController {
 	}
 
 	updateCal(){
+		this.loading = true;
 		var parsedDate = this.$filter('date')(this.calendarDate, 'dd/MM/yyyy');
 		var cleanDate = this.$filter('reparseDate')(parsedDate);
 		var sessions = this.sessions;
@@ -258,13 +353,24 @@ export default class CalendarController {
 		document.addEventListener("dragend", dragStop);
 		document.addEventListener('drop', dragStop);
 
+		this.loading = false;
+
 	}
 
 	reloadCal(){
+		this.loading = true;
 		this.$http.get('/api/lessons').then(response => {
         	this.sessions = response.data;
         	this.intInfoAdd();
         	this.clearCal();
+      	});
+	}
+
+	reloadStudents(){
+		this.loading = true;
+		this.$http.get('/api/students').then(response => {
+        	this.students = response.data;
+        	this.reloadCal();
       	});
 	}
 
@@ -324,6 +430,7 @@ export default class CalendarController {
 	}
 
 	clearCal(){
+		this.loading = true;
 		console.log('clearing calendar');
 		document.querySelectorAll('.session-cell').forEach(item =>{
 			item.parentNode.removeChild(item);
@@ -355,6 +462,8 @@ export default class CalendarController {
 		_div.setAttribute('data-instance', instance);
 		var _duration = (session.overwriteDuration && instance in session.overwriteDuration) ? session.overwriteDuration[instance] : session.duration;
 		_div.style.height = String(100 * (_duration/30)) + '%';
+		if(_duration == 30)
+			_div.className += ' single-cell';
 		_div.innerHTML = '<span class="student">' + session.student.firstName + ' ' + session.student.lastName + '</span>';
 		_div.innerHTML += '<span>' + session.tutor.firstName + ' ' + session.tutor.lastName + '</span>';
 		if(session.globalNotes)
@@ -366,9 +475,9 @@ export default class CalendarController {
 		var _icons = '';
 		if(session.student.grade == 12)
 			_icons += '<i class="fa fa-star grade-12" aria-hidden="true"></i>';
-		if(session.student.var1)
+		if(session.student.var1 || (session.overwriteVar1 && instance in session.overwriteVar1))
 			_icons += '<i class="fa fa-id-card norm-icon" aria-hidden="true"></i>';
-		if(session.student.var2)
+		if(session.student.var2 || (session.overwriteVar2 && instance in session.overwriteVar2))
 			_icons += '<i class="fa fa-usd norm-icon" aria-hidden="true"></i>';
 		if(session.student.var3)
 			_icons += '<i class="fa fa-check norm-icon" aria-hidden="true"></i>';

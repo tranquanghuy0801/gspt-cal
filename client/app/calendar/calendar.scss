@@ -20,7 +20,7 @@
 } 
 
 .a-calendar.table>tbody>tr>th, .a-calendar.table>tbody>tr>td{
-  padding: 12px 8px;
+  padding: 8px;
 }
 
 .session-cell{
@@ -32,7 +32,39 @@
     padding: 5px;
     line-height: 1.1;
     overflow: hidden;
-  
+    
+    &.single-cell{
+      padding: 3px 2px;
+      font-size: 11px;
+
+      span.student{
+        display: block;
+        font-size: 12px;
+        margin-bottom: 3px;
+      }
+
+      span{
+        white-space: nowrap;
+        display: block;
+        -o-text-overflow: ellipsis;
+           text-overflow: ellipsis;
+        overflow: hidden;
+      }
+
+      .icon-row{
+          opacity: 0.6;
+          padding: 2px 0px 2px 3px;
+          border-radius: 3px 0px 0px;
+          z-index: 10;
+          font-size: 10px;
+
+          i{
+            margin-right: 2px;
+          }
+      }
+
+    }
+
     &:only-child{
       width: 100%;
     }
@@ -182,6 +214,11 @@
   }
 }
 
+.a-calendar.loading{
+  opacity: 0.5;
+  pointer-events: none;
+}
+
 .a-calendar tbody{
 
   th, td{
@@ -199,4 +236,80 @@ table.in-drag .session-cell:not(.in-drag){
 
 .table-striped.a-calendar > tbody > tr:nth-of-type(even) {
     background-color: rgba(255, 255, 255, 0.35);
+}
+
+.a-table-row .form-control{
+  width: 75%;
+  display: inline-block;
+}
+
+.a-table-row .btn{
+  width: 22%;
+  display: inline-block;
+}
+
+.a-success-wrap{
+  background: rgba(7,204,0,0.21);
+  border: 2px solid #119200;
+  border-radius: 3px;
+  padding: 15px 30px 15px 10px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  position: fixed;
+  right: 50px;
+  bottom: 20px;
+
+  &.fail{
+    background: rgba(204,0,0,0.21);
+    border: 2px solid #920000;
+
+    .a-success-circle{
+      border: 1px solid #920000;
+
+      i{
+        color: #920000;
+      }
+    }
+    .a-success-message{
+        color: #920000;
+      }
+  }
+
+  .a-success-circle{
+    border-radius: 100px;
+    background: rgba(255,255,255,0.44);
+    border: 1px solid #119200;
+    height: 50px;
+    width: 50px;
+    display: inline-block;
+    margin-right: 15px;
+    text-align: center;
+    position: relative;
+    -webkit-box-flex: 0;
+    -webkit-flex: 0 0 auto;
+        -ms-flex: 0 0 auto;
+            flex: 0 0 auto;
+    
+    i{
+      font-size: 26px;
+      color: #119200;
+      position: absolute;
+      top: 50%;
+      left: 0px;
+        right: 0px;
+      -webkit-transform: translateY(-50%);
+          -ms-transform: translateY(-50%);
+              transform: translateY(-50%);
+    }
+  }
+
+  .a-success-message{
+    font-size: 22px;
+    color: #119200;
+    line-height: 30px;
+    display: inline-block;
+    margin-top: 8px;
+  }
 }
