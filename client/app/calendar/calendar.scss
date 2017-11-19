@@ -4,6 +4,10 @@
   margin-right: 20px;
 }
 
+#calendar-container{
+  margin-top: -10px;
+}
+
 .search-group{
   float: left;
   margin-right: 20px;
@@ -19,8 +23,8 @@
   }
 } 
 
-.a-calendar.table>tbody>tr>th, .a-calendar.table>tbody>tr>td{
-  padding: 8px;
+.a-calendar.table tr > th, .a-calendar.table tr > td{
+  padding: 2px 8px;
 }
 
 .session-cell{
@@ -315,7 +319,7 @@ table.in-drag .session-cell:not(.in-drag){
 }
 
 .table-wrap{
-  height: 100vh;
+  height: calc(100vh - 150px);
   overflow-y: auto;
 }
 

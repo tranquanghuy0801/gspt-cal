@@ -27,7 +27,7 @@
 		<div class="form-group duration-group">
 			<label>Duration (exception change)</label>
 			<div ng-init="vm.newDuration = $resolve.data.duration">
-				<button type="button" class="btn btn-default" ng-repeat="duration in [30,60,90,120,150,180,210,240]" ng-click="vm.newDuration = duration" ng-class="{'btn-primary': vm.newDuration == duration}">{{duration}} m</button>
+				<button type="button" class="btn btn-default" ng-repeat="duration in [60,90,120,150,180,210,240]" ng-click="vm.newDuration = duration" ng-class="{'btn-primary': vm.newDuration == duration}">{{duration}} m</button>
 			</div>
 		</div>
 		<hr>

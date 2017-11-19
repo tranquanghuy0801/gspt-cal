@@ -2,12 +2,12 @@
 
 export default class CalendarController {
 	/*@ngInject*/
-	constructor(Modal, $http, $filter, $uibModal){
+	constructor(Modal, $http, $filter, $uibModal, $compile){
 		this.Modal = Modal;
 		this.$http = $http;
 		this.$filter = $filter;
 		this.$uibModal = $uibModal;
-
+		this.$compile = $compile;
 
 	}
 
@@ -357,6 +357,10 @@ export default class CalendarController {
 		document.addEventListener("dragend", dragStop);
 		document.addEventListener('drop', dragStop);
 
+		//Set scroll height properly
+		var el = document.querySelector('.table-wrap');
+		el.scrollTop = 432;
+
 		this.loading = false;
 
 	}
@@ -471,17 +475,28 @@ export default class CalendarController {
 
 		var _duration = (session.overwriteDuration && instance in session.overwriteDuration) ? session.overwriteDuration[instance] : session.duration;
 		_div.style.height = String(100 * (_duration/30)) + '%';
-		if(_duration == 30)
+		if(_duration <= 60)
 			_div.className += ' single-cell';
 		_div.innerHTML = '<span class="student">' + session.student.firstName + ' ' + session.student.lastName + '</span>';
 		_div.innerHTML += '<span>' + session.tutor.firstName + ' ' + session.tutor.lastName + '</span>';
 
+		var compiledNotes = '';
 		if(session.globalNotes){
 			_div.innerHTML += '<br><span class="notes global-notes">' + session.globalNotes + '</span>';
+			compiledNotes += 'Global Notes: \n';
+			compiledNotes += session.globalNotes;
 		}
 		if(specificNotes){
 			_div.innerHTML += '<br><span class="notes specific-notes">' + specificNotes + '</span>';
+			if(compiledNotes)
+				compiledNotes += '\n';
+			compiledNotes += 'Specific Notes: \n';
+			compiledNotes += specificNotes;
 		}
+
+		if(compiledNotes)
+			_div.setAttribute('title', compiledNotes);
+
 
 		var _icons = '';
 		if(session.student.grade == 12)
