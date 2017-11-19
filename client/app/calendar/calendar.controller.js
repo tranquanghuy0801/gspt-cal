@@ -475,7 +475,7 @@ export default class CalendarController {
 
 		var _duration = (session.overwriteDuration && instance in session.overwriteDuration) ? session.overwriteDuration[instance] : session.duration;
 		_div.style.height = String(100 * (_duration/30)) + '%';
-		if(_duration <= 60)
+		if(_duration < 60)
 			_div.className += ' single-cell';
 		_div.innerHTML = '<span class="student">' + session.student.firstName + ' ' + session.student.lastName + '</span>';
 		_div.innerHTML += '<span>' + session.tutor.firstName + ' ' + session.tutor.lastName + '</span>';
