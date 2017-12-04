@@ -25,5 +25,12 @@ export default function routes($stateProvider) {
     controller: 'SessionController',
     controllerAs: 'admin',
     authenticate: 'admin'
+  })
+  .state('admin.settings', {
+    url: '/settings',
+    template: require('./settings/settings.html'),
+    controller: 'SettingsController',
+    controllerAs: 'admin',
+    authenticate: 'admin'
   });
 }

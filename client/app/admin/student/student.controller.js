@@ -11,6 +11,16 @@ export default class StudentController {
 
   $onInit() {
     this.grab();
+
+    this.$http.get('/api/icons')
+        .then(response => {
+          this.icons = response.data[0] || {
+            first: '',
+            second: '',
+            third: '',
+            year12: ''
+          };
+        });
   }
 
   grab(){
@@ -57,26 +67,6 @@ export default class StudentController {
           console.log(res);
           this.error = JSON.stringify(res.data, null, '\t');
         });
-    }
-  }
-
-  addYear(){
-    if(confirm('Are you sure you want to add a year to all students?')){
-      this.students.forEach(student => {
-        //If student is not in uni
-        if(!student.isTertiary){
-          if(student.grade == 12){
-            student.isTertiary = true;
-            student.isActive = false;
-          } else {
-            student.grade++;
-          }
-          //now save student
-          this.$http.put('/api/students/' + String(student._id), student);
-        }
-      })
-      //Update results
-      this.grab();
     }
   }
 

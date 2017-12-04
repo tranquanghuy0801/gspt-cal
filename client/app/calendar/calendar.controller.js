@@ -12,6 +12,15 @@ export default class CalendarController {
 	}
 
 	$onInit(){
+		this.$http.get('/api/icons').then(response => {
+          this.icons = response.data[0] || {
+            first: '',
+            second: '',
+            third: '',
+            year12: ''
+          };
+        });
+
 		//defaults to paddington
 		this.location = 'paddington';
 		//setting locations and number of rooms with [0,1,2] arrays to loop through
@@ -60,29 +69,47 @@ export default class CalendarController {
 	    },
 	    {
 	        text: 'Edit',
+	        displayed: ($itemScope, $event) => {
+	        	return !!($event.target.classList.contains('session-cell') ? $event.target : $event.target.closest('.session-cell'))
+	        },
 	        click: ($itemScope, $event) => {
 	            var _targ = $event.target.classList.contains('session-cell') ? $event.target : $event.target.closest('.session-cell');
-				if(!_targ)
-					return;
 				var _uid = _targ.dataset.id;
 				var _instance = +_targ.dataset.instance;
 				this.editSessionModal(_uid, _instance);
 	        }
 	    },
 	    {
-	        text: 'Hide Instance',
+	        text: 'Delete Session',
 	        hasBottomDivider: true,
+	        displayed: ($itemScope, $event) => {
+	        	return !!($event.target.classList.contains('session-cell') ? $event.target : $event.target.closest('.session-cell'))
+	        },
 	        click: ($itemScope, $event) => {
 	            var _targ = $event.target.classList.contains('session-cell') ? $event.target : $event.target.closest('.session-cell');
-				if(!_targ)
-					return;
 				var _uid = _targ.dataset.id;
 				var _instance = +_targ.dataset.instance;
 				this.overwriteHide(_uid, _instance);
 	        }
 	    },
 	    {
+	        text: 'Make Student Inactive',
+	        hasBottomDivider: true,
+	        displayed: ($itemScope, $event) => {
+	        	return !!($event.target.classList.contains('session-cell') ? $event.target : $event.target.closest('.session-cell'))
+	        },
+	        click: ($itemScope, $event) => {
+	            var _targ = $event.target.classList.contains('session-cell') ? $event.target : $event.target.closest('.session-cell');
+				var _uid = _targ.dataset.id;
+				var _instance = +_targ.dataset.instance;
+				this.studentInactive(_uid, _instance);
+	        }
+	    },
+	    {
 	        text: 'Temp First Icon',
+	        displayed: ($itemScope, $event) => {
+	        	return !!($event.target.classList.contains('session-cell') ? $event.target : $event.target.closest('.session-cell'))
+	        },
 	        click: ($itemScope, $event) => {
 	            var _targ = $event.target.classList.contains('session-cell') ? $event.target : $event.target.closest('.session-cell');
 				if(!_targ)
@@ -96,10 +123,11 @@ export default class CalendarController {
 	    },
 	    {
 	        text: 'Temp Second Icon',
+	        displayed: ($itemScope, $event) => {
+	        	return !!($event.target.classList.contains('session-cell') ? $event.target : $event.target.closest('.session-cell'))
+	        },
 	        click: ($itemScope, $event) => {
 	            var _targ = $event.target.classList.contains('session-cell') ? $event.target : $event.target.closest('.session-cell');
-				if(!_targ)
-					return;
 				var _uid = _targ.dataset.id;
 				var _instance = +_targ.dataset.instance;
 				var _perm = false;
@@ -109,16 +137,90 @@ export default class CalendarController {
 	    },
 	    {
 	        text: 'Perm Third Icon',
+	        hasBottomDivider: true,
+	        displayed: ($itemScope, $event) => {
+	        	return !!($event.target.classList.contains('session-cell') ? $event.target : $event.target.closest('.session-cell'))
+	        },
 	        click: ($itemScope, $event) => {
 	            var _targ = $event.target.classList.contains('session-cell') ? $event.target : $event.target.closest('.session-cell');
-				if(!_targ)
-					return;
 				var _uid = _targ.dataset.id;
 				var _instance = +_targ.dataset.instance;
 				var _perm = true;
 				var _icon = 3;
 				this.editIcon(_uid, _instance, _icon, _perm);
 	        }
+	    },
+	    {
+	        text: 'Temporary Colour',
+	        hasBottomDivider: true,
+	        displayed: ($itemScope, $event) => {
+	        	return !!($event.target.classList.contains('session-cell') ? $event.target : $event.target.closest('.session-cell'))
+	        },
+	        children: [
+	        	 {
+			        text: 'Yellow',
+			        click: ($itemScope, $event) => {
+			            var _targ = $event.target.classList.contains('session-cell') ? $event.target : $event.target.closest('.session-cell');
+						var _uid = _targ.dataset.id;
+						var _instance = +_targ.dataset.instance;
+						var _colour = 'yellow';
+						this.editColour(_uid, _instance, _colour);
+			        }
+			    },
+			    {
+			        text: 'Green',
+			        click: ($itemScope, $event) => {
+			            var _targ = $event.target.classList.contains('session-cell') ? $event.target : $event.target.closest('.session-cell');
+						var _uid = _targ.dataset.id;
+						var _instance = +_targ.dataset.instance;
+						var _colour = 'green';
+						this.editColour(_uid, _instance, _colour);
+			        }
+			    },
+			    {
+			        text: 'Dark Green',
+			        click: ($itemScope, $event) => {
+			            var _targ = $event.target.classList.contains('session-cell') ? $event.target : $event.target.closest('.session-cell');
+						var _uid = _targ.dataset.id;
+						var _instance = +_targ.dataset.instance;
+						var _colour = 'dark green';
+						this.editColour(_uid, _instance, _colour);
+			        }
+			    },
+			    {
+			        text: 'Orange',
+			        click: ($itemScope, $event) => {
+			            var _targ = $event.target.classList.contains('session-cell') ? $event.target : $event.target.closest('.session-cell');
+						var _uid = _targ.dataset.id;
+						var _instance = +_targ.dataset.instance;
+						var _colour = 'orange';
+						this.editColour(_uid, _instance, _colour);
+			        }
+			    },
+			    {
+			        text: 'Red',
+			        click: ($itemScope, $event) => {
+			            var _targ = $event.target.classList.contains('session-cell') ? $event.target : $event.target.closest('.session-cell');
+						var _uid = _targ.dataset.id;
+						var _instance = +_targ.dataset.instance;
+						var _colour = 'red';
+						this.editColour(_uid, _instance, _colour);
+			        }
+			    },
+			    {
+			        text: 'Dark Red',
+			        click: ($itemScope, $event) => {
+			            var _targ = $event.target.classList.contains('session-cell') ? $event.target : $event.target.closest('.session-cell');
+						var _uid = _targ.dataset.id;
+						var _instance = +_targ.dataset.instance;
+						var _colour = 'dark red';
+						this.editColour(_uid, _instance, _colour);
+			        }
+			    },
+	        ]
+	    },
+	    {
+	        text: 'Close'
 	    }
 	    ];
 	}
@@ -127,8 +229,37 @@ export default class CalendarController {
 		this.calendarDate = new Date();
 	}
 
+	editColour(id, instance, colour){
+		this.sessions.forEach(session => {
+			if(id == session._id){
+				
+				session.overwriteColor = session.overwriteColor || {};
+				session.overwriteColor[instance] = colour;
+				console.log(session.overwriteColor);
+				this.$http.put('/api/lessons/' + id, {
+					overwriteColor: session.overwriteColor
+				}).then(response => {
+		        	this.reloadStudents();
+		      	});
+		    }
+		});
+	}
+
 	clearMessages(){
 		this.tempSuccess = null;
+	}
+
+	studentInactive(id, instance){
+		//function makes student inactive
+		this.sessions.forEach(session => {
+			if(id == session._id){
+				this.$http.put('/api/students/' + session.student._id, {
+					isActive: false
+				}).then(response => {
+		        	this.reloadStudents();
+		      	});
+		    }
+		});
 	}
 
 	editIcon(id, instance, icon, perm){
@@ -137,8 +268,9 @@ export default class CalendarController {
 			//that is, if perm we assume icon = 3
 			this.sessions.forEach(session =>{
 					if(id == session._id){
+
 						this.$http.put('/api/students/' + session.student._id, {
-							var3: true
+							var3: !session.student.var3
 						}).then(response => {
 				        	this.reloadStudents();
 				      	});
@@ -151,7 +283,7 @@ export default class CalendarController {
 			this.sessions.forEach(session =>{
 				if(id == session._id){
 					session.overwriteVar1 = session.overwriteVar1 || {};
-					session.overwriteVar1[instance] = true;
+					session.overwriteVar1[instance] = !session.overwriteVar1[instance];
 					this.$http.put('/api/lessons/' + id, {
 						overwriteVar1: session.overwriteVar1
 					}).then(response => {
@@ -166,7 +298,7 @@ export default class CalendarController {
 			this.sessions.forEach(session =>{
 				if(id == session._id){
 					session.overwriteVar2 = session.overwriteVar2 || {};
-					session.overwriteVar2[instance] = true;
+					session.overwriteVar2[instance] = !session.overwriteVar2[instance];
 					this.$http.put('/api/lessons/' + id, {
 						overwriteVar2: session.overwriteVar2
 					}).then(response => {
@@ -236,7 +368,8 @@ export default class CalendarController {
 			if(session.location != this.location)
 				return; //wrong location
 
-			
+			if(!session.student.isActive)
+				return;
 
 			if(session.date == parsedDate)
 				return this.addCalendar(session, 0);
@@ -483,30 +616,37 @@ export default class CalendarController {
 		var compiledNotes = '';
 		if(session.globalNotes){
 			_div.innerHTML += '<br><span class="notes global-notes">' + session.globalNotes + '</span>';
-			compiledNotes += 'Global Notes: \n';
-			compiledNotes += session.globalNotes;
+			compiledNotes += 'Global Notes: \n' + session.globalNotes + '\n';
 		}
 		if(specificNotes){
 			_div.innerHTML += '<br><span class="notes specific-notes">' + specificNotes + '</span>';
-			if(compiledNotes)
-				compiledNotes += '\n';
-			compiledNotes += 'Specific Notes: \n';
-			compiledNotes += specificNotes;
+			compiledNotes += 'Specific Notes: \n' + specificNotes + '\n';
 		}
 
-		if(compiledNotes)
-			_div.setAttribute('title', compiledNotes);
+		//Add contact name
+		if(session.student.clientFirstName || session.student.clientLastName){
+			compiledNotes += 'Contact Name: ' + session.student.clientFirstName + ' ' + session.student.clientLastName + '\n';
+		}
+		//Add contact number
+		if(session.student.clientPh)
+			compiledNotes += 'Contact Number: ' + session.student.clientPh + '\n';
+
+		//Add grade
+		compiledNotes += 'Student Year: ' + session.student.grade;
+
+		//Add title notes
+		_div.setAttribute('title', compiledNotes);
 
 
 		var _icons = '';
 		if(session.student.grade == 12)
-			_icons += '<i class="fa fa-star grade-12" aria-hidden="true"></i>';
+			_icons += '<i class="fa fa-' + this.icons.year12 + ' grade-12" aria-hidden="true"></i>';
 		if(session.student.var1 || (session.overwriteVar1 && instance in session.overwriteVar1))
-			_icons += '<i class="fa fa-id-card norm-icon" aria-hidden="true"></i>';
+			_icons += '<i class="fa fa-' + this.icons.first + ' norm-icon" aria-hidden="true"></i>';
 		if(session.student.var2 || (session.overwriteVar2 && instance in session.overwriteVar2))
-			_icons += '<i class="fa fa-usd norm-icon" aria-hidden="true"></i>';
+			_icons += '<i class="fa fa-' + this.icons.second + ' norm-icon" aria-hidden="true"></i>';
 		if(session.student.var3)
-			_icons += '<i class="fa fa-check norm-icon" aria-hidden="true"></i>';
+			_icons += '<i class="fa fa-' + this.icons.third + ' norm-icon" aria-hidden="true"></i>';
 		if(_icons)
 			_div.innerHTML += '<div class="icon-row">' + _icons + '</div>';
 

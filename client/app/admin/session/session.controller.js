@@ -17,7 +17,11 @@ export default class {
   		};
   		this.$http.get('/api/students')
 	      .then(response => {
-	        this.students = response.data;
+	      	this.students = [];
+	      	response.data.forEach(student => {
+	      		if(student.isActive)
+	      			this.students.push(student);
+	      	});
 	    });
 	    this.$http.get('/api/tutors')
 	      .then(response => {
