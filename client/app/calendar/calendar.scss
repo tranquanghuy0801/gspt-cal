@@ -23,8 +23,30 @@
   }
 } 
 
+.calendar-grey{
+  padding-bottom: 10px;
+    background: #E2E7EB;
+    margin-top: -10px;
+    padding-top: 10px;
+
+  button.btn-primary{
+    background-color: #9db4c5 !important;
+    border-color: #333 !important;
+    color: #333 !important;
+    cursor: default;
+  }
+
+  button:focus{
+    outline: none !important;
+  }
+}
+
 .a-calendar.table tr > th, .a-calendar.table tr > td{
   padding: 2px 8px;
+}
+
+.a-calendar.table tr > th{
+  font-weight: 400;
 }
 
 .session-cell{

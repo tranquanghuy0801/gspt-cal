@@ -20,9 +20,15 @@ export default class {
 		}
 
 		if(this.newColor != data.color){
-			data.overwriteColor = data.overwriteColor || {};
-			data.overwriteColor[instance] = this.newColor;
-			changes.overwriteColor = data.overwriteColor;
+			if(this.permColorChange){
+				data.color = this.newColor;
+				changes.color = data.color;
+			} else{
+				data.overwriteColor = data.overwriteColor || {};
+				data.overwriteColor[instance] = this.newColor;
+				changes.overwriteColor = data.overwriteColor;
+			}
+			
 		}
 
 		changes.globalNotes = this.globalNotes;

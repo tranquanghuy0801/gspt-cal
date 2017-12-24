@@ -32,7 +32,11 @@
 		</div>
 		<hr>
 		<div class="form-group color-group" ng-init="vm.newColor = $resolve.data.color">
-			<label>Change Color (exception change)</label>
+			<label>Change Color</label>
+			<span>
+				<input type="checkbox" ng-model="vm.permColorChange" id="permColor" style="margin-left: 20px">
+				<label for="permColor" style="font-weight: 400">Make Change Permanent</label>
+			</span>
 			<div>
 				<span class="color-box aa{{color}}" ng-repeat="color in vm.colors" ng-click="vm.newColor = color" ng-class="{'active': vm.newColor == color}"></span>
 			</div>
