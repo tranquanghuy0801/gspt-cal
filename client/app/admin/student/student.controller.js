@@ -4,9 +4,10 @@ export default class StudentController {
   
 
   /*@ngInject*/
-  constructor($http, $scope, Modal) {
+  constructor($http, $scope, Modal, JSONToCSVConvertor) {
     this.$http = $http;
     this.Modal = Modal;
+    this.JSONToCSVConvertor = JSONToCSVConvertor;
   }
 
   $onInit() {
@@ -21,6 +22,10 @@ export default class StudentController {
             year12: ''
           };
         });
+  }
+
+  export(data){
+    this.JSONToCSVConvertor(data, 'Student Export', true);
   }
 
   grab(){

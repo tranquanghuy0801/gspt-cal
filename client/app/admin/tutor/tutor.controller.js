@@ -4,9 +4,10 @@ export default class TutorController {
   
 
   /*@ngInject*/
-  constructor($http, $scope, Modal) {
+  constructor($http, $scope, Modal, JSONToCSVConvertor) {
     this.$http = $http;
     this.Modal = Modal;
+    this.JSONToCSVConvertor = JSONToCSVConvertor;
   }
 
   $onInit() {
@@ -18,6 +19,10 @@ export default class TutorController {
       .then(response => {
         this.tutors = response.data;
       });
+  }
+
+  export(data){
+    this.JSONToCSVConvertor(data, 'Tutor Export', true);
   }
 
   addTutor(newTutor) {

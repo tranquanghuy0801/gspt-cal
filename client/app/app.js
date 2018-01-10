@@ -26,12 +26,13 @@ import constants from './app.constants';
 import util from '../components/util/util.module';
 import Modal from '../components/modal/modal.service';
 import filters from '../components/filters/';
+import miscServices from '../components/misc-services/';
 
 import './app.scss';
 
 angular.module('calApp', [ngCookies, ngResource, ngSanitize, uiRouter, uiBootstrap, _Auth, account,
   admin, 'validation.match', navbar, main, constants, util, calendar, filters, Modal, 'ngTagsInput',
-   'ui.bootstrap.contextMenu'
+   'ui.bootstrap.contextMenu', miscServices
 ])
   .config(routeConfig)
   .run(function($rootScope, $location, Auth) {

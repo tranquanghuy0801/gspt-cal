@@ -20,6 +20,7 @@ var TutorSchema = new mongoose.Schema({
   	type: Boolean,
   	default: true
   },
+  email: String,
   phone: String,
   backupLink:{
   	type: mongoose.Schema.Types.ObjectId
