@@ -121,9 +121,13 @@
 
   span.student{
     display: block;
-    font-size: 16px;
+    font-size: 14px;
     line-height: 1.1;
-    font-weight: 900;
+    font-weight: 700;
+  }
+
+  span.tutor{
+    font-size: 12px;
   }
   
   span.notes{
@@ -174,6 +178,7 @@
 
     i{
       margin-right: 5px;
+      font-size: 12px;
     }
 }
 
@@ -258,10 +263,14 @@ table.in-drag .session-cell:not(.in-drag){
 
 .table-striped.a-calendar > tbody > tr:nth-of-type(odd) {
     background-color: rgba(221, 220, 220, 0.35);
+    th{
+      opacity: 0;
+    }
 }
 
 .table-striped.a-calendar > tbody > tr:nth-of-type(even) {
     background-color: rgba(255, 255, 255, 0.35);
+    
 }
 
 .a-table-row .form-control{

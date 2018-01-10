@@ -44,7 +44,7 @@
 		<table class="table table-striped a-calendar" ng-class="{'loading': vm.loading}">
 			<tbody>
 				<tr ng-repeat="segment in vm.segments">
-					<th class="time-col">{{segment | segmentConvert}}</th>
+					<th class="time-col text-center" style="width: 80px">{{segment | segmentConvert:true}}</th>
 				  	<td ng-repeat="room in vm.rooms[vm.location]" class="free-col" id="{{ 't' + (1440 / vm.segments.length * segment) + 'r' + room }}" data-room="{{room}}" data-time="{{1440 / vm.segments.length * segment}}" ng-click="vm.handleClick($event)" context-menu="vm.menuOptions" ></td>
 				</tr>
 			</tbody>

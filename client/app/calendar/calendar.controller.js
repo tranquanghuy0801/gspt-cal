@@ -611,7 +611,7 @@ export default class CalendarController {
 		if(_duration < 60)
 			_div.className += ' single-cell';
 		_div.innerHTML = '<span class="student">' + session.student.firstName + ' ' + session.student.lastName + '</span>';
-		_div.innerHTML += '<span>' + session.tutor.firstName + ' ' + session.tutor.lastName + '</span>';
+		_div.innerHTML += '<span class="tutor">' + session.tutor.firstName + ' ' + session.tutor.lastName + '</span>';
 
 		var compiledNotes = '';
 		if(session.globalNotes){
