@@ -23,9 +23,8 @@
       <div class="form-group">
         <label>Data</label>
         <div class="data-button-wrap">
-          <button type="button" ng-init="newStudent.var1 = false" ng-click="newStudent.var1 =! newStudent.var1" ng-class="{'active': newStudent.var1}"><i class="fa fa-{{admin.icons.first}}" aria-hidden="true"></i></button>
-          <button type="button" ng-init="newStudent.var2 = false" ng-click="newStudent.var2 =! newStudent.var2" ng-class="{'active': newStudent.var2}"><i class="fa fa-{{admin.icons.second}}" aria-hidden="true"></i></button>
           <button type="button" ng-init="newStudent.var3 = false" ng-click="newStudent.var3 =! newStudent.var3" ng-class="{'active': newStudent.var3}"><i class="fa fa-{{admin.icons.third}}" aria-hidden="true"></i></button>
+          <button type="button" ng-init="newStudent.var4 = false" ng-click="newStudent.var4 =! newStudent.var4" ng-class="{'active': newStudent.var4}"><i class="fa fa-{{admin.icons.fourth}}" aria-hidden="true"></i></button>
         </div>
       </div>
     </div>
@@ -146,9 +145,12 @@
       <td>{{student.clientPh}}</td>
       <td>
         <div class="data-button-wrap">
-          <div ng-class="{'active': student.var1}"><i class="fa fa-{{admin.icons.first}}" aria-hidden="true"></i></div>
-          <div ng-class="{'active': student.var2}"><i class="fa fa-{{admin.icons.second}}" aria-hidden="true"></i></div>
-          <div ng-class="{'active': student.var3}"><i class="fa fa-{{admin.icons.third}}" aria-hidden="true"></i></div>
+          <div ng-class="{'active': student.var3}">
+            <i class="fa fa-{{admin.icons.third}}" aria-hidden="true"></i>
+          </div>
+          <div ng-class="{'active': student.var4}">
+            <i class="fa fa-{{admin.icons.fourth}}" aria-hidden="true"></i>
+          </div>
         </div>
       </td>
       <td><button class="btn btn-default edit-button" ng-click="admin.openModal(student)">Edit</button></td>

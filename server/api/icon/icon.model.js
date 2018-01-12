@@ -19,6 +19,11 @@ var IconSchema = new mongoose.Schema({
   	required: true,
   	lowercase: true
   },
+  fourth: {
+    type: String,
+    required: true,
+    lowercase: true
+  },
   year12: {
   	type: String,
   	required: true,

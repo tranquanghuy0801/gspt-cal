@@ -14,14 +14,17 @@
 		<div class="form-group row">
 			<label class="col-sm-3">Client Name</label>
 			<div class="col-sm-3">{{$resolve.data.student.clientFirstName + ' ' + $resolve.data.clientLastName}}</div>
-			<label class="col-sm-3">Client Email</label>
-			<div class="col-sm-3">{{$resolve.data.student.clientEmail}}</div>
-		</div>
-		<div class="form-group row">
 			<label class="col-sm-3">CRM ID</label>
 			<div class="col-sm-3">{{$resolve.data.student.crmID}}</div>
+		</div>
+		<div class="form-group row">
+			<label class="col-sm-3">Client Email</label>
+			<div class="col-sm-9">{{$resolve.data.student.clientEmail}}</div>
+			
+		</div>
+		<div class="form-group row">
 			<label class="col-sm-3">Client Phone</label>
-			<div class="col-sm-3">{{$resolve.data.student.clientPhone}}</div>
+			<div class="col-sm-9">{{$resolve.data.student.clientPhone}}</div>
 		</div>
 		<hr>
 		<div class="form-group duration-group">

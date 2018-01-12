@@ -36,9 +36,8 @@ var StudentSchema = new mongoose.Schema({
   clientEmail: String,
   clientPh: String,
   studentNotes: String,
-  var1: Boolean,
-  var2: Boolean,
   var3: Boolean,
+  var4: Boolean,
   backupLink: {
   	type: mongoose.Schema.Types.ObjectId
   },

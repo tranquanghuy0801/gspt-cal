@@ -14,6 +14,15 @@
   max-width: 300px;
 }
 
+.a-calendar{
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */ /* Konqueror HTML */
+       -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome and Opera */
+}
+
 .free-col{
   position: relative;
 
@@ -50,10 +59,10 @@
 }
 
 .session-cell{
-    width: 50%;
+    width: calc(50% - 5px);
     position: absolute;
-    top: 0px;
-    left: 0px;
+    top: 5px;
+    left: 5px;
     z-index: 10;
     padding: 5px;
     line-height: 1.1;
@@ -92,12 +101,12 @@
     }
 
     &:only-child{
-      width: 100%;
+      width: calc(100% - 10px);
     }
 
     &:nth-child(2) {
       left: auto;
-      right: 0px;
+      right: 5px;
     }
 
     &:hover{
@@ -162,7 +171,12 @@
 }
 
 .time-col{
-  width: 90px;
+  width: 80px;
+}
+
+.a-calendar thead tr th{
+  text-align: center;
+  font-weight: 700 !important;
 }
 
 .icon-row{
@@ -262,14 +276,15 @@ table.in-drag .session-cell:not(.in-drag){
 }
 
 .table-striped.a-calendar > tbody > tr:nth-of-type(odd) {
-    background-color: rgba(221, 220, 220, 0.35);
+    
+    background-color: rgba(255, 255, 255, 0.35);
     th{
       opacity: 0;
     }
 }
 
 .table-striped.a-calendar > tbody > tr:nth-of-type(even) {
-    background-color: rgba(255, 255, 255, 0.35);
+    background-color: rgba(221, 220, 220, 0.35);
     
 }
 
@@ -356,4 +371,9 @@ table.in-drag .session-cell:not(.in-drag){
 
 .a-calendar{
   margin-bottom: 0px;
+}
+
+span.time-text{
+  position: relative;
+  top: -10px;
 }

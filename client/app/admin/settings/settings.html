@@ -12,28 +12,34 @@
 <hr>
 <div>
 	<h4>Icon Settings</h4>
-	<p>Only use the name of the icon, i.e., don't include 'fa'. <a href="http://fontawesome.io/icons/">Click here for a list of icons.</a></p>
+	<p>Only use the name of the icon, i.e., don't include 'fa'. <a href="http://fontawesome.io/icons/" target="_blank">Click here for a list of icons.</a></p>
 	<form ng-submit="admin.saveIcons()">
 		<div class="row">
-			<div class="col-md-3">
+			<div class="col-md-6">
 				<div class="form-group">
-					<label>First Icon</label>
+					<label>First Icon (temp)</label>
 					<input class="form-control" type="text" ng-model="admin.icons.first" required placeholder="'Phone', 'Cross', etc." />
 				</div>
 			</div>
-			<div class="col-md-3">
+			<div class="col-md-6">
 				<div class="form-group">
-					<label>Second Icon</label>
+					<label>Second Icon (temp)</label>
 					<input class="form-control" type="text" ng-model="admin.icons.second" required placeholder="'Phone', 'Cross', etc." />
 				</div>
 			</div>
-			<div class="col-md-3">
+			<div class="col-md-6">
 				<div class="form-group">
-					<label>Third Icon</label>
+					<label>Third Icon (permanent)</label>
 					<input class="form-control" type="text" ng-model="admin.icons.third" required placeholder="'Phone', 'Cross', etc." />
 				</div>
 			</div>
-			<div class="col-md-3">
+			<div class="col-md-6">
+				<div class="form-group">
+					<label>Fourth Icon (permanent)</label>
+					<input class="form-control" type="text" ng-model="admin.icons.fourth" required placeholder="'Phone', 'Cross', etc." />
+				</div>
+			</div>
+			<div class="col-md-6">
 				<div class="form-group">
 					<label>Year 12 Icon</label>
 					<input class="form-control" type="text" ng-model="admin.icons.year12" required placeholder="'Phone', 'Cross', etc." />

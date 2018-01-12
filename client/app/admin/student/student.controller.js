@@ -19,6 +19,7 @@ export default class StudentController {
             first: '',
             second: '',
             third: '',
+            fourth: '',
             year12: ''
           };
         });

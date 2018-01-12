@@ -17,6 +17,7 @@ export default class CalendarController {
             first: '',
             second: '',
             third: '',
+            fourth: '',
             year12: ''
           };
         });
@@ -57,6 +58,15 @@ export default class CalendarController {
         	this.finishedLoad();
       	});
 
+
+      	var changeColour = (colour) =>{
+      		return ($itemScope, $event) => {
+	            var _targ = $event.target.classList.contains('session-cell') ? $event.target : $event.target.closest('.session-cell');
+				var _uid = _targ.dataset.id;
+				var _instance = +_targ.dataset.instance;
+				this.editColour(_uid, _instance, colour);
+	        }
+      	}
 
       	this.menuOptions = [{
 	        text: 'Add New',
@@ -137,7 +147,6 @@ export default class CalendarController {
 	    },
 	    {
 	        text: 'Perm Third Icon',
-	        hasBottomDivider: true,
 	        displayed: ($itemScope, $event) => {
 	        	return !!($event.target.classList.contains('session-cell') ? $event.target : $event.target.closest('.session-cell'))
 	        },
@@ -151,6 +160,21 @@ export default class CalendarController {
 	        }
 	    },
 	    {
+	        text: 'Perm Fourth Icon',
+	        hasBottomDivider: true,
+	        displayed: ($itemScope, $event) => {
+	        	return !!($event.target.classList.contains('session-cell') ? $event.target : $event.target.closest('.session-cell'))
+	        },
+	        click: ($itemScope, $event) => {
+	            var _targ = $event.target.classList.contains('session-cell') ? $event.target : $event.target.closest('.session-cell');
+				var _uid = _targ.dataset.id;
+				var _instance = +_targ.dataset.instance;
+				var _perm = true;
+				var _icon = 4;
+				this.editIcon(_uid, _instance, _icon, _perm);
+	        }
+	    },
+	    {
 	        text: 'Temporary Colour',
 	        hasBottomDivider: true,
 	        displayed: ($itemScope, $event) => {
@@ -159,64 +183,32 @@ export default class CalendarController {
 	        children: [
 	        	 {
 			        text: 'Yellow',
-			        click: ($itemScope, $event) => {
-			            var _targ = $event.target.classList.contains('session-cell') ? $event.target : $event.target.closest('.session-cell');
-						var _uid = _targ.dataset.id;
-						var _instance = +_targ.dataset.instance;
-						var _colour = 'yellow';
-						this.editColour(_uid, _instance, _colour);
-			        }
+			        click: changeColour('yellow')
 			    },
 			    {
 			        text: 'Green',
-			        click: ($itemScope, $event) => {
-			            var _targ = $event.target.classList.contains('session-cell') ? $event.target : $event.target.closest('.session-cell');
-						var _uid = _targ.dataset.id;
-						var _instance = +_targ.dataset.instance;
-						var _colour = 'green';
-						this.editColour(_uid, _instance, _colour);
-			        }
+			        click: changeColour('green')
 			    },
 			    {
 			        text: 'Dark Green',
-			        click: ($itemScope, $event) => {
-			            var _targ = $event.target.classList.contains('session-cell') ? $event.target : $event.target.closest('.session-cell');
-						var _uid = _targ.dataset.id;
-						var _instance = +_targ.dataset.instance;
-						var _colour = 'dark green';
-						this.editColour(_uid, _instance, _colour);
-			        }
+			        click: changeColour('dark green')
 			    },
 			    {
 			        text: 'Orange',
-			        click: ($itemScope, $event) => {
-			            var _targ = $event.target.classList.contains('session-cell') ? $event.target : $event.target.closest('.session-cell');
-						var _uid = _targ.dataset.id;
-						var _instance = +_targ.dataset.instance;
-						var _colour = 'orange';
-						this.editColour(_uid, _instance, _colour);
-			        }
+			        click: changeColour('orange')
+			    },
+			    {
+			        text: 'Purple',
+			        click: changeColour('purple')
 			    },
 			    {
 			        text: 'Red',
-			        click: ($itemScope, $event) => {
-			            var _targ = $event.target.classList.contains('session-cell') ? $event.target : $event.target.closest('.session-cell');
-						var _uid = _targ.dataset.id;
-						var _instance = +_targ.dataset.instance;
-						var _colour = 'red';
-						this.editColour(_uid, _instance, _colour);
-			        }
+			        click: changeColour('red')
 			    },
 			    {
 			        text: 'Dark Red',
-			        click: ($itemScope, $event) => {
-			            var _targ = $event.target.classList.contains('session-cell') ? $event.target : $event.target.closest('.session-cell');
-						var _uid = _targ.dataset.id;
-						var _instance = +_targ.dataset.instance;
-						var _colour = 'dark red';
-						this.editColour(_uid, _instance, _colour);
-			        }
-			    },
+			        click: changeColour('dark red')
+			    }
 	        ]
 	    },
 	    {
@@ -268,46 +260,31 @@ export default class CalendarController {
 			//that is, if perm we assume icon = 3
 			this.sessions.forEach(session =>{
 					if(id == session._id){
-
-						this.$http.put('/api/students/' + session.student._id, {
-							var3: !session.student.var3
-						}).then(response => {
+						var key = 'var' + String(icon);
+						var property = !session.student[key];
+						var change = {[key]: property};
+						this.$http.put('/api/students/' + session.student._id, change).then(response => {
 				        	this.reloadStudents();
 				      	});
 				    }
 				});
 			return;
 		}
-		if(icon == 1){
 
-			this.sessions.forEach(session =>{
-				if(id == session._id){
-					session.overwriteVar1 = session.overwriteVar1 || {};
-					session.overwriteVar1[instance] = !session.overwriteVar1[instance];
-					this.$http.put('/api/lessons/' + id, {
-						overwriteVar1: session.overwriteVar1
-					}).then(response => {
-			        	this.reloadCal();
-			      	});
-				}
-			})
-			return;
-
-		}
-		if(icon == 2){
-			this.sessions.forEach(session =>{
-				if(id == session._id){
-					session.overwriteVar2 = session.overwriteVar2 || {};
-					session.overwriteVar2[instance] = !session.overwriteVar2[instance];
-					this.$http.put('/api/lessons/' + id, {
-						overwriteVar2: session.overwriteVar2
-					}).then(response => {
-			        	this.reloadStudents();
-			      	});
-				}
-			})
-			return;
-		}
+		this.sessions.forEach(session =>{
+			if(id == session._id){
+				var key = 'overwriteVar' + String(icon);
+				session[key] = session[key] || {};
+				session[key][instance] = !session[key][instance];
+				var change = {
+					[key]: session[key]
+				};
+				this.$http.put('/api/lessons/' + id, change).then(response => {
+		        	this.reloadCal();
+		      	});
+			}
+		})
+		return;
 
 		//Shouldn't be able to reach here with current setup
 
@@ -352,7 +329,6 @@ export default class CalendarController {
 	}
 
 	updateCal(){
-		this.loading = true;
 		var parsedDate = this.$filter('date')(this.calendarDate, 'dd/MM/yyyy');
 		var cleanDate = this.$filter('reparseDate')(parsedDate);
 		var sessions = this.sessions;
@@ -367,9 +343,6 @@ export default class CalendarController {
 
 			if(session.location != this.location)
 				return; //wrong location
-
-			if(!session.student.isActive)
-				return;
 
 			if(session.date == parsedDate)
 				return this.addCalendar(session, 0);
@@ -492,14 +465,16 @@ export default class CalendarController {
 
 		//Set scroll height properly
 		var el = document.querySelector('.table-wrap');
-		el.scrollTop = 432;
-
+		if(this.loading || this.changingDay){
+			el.scrollTop = 432;
+		}
+		
+		this.changingDay = false;
 		this.loading = false;
 
 	}
 
 	reloadCal(){
-		this.loading = true;
 		this.$http.get('/api/lessons').then(response => {
         	this.sessions = response.data;
         	this.intInfoAdd();
@@ -508,7 +483,6 @@ export default class CalendarController {
 	}
 
 	reloadStudents(){
-		this.loading = true;
 		this.$http.get('/api/students').then(response => {
         	this.students = response.data;
         	this.reloadCal();
@@ -517,7 +491,7 @@ export default class CalendarController {
 
 	addSessionModal(startTime, room){
 
-		var modalInstance = this.$uibModal.open({
+		this.$uibModal.open({
 	        template: require('./modal/add-session.html'),
 	        controller: 'SessionController',
 	        controllerAs: 'vm',
@@ -531,9 +505,7 @@ export default class CalendarController {
 	            }
 	          }
 	        } 
-	      });
-
-		modalInstance.result.then(res => {
+	    }).result.then(res => {
 			if(res.reason == 'success'){
 				this.tempSuccess = true;
 				this.reloadCal();
@@ -554,7 +526,7 @@ export default class CalendarController {
 
 		_data.aInstance = instance;
 
-		var modalInstance = this.$uibModal.open({
+		this.$uibModal.open({
 	        template: require('./modal/edit-session.html'),
 	        controller: 'EditSessionController',
 	        controllerAs: 'vm',
@@ -563,9 +535,7 @@ export default class CalendarController {
 	            return _data
 	          }
 	        } 
-	      });
-
-		modalInstance.result.then(res => {
+	    }).result.then(res => {
 			if(res.reason == 'success'){
 				this.tempSuccess = true;
 				this.reloadCal();
@@ -575,7 +545,6 @@ export default class CalendarController {
 	}
 
 	clearCal(){
-		this.loading = true;
 		console.log('clearing calendar');
 		document.querySelectorAll('.session-cell').forEach(item =>{
 			item.parentNode.removeChild(item);
@@ -607,7 +576,7 @@ export default class CalendarController {
 		_div.setAttribute('data-instance', instance);
 
 		var _duration = (session.overwriteDuration && instance in session.overwriteDuration) ? session.overwriteDuration[instance] : session.duration;
-		_div.style.height = String(100 * (_duration/30)) + '%';
+		_div.style.height = 'calc(' + String(100 * (_duration/30)) + '% - 10px)';
 		if(_duration < 60)
 			_div.className += ' single-cell';
 		_div.innerHTML = '<span class="student">' + session.student.firstName + ' ' + session.student.lastName + '</span>';
@@ -639,14 +608,16 @@ export default class CalendarController {
 
 
 		var _icons = '';
-		if(session.student.grade == 12)
-			_icons += '<i class="fa fa-' + this.icons.year12 + ' grade-12" aria-hidden="true"></i>';
-		if(session.student.var1 || (session.overwriteVar1 && instance in session.overwriteVar1))
+		if(session.overwriteVar1 && instance in session.overwriteVar1)
 			_icons += '<i class="fa fa-' + this.icons.first + ' norm-icon" aria-hidden="true"></i>';
-		if(session.student.var2 || (session.overwriteVar2 && instance in session.overwriteVar2))
+		if(session.overwriteVar2 && instance in session.overwriteVar2)
 			_icons += '<i class="fa fa-' + this.icons.second + ' norm-icon" aria-hidden="true"></i>';
 		if(session.student.var3)
 			_icons += '<i class="fa fa-' + this.icons.third + ' norm-icon" aria-hidden="true"></i>';
+		if(session.student.var4)
+			_icons += '<i class="fa fa-' + this.icons.fourth + ' norm-icon" aria-hidden="true"></i>';
+		if(session.student.grade == 12)
+			_icons += '<i class="fa fa-' + this.icons.year12 + ' grade-12" aria-hidden="true"></i>';
 		if(_icons)
 			_div.innerHTML += '<div class="icon-row">' + _icons + '</div>';
 
@@ -666,11 +637,13 @@ export default class CalendarController {
 		//calendarDate is re-int bc watcher won't update
 		//with regular setTime()
 		//hacky fix
+		this.changingDay = true;
 		this.calendarDate = new Date(this.calendarDate.getTime() + (days * 86400000));
 		this.clearCal();
 	}
 
 	changeLocation(location){
+		this.changingDay = true;
 		this.location = location;
 		this.clearCal();
 	}
