@@ -60,6 +60,7 @@ export default class CalendarController {
 
 
       	var changeColour = (colour) =>{
+      		colour = colour.toLowerCase();
       		return ($itemScope, $event) => {
 	            var _targ = $event.target.classList.contains('session-cell') ? $event.target : $event.target.closest('.session-cell');
 				var _uid = _targ.dataset.id;
@@ -67,6 +68,15 @@ export default class CalendarController {
 				this.editColour(_uid, _instance, colour);
 	        }
       	}
+
+      	var tempColourChildren = ['Yellow', 'Green', 'Dark Green', 'Orange', 'Purple', 'Red', 'Dark Red'];
+      	tempColourChildren = tempColourChildren.map(item =>{
+      		return {
+      			text: item,
+      			click: changeColour(item)
+      		}
+      	});
+
 
       	this.menuOptions = [{
 	        text: 'Add New',
@@ -180,36 +190,7 @@ export default class CalendarController {
 	        displayed: ($itemScope, $event) => {
 	        	return !!($event.target.classList.contains('session-cell') ? $event.target : $event.target.closest('.session-cell'))
 	        },
-	        children: [
-	        	 {
-			        text: 'Yellow',
-			        click: changeColour('yellow')
-			    },
-			    {
-			        text: 'Green',
-			        click: changeColour('green')
-			    },
-			    {
-			        text: 'Dark Green',
-			        click: changeColour('dark green')
-			    },
-			    {
-			        text: 'Orange',
-			        click: changeColour('orange')
-			    },
-			    {
-			        text: 'Purple',
-			        click: changeColour('purple')
-			    },
-			    {
-			        text: 'Red',
-			        click: changeColour('red')
-			    },
-			    {
-			        text: 'Dark Red',
-			        click: changeColour('dark red')
-			    }
-	        ]
+	        children: tempColourChildren
 	    },
 	    {
 	        text: 'Close'
