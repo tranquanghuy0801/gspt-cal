@@ -2,6 +2,7 @@
 
 import angular from 'angular';
 import CalendarController from './calendar.controller';
+import SendSMSController from './send-sms/send-sms.controller';
 
 function routes($stateProvider) {
   'ngInject';
@@ -19,4 +20,5 @@ function routes($stateProvider) {
 export default angular.module('calApp.calendar', ['calApp.auth', 'ui.router'])
   .config(routes)
   .controller('CalendarController', CalendarController)
+  .controller('SendSMSController', SendSMSController)
   .name;

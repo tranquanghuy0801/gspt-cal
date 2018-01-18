@@ -55,6 +55,6 @@ export default class TutorController {
   }
 
   openModal(tutor){
-    this.Modal.editTutor(tutor);
+    this.Modal.editTutor(tutor)
   }
 }

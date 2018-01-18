@@ -87,11 +87,16 @@ export default class CalendarController {
       	}
 
       	var menuDisplayed = ($itemScope, $event) => {
-        	return !!($event.target.classList.contains('session-cell') ? $event.target : $event.target.closest('.session-cell'))
+      		return !!($event.target.classList.contains('session-cell') ? $event.target : $event.target.closest('.session-cell'))
+        }
+
+        var dateSame = ($itemScope, $event) =>{
+        	var today = new Date();
+        	return menuDisplayed($itemScope, $event) && this.calendarDate.toDateString() === today.toDateString();
         }
 
       	this.menuOptions = [{
-	        text: 'Addmenu',
+	        text: 'Add Session',
 	        hasBottomDivider: true,
 	        click: ($itemScope, $event) => {
 	           console.log($itemScope, $event);
@@ -117,7 +122,18 @@ export default class CalendarController {
 				var _instance = +_targ.dataset.instance;
 				this.overwriteHide(_uid, _instance);
 	        }
-	    }, {
+	    }, 
+	    {
+	    	text: 'Send SMS',
+	    	displayed: dateSame,
+	    	click: ($itemScope, $event) => {
+	            var _targ = $event.target.classList.contains('session-cell') ? $event.target : $event.target.closest('.session-cell');
+				var _uid = _targ.dataset.id;
+				var _instance = +_targ.dataset.instance;
+				var _time = $itemScope.$parent.segment;
+				this.sendSMS(_uid, _instance, _time);
+	        }
+	    },{
 	        text: 'Make Student Inactive',
 	        hasBottomDivider: true,
 	        displayed: menuDisplayed,
@@ -190,6 +206,40 @@ export default class CalendarController {
 		      	});
 		    }
 		});
+	}
+
+	sendSMS(id, instance, time){
+		var student;
+		this.sessions.some(session => {
+			if(id == session._id){
+				student = session.student
+				return true;
+			}
+		});
+		this.sendSMSModal(student, time);
+	}
+
+	sendSMSModal(student, time){
+
+		this.$uibModal.open({
+	        template: require('./send-sms/send-sms.html'),
+	        controller: 'SendSMSController',
+	        controllerAs: 'vm',
+	        resolve:{
+	          data: () => {
+	            return {
+	              student: student,
+	              time: time
+	            }
+	          }
+	        } 
+	    }).result.then(res => {
+	    	this.tempSuccess = true;
+			if(res.reason == 'change'){
+				this.reloadCal();
+			}
+		})
+		
 	}
 
 	editIcon(id, instance, icon, perm){
@@ -515,7 +565,7 @@ export default class CalendarController {
 		_div.setAttribute('data-instance', instance);
 
 		var _duration = (session.overwriteDuration && instance in session.overwriteDuration) ? session.overwriteDuration[instance] : session.duration;
-		_div.style.height = 'calc(' + String(100 * (_duration/30)) + '% - 10px)';
+		_div.style.height = 'calc(' + String(100 * (_duration/30)) + '% - 4px)';
 		if(_duration < 60)
 			_div.className += ' single-cell';
 		_div.innerHTML = '<span class="student">' + session.student.firstName + ' ' + session.student.lastName + '</span>';

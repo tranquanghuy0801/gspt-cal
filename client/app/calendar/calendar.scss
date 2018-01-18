@@ -59,10 +59,10 @@
 }
 
 .session-cell{
-    width: calc(50% - 5px);
+    width: calc(50% - 2px);
     position: absolute;
-    top: 5px;
-    left: 5px;
+    top: 0px;
+    left: 0px;
     z-index: 10;
     padding: 5px;
     line-height: 1.1;
@@ -101,12 +101,12 @@
     }
 
     &:only-child{
-      width: calc(100% - 10px);
+      width: calc(100% - 4px);
     }
 
     &:nth-child(2) {
       left: auto;
-      right: 5px;
+      right: 4px;
     }
 
     &:hover{
@@ -371,9 +371,4 @@ table.in-drag .session-cell:not(.in-drag){
 
 .a-calendar{
   margin-bottom: 0px;
-}
-
-span.time-text{
-  position: relative;
-  top: -10px;
 }
