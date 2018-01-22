@@ -2,13 +2,13 @@
 
 export default class CalendarController {
 	/*@ngInject*/
-	constructor(Modal, $http, $filter, $uibModal, $compile){
+	constructor(Modal, $http, $filter, $uibModal, $compile, $timeout){
 		this.Modal = Modal;
 		this.$http = $http;
 		this.$filter = $filter;
 		this.$uibModal = $uibModal;
 		this.$compile = $compile;
-
+		this.$timeout = $timeout;
 	}
 
 	$onInit(){
@@ -124,14 +124,26 @@ export default class CalendarController {
 	        }
 	    }, 
 	    {
-	    	text: 'Send SMS',
+	    	text: 'SMS Student',
 	    	displayed: dateSame,
 	    	click: ($itemScope, $event) => {
 	            var _targ = $event.target.classList.contains('session-cell') ? $event.target : $event.target.closest('.session-cell');
 				var _uid = _targ.dataset.id;
 				var _instance = +_targ.dataset.instance;
 				var _time = $itemScope.$parent.segment;
-				this.sendSMS(_uid, _instance, _time);
+				this.sendSMS(_uid, _instance, _time, false);
+	        }
+	    },
+	    {
+	    	text: 'SMS Tutor',
+	    	hasBottomDivider: true,
+	    	displayed: dateSame,
+	    	click: ($itemScope, $event) => {
+	            var _targ = $event.target.classList.contains('session-cell') ? $event.target : $event.target.closest('.session-cell');
+				var _uid = _targ.dataset.id;
+				var _instance = +_targ.dataset.instance;
+				var _time = $itemScope.$parent.segment;
+				this.sendSMS(_uid, _instance, _time, true);
 	        }
 	    },{
 	        text: 'Make Student Inactive',
@@ -208,18 +220,19 @@ export default class CalendarController {
 		});
 	}
 
-	sendSMS(id, instance, time){
-		var student;
+	sendSMS(id, instance, time, isTutor){
+		var student, tutor;
 		this.sessions.some(session => {
 			if(id == session._id){
-				student = session.student
+				student = session.student;
+				tutor = session.tutor;
 				return true;
 			}
 		});
-		this.sendSMSModal(student, time);
+		this.sendSMSModal(student, time, tutor, isTutor);
 	}
 
-	sendSMSModal(student, time){
+	sendSMSModal(student, time, tutor, isTutor){
 
 		this.$uibModal.open({
 	        template: require('./send-sms/send-sms.html'),
@@ -229,7 +242,9 @@ export default class CalendarController {
 	          data: () => {
 	            return {
 	              student: student,
-	              time: time
+	              time: time,
+	              tutor: tutor,
+	              isTutor: isTutor
 	            }
 	          }
 	        } 
@@ -326,7 +341,9 @@ export default class CalendarController {
 			sessions = this.$filter('filter')(this.sessions, this.searchFilter);
 
 		sessions.forEach( session => {
-
+			if(session._id == '5a0db8dd0c527203a86748f0'){
+				console.log(session)
+			};
 			if(session.isHidden)
 				return;
 
@@ -533,12 +550,19 @@ export default class CalendarController {
 		
 	}
 
-	clearCal(){
+	clearCal(delayUpdate){
 		console.log('clearing calendar');
 		document.querySelectorAll('.session-cell').forEach(item =>{
 			item.parentNode.removeChild(item);
 		})
-		this.updateCal();
+		if(delayUpdate){
+			this.$timeout(() =>{
+				this.updateCal();
+			}, 300);
+		} else {
+			this.updateCal();
+		}
+		
 	}
 
 	addCalendar(session, instance){
@@ -546,6 +570,10 @@ export default class CalendarController {
 
 		if(session.overwriteVisibility && session.overwriteVisibility[instance])
 			return
+
+		if(session._id == '5a0db8dd0c527203a86748f0'){
+			console.log('makes it here');
+		};
 
 		var identifier = 't' + session.startTime + 'r' + session.room;
 		//identified applied to table cell,
@@ -612,9 +640,16 @@ export default class CalendarController {
 
 		_div.innerHTML += '<div class="a-bg ' + 'aa' + color + '"></div>';
 
+		
+
 		var _start = (session.overwriteStart && instance in session.overwriteStart) ? session.overwriteStart[instance] : session.startTime;
 		var _room = (session.overwriteRoom && instance in session.overwriteRoom) ? session.overwriteRoom[instance] : session.room;
 		var _targ = document.getElementById('t' + _start + 'r' + _room);
+
+		if(session._id == '5a0db8dd0c527203a86748f0'){
+			console.log(document.getElementById('t' + _start + 'r' + _room));
+		};
+
 		_targ && _targ.insertBefore(_div, null);
 	}
 
@@ -634,6 +669,6 @@ export default class CalendarController {
 	changeLocation(location){
 		this.changingDay = true;
 		this.location = location;
-		this.clearCal();
+		this.clearCal(true);
 	}
 }

@@ -1,12 +1,12 @@
 <form ng-submit="vm.submit($close)">
 <div class="modal-header">
-	<h4 class="modal-title">Send SMS</h4>
+	<h4 class="modal-title">Send {{vm.isTutor ? 'Tutor' : 'Student'}} SMS</h4>
 	<button type="button" tabindex="-1" class="close" aria-label="Close" ng-click="$dismiss('close')"><span aria-hidden="true">&times;</span></button>
 </div>
 <div class="modal-body">
 	<div class="row">
 		<div class="col-md-6">
-			<label>Client Phone Number</label>
+			<label>{{vm.isTutor ? 'Tutor' : 'Client'}} Phone Number</label>
 			<input type="tel" required class="form-control" ng-model="vm.phone" ng-change="vm.changed = true" />
 		</div>
 		<div class="col-md-6" ng-show="vm.changed">
@@ -16,7 +16,7 @@
 	<hr>
 	<label>SMS Message, dont use hyphens, avoid symbols</label>
 	<textarea class="form-control" rows="10" ng-maxlength="150" required ng-model="vm.message"></textarea>
-	<p>Max length 150. Current length: {{vm.message.length}}</p>
+	<p style="margin-top: 10px">Max length 150. Current length: {{vm.message.length}}</p>
 	<div class="alert alert-danger" ng-show="vm.error" ng-bind="vm.error" style="margin-top: 20px">
   	</div>
 </div>
