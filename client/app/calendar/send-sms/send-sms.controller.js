@@ -29,7 +29,7 @@ export default class {
 		if(!this.isTutor){
 			this.message = `Hi ${this.parent}! Just a reminder that ${this.studentName} has tuition this afternoon (${this.date}) at ${this.time}. Thanks, Pat (Personal Tutors)`;
 		} else {
-			this.message = `Hi ${this.tutorName}! Just a reminder that you tutor this afternoon (${this.date}) from ${this.time} to ${this.time}. Thanks, Pat (Personal Tutors)`;
+			this.message = `Hi ${this.tutorName}! Just a reminder that you tutor this afternoon (${this.date}) from ${this.time} to ${this.time} (0 Hours). Thanks, Pat (Personal Tutors)`;
 		}
 	}
 
