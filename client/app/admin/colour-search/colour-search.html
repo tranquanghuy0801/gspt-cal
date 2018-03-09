@@ -1,0 +1,109 @@
+<div class="row">
+  <div class="col-sm-12">
+    <h1>Colour Search</h1>
+  </div>
+</div>
+<br>
+<hr>
+  <div class="row">
+    <div class="col-sm-3">
+      <div class="form-group">
+        <label>Colour</label>
+        <select class="form-control" required ng-model="admin.search.colour" placeholder="Select a colour">
+          <option value="colour" ng-repeat="colour in admin.colours">{{colour}}</option>
+        </select>
+      </div>
+    </div>
+    <div class="col-sm-3">
+      <div class="form-group">
+        <label>Start Date</label>
+        <div class="input-group">
+          <input type="text" class="form-control" uib-datepicker-popup="dd/MM/y"  required ng-model="admin.search.start" placeholder="Start Date" is-open="opened" close-text="Close" >
+          <span class="input-group-btn">
+            <button type="button" class="btn btn-default" ng-click="opened = true"><i class="glyphicon glyphicon-calendar"></i></button>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-3">
+      <div class="form-group">
+        <label>End Date</label>
+        <div class="input-group">
+          <input type="text" class="form-control" uib-datepicker-popup="dd/MM/y"  required ng-model="admin.search.end" placeholder="Start Date" is-open="opened2" close-text="Close" >
+          <span class="input-group-btn">
+            <button type="button" class="btn btn-default" ng-click="opened2 = true"><i class="glyphicon glyphicon-calendar"></i></button>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-3">
+      <div class="form-group">
+        <label>Terms</label><br>
+        <div class="btn-group">
+          <button type="button" class="btn btn-primary" ng-click="admin.setTerm(i)" ng-repeat="i in [1,2,3,4]">{{i}}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="alert alert-danger" ng-show="admin.error">
+    There was an error:<br>
+    <code>{{admin.error}}</code>
+  </div>
+<hr>
+<!-- <div class="row">
+  <div class="col-sm-9">
+    <div class="form-group">
+      <input type="search" class="form-control" ng-model="admin.search" placeholder="Search here...">
+    </div>
+  </div>
+  <div class="col-sm-3 text-right">
+    <div ng-init="currentPage = 0; pageSize = 100;">
+      <button class="btn btn-default" ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1">
+        Previous
+      </button>
+      {{currentPage + 1}}/{{(admin.students.length/pageSize | roundUp) || 1}}
+      <button class="btn btn-default" ng-disabled="currentPage >= admin.students.length/pageSize - 1" ng-click="currentPage=currentPage+1">
+        Next
+      </button>
+    </div>
+  </div>
+</div>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Student Name</th>
+      <th>Client Name</th>
+      <th>CRM ID</th>
+      <th>Grade
+        <span class="glyphicon glyphicon-arrow-up" aria-hidden="true" ng-click="tableOrder = 'grade'"></span>
+        <span class="glyphicon glyphicon-arrow-down" aria-hidden="true" ng-click="tableOrder = '-grade'"></span></th>
+      <th>Email</th>
+      <th>Phone</th>
+      <th>Data</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody ng-init="tableOrder = '-dateCreated'">
+    <tr ng-repeat="student in admin.students | filter: admin.search | startFrom:currentPage*pageSize | limitTo:pageSize | orderBy: tableOrder">
+      <th scope="row">{{$index + 1}}</th>
+      <td>{{student.firstName + ' ' + student.lastName}}</td>
+      <td>{{student.clientFirstName + ' ' + student.clientLastName}}</td>
+      <td>{{student.crmID}}</td>
+      <td>{{student.isTertiary ? 'T' : student.grade}}</td>
+      <td>{{student.clientEmail}}</td>
+      <td>{{student.clientPh}}</td>
+      <td>
+        <div class="data-button-wrap">
+          <div ng-class="{'active': student.var3}">
+            <i class="fa fa-{{admin.icons.third}}" aria-hidden="true"></i>
+          </div>
+          <div ng-class="{'active': student.var4}">
+            <i class="fa fa-{{admin.icons.fourth}}" aria-hidden="true"></i>
+          </div>
+        </div>
+      </td>
+      <td><button class="btn btn-default edit-button" ng-click="admin.openModal(student)">Edit</button></td>
+    </tr>
+  </tbody>
+</table> -->

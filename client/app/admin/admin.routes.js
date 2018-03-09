@@ -32,5 +32,12 @@ export default function routes($stateProvider) {
     controller: 'SettingsController',
     controllerAs: 'admin',
     authenticate: 'admin'
+  })
+  .state('admin.colourSearch', {
+    url: '/colour-search',
+    template: require('./colour-search/colour-search.html'),
+    controller: 'ColourSearchController',
+    controllerAs: 'admin',
+    authenticate: 'admin'
   });
 }
