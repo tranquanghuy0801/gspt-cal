@@ -39,5 +39,19 @@ export default function routes($stateProvider) {
     controller: 'ColourSearchController',
     controllerAs: 'admin',
     authenticate: 'admin'
+  })
+  .state('admin.studentInfo', {
+    url: '/student-info',
+    template: require('./student-info/student-info.html'),
+    controller: 'StudentInfoController',
+    controllerAs: 'admin',
+    authenticate: 'admin'
+  })
+  .state('admin.exportTutor', {
+    url: '/export-tutor',
+    template: require('./export-tutor/export-tutor.html'),
+    controller: 'ExportTutorController',
+    controllerAs: 'admin',
+    authenticate: 'admin'
   });
 }

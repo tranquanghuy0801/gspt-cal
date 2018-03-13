@@ -1,6 +1,6 @@
 <div class="row">
   <div class="col-sm-12">
-    <h1>Colour Search<button type="button" class="btn btn-lg btn-default pull-right" ng-disabled="!admin.less || !admin.less.length" ng-click="admin.export(admin.less)">Export Data</button></h1>
+    <h1>Tutor Data<button type="button" class="btn btn-lg btn-default pull-right" ng-disabled="!admin.less || !admin.less.length" ng-click="admin.export(admin.less)">Export Data</button></h1>
   </div>
 </div>
 <br>
@@ -8,10 +8,15 @@
   <div class="row">
     <div class="col-sm-3">
       <div class="form-group">
-        <label>Colour</label>
-        <select class="form-control" required ng-model="admin.search.colour" placeholder="Select a colour">
-          <option ng-value="colour" ng-repeat="colour in admin.colours">{{colour}}</option>
-        </select>
+        <label>Tutor Name</label>
+        <tags-input ng-model="admin.search.tutor"
+                placeholder=" "
+                add-from-autocomplete-only="true"
+                replace-spaces-with-dashes="false"
+                display-property="fullName" required>
+          <auto-complete source="admin.returnFilter(admin.tutors, $query)" 
+                       min-length="1" ></auto-complete>
+        </tags-input>
       </div>
     </div>
     <div class="col-sm-3">
@@ -38,8 +43,8 @@
     </div>
     <div class="col-sm-3">
       <div class="form-group">
-        <label style="opacity: 0">Start Date</label>
-        <button type="button" class="btn btn-success btn-block" ng-click="admin.processLessons()">
+        <label style="opacity: 0">Terms</label><br>
+        <button type="button" class="btn btn-success btn-block" ng-click="admin.submit()">
           <span>Search</span>
         </button>
       </div>
@@ -48,6 +53,9 @@
   <div class="alert alert-danger" ng-show="admin.error">
     There was an error:<br>
     <code>{{admin.error}}</code>
+  </div>
+  <div>
+    
   </div>
 <hr>
 <div class="row">
@@ -70,14 +78,14 @@
     <tr>
       <th>#</th>
       <th>Student Name</th>
-      <th>Occurences</th>
+      <th>Total Time</th>
     </tr>
   </thead>
-  <tbody>
-    <tr ng-repeat="lesson in admin.less | startFrom:currentPage*pageSize | limitTo:pageSize">
+  <tbody ng-init="tableOrder = 'found'">
+    <tr ng-repeat="lesson in admin.less | startFrom:currentPage*pageSize | limitTo:pageSize | orderBy: tableOrder">
       <th scope="row">{{$index + 1}}</th>
-      <td>{{lesson.student.firstName + ' ' + lesson.student.lastName}}</td>
-      <td>{{lesson.found}}</td>
+      <td>{{lesson.student.fullName}}</td>
+      <td>{{lesson.totalTime}}</td>
     </tr>
   </tbody>
 </table>

@@ -8,14 +8,15 @@
       <li ui-sref-active="active"><a ui-sref="admin.tutor">Tutors</a></li>
       <li ui-sref-active="active"><a ui-sref="admin.settings">Settings</a></li>
       <li ui-sref-active="active"><a ui-sref="admin.colourSearch">Colour Search</a></li>
+      <li ui-sref-active="active"><a ui-sref="admin.studentInfo">Student Info</a></li>
+      <li ui-sref-active="active"><a ui-sref="admin.exportTutor">Export Tutor</a></li>
       <!-- <li ui-sref-active="active"><a ui-sref="admin.session">Sessions</a></li> -->
     </ul>
     <div uib-collapse="$ctrl.isCollapsed" class="navbar-collapse collapse" id="navbar-main">
       <ul class="nav navbar-nav navbar-right">
         <li ng-hide="$ctrl.isLoggedIn()" ui-sref-active="active"><a ui-sref="main">Login</a></li>
-        <li ng-show="$ctrl.isLoggedIn()"><p class="navbar-text">Logged in as {{ $ctrl.getCurrentUser().name }}</p> </li>
         <li ng-show="$ctrl.isLoggedIn()" ui-sref-active="active"><a ui-sref="settings"><span class="glyphicon glyphicon-cog"></span></a></li>
-        <li ng-show="$ctrl.isLoggedIn()"><a ui-sref="logout">Logout</a></li>
+        <li ng-show="$ctrl.isLoggedIn()"><a ui-sref="logout">Logout - {{ $ctrl.getCurrentUser().name }}</a></li>
       </ul>
     </div>
   </div>

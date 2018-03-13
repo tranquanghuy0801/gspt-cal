@@ -13,7 +13,7 @@ var LessonSchema = new mongoose.Schema({
         required: true
     },
     globalNotes: {
-        type: String,
+        type: String, 
         maxLength: 5000
     },
     startTime:{

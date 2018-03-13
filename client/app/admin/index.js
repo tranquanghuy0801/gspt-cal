@@ -8,6 +8,8 @@ import SessionController from './session/session.controller';
 import EditSessionController from './session/edit.session.controller';
 import SettingsController from './settings/settings.controller';
 import ColourSearchController from './colour-search/colour-search.controller'
+import StudentInfoController from './student-info/student-info.controller'
+import ExportTutorController from './export-tutor/export-tutor.controller'
 
 export default angular.module('calApp.admin', ['calApp.auth', 'ui.router'])
   .config(routes)
@@ -17,4 +19,6 @@ export default angular.module('calApp.admin', ['calApp.auth', 'ui.router'])
   .controller('EditSessionController', EditSessionController)
   .controller('SettingsController', SettingsController)
   .controller('ColourSearchController', ColourSearchController)
+  .controller('StudentInfoController', StudentInfoController)
+  .controller('ExportTutorController', ExportTutorController)
   .name;
