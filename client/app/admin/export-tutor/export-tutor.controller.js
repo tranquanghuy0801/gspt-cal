@@ -34,9 +34,16 @@ export default class {
 			} else {
 				newObj.clientName = 'Hidden User'
 			}
-			newObj.total = entity.totalTime;
-			return newObj
+
+      newObj.time = entity.totalTime
+
+      return newObj
+			
 		})
+
+    data.push({clientName: 'Total Time', time: this.totalTime})
+
+   
 		this.JSONToCSVConvertor(data, 'Tutor Export ' + this.search.tutor[0].fullName, true);
 	}
 
@@ -60,24 +67,41 @@ export default class {
 
 		var temper2 = [];
 
-		 temp.forEach(lesson => {
-  			var foundEr = false;
-  			temper2.some(found => {
-  				if(found.clientUID === lesson.clientUID){
+    temp.forEach(lesson => {
+			var foundEr = false;
+			temper2.some(found => {
+				if(found.clientUID === lesson.clientUID){
 
-		            found.totalTime += lesson.totalTime
-  					foundEr = true;
-  					return true;
-  				}
-  				
-  			})
+	            found.totalTime += lesson.totalTime
+					foundEr = true;
+					return true;
+				}
+				
+			})
 
-  			if(foundEr === false){
-  				temper2.push(lesson)
-  			}
-  		})
+			if(foundEr === false){
+				temper2.push(lesson)
+			}
+		})
 
-  		this.less = temper2
+    temper2 = temper2.map(ent => {
+      ent.totalTime /= 60
+      return ent
+    })
+    temper2 = temper2.filter(ent => ent.totalTime !== 0)
+    temper2 = temper2.sort((a,b) =>  {
+      if(a.student.firstName < b.student.firstName) return -1;
+      if(a.student.firstName > b.student.firstName) return 1;
+      return 0;
+    });
+
+    this.totalTime = 0;
+
+    temper2.forEach(ent => {
+      this.totalTime += ent.totalTime
+    })
+
+  	this.less = temper2
 
 	}
 
@@ -91,6 +115,7 @@ export default class {
 
   		lesson.newDate = this.$filter('reparseDate')(lesson.date)
   		lesson.totalTime = 0;
+      end.setDate(end.getDate() + 1);
 
   		if(lesson.newDate > end){
   			return lesson

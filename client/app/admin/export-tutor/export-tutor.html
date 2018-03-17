@@ -58,21 +58,6 @@
     
   </div>
 <hr>
-<div class="row">
-  <div class="col-sm-9">
-  </div>
-  <div class="col-sm-3 text-right">
-    <div ng-init="currentPage = 0; pageSize = 100;">
-      <button class="btn btn-default" ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1">
-        Previous
-      </button>
-      {{currentPage + 1}}/{{(admin.less.length/pageSize | roundUp) || 1}}
-      <button class="btn btn-default" ng-disabled="currentPage >= admin.less.length/pageSize - 1" ng-click="currentPage=currentPage+1">
-        Next
-      </button>
-    </div>
-  </div>
-</div>
 <table class="table table-striped">
   <thead>
     <tr>
@@ -81,11 +66,14 @@
       <th>Total Time</th>
     </tr>
   </thead>
-  <tbody ng-init="tableOrder = 'found'">
-    <tr ng-repeat="lesson in admin.less | startFrom:currentPage*pageSize | limitTo:pageSize | orderBy: tableOrder">
+  <tbody>
+    <tr ng-repeat="lesson in admin.less">
       <th scope="row">{{$index + 1}}</th>
       <td>{{lesson.student.fullName}}</td>
       <td>{{lesson.totalTime}}</td>
     </tr>
   </tbody>
 </table>
+<div>
+  <span><strong style="margin-right: 10px">Total Time:</strong> {{admin.totalTime || 0}} hours
+</div>
