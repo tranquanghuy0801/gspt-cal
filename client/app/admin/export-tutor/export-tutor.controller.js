@@ -54,16 +54,23 @@ export default class {
     }
 
 	submit(){
+    var msDay = 1000 * 60 * 60 * 24;
 		var {start, end, tutor} = this.search;            
 
   		if(!start || !end || !tutor.length){
   			return;
   		}
 
-     	tutor = tutor[0]
-     	var temp;
+    tutor = tutor[0];
+    var temp;
+
+    //filters lessons that don't match to the tutor's ID
 		temp = this.lessons.filter(entity => entity.tutorUID === tutor._id);
+
+    //figures out minutes for each lesson
 		temp = temp.map(entity => this.timeCompress(entity, start, end))
+
+    console.log(temp);
 
 		var temper2 = [];
 
@@ -72,9 +79,9 @@ export default class {
 			temper2.some(found => {
 				if(found.clientUID === lesson.clientUID){
 
-	            found.totalTime += lesson.totalTime
-					foundEr = true;
-					return true;
+	       found.totalTime += lesson.totalTime
+				foundEr = true;
+				return true;
 				}
 				
 			})
@@ -88,6 +95,8 @@ export default class {
       ent.totalTime /= 60
       return ent
     })
+
+
     temper2 = temper2.filter(ent => ent.totalTime !== 0)
     temper2 = temper2.sort((a,b) =>  {
       if(a.student.firstName < b.student.firstName) return -1;
@@ -113,15 +122,18 @@ export default class {
   				lesson.student = student;
   		});
 
+      console.log(end);
+
   		lesson.newDate = this.$filter('reparseDate')(lesson.date)
   		lesson.totalTime = 0;
-      end.setDate(end.getDate() + 1);
 
   		if(lesson.newDate > end){
   			return lesson
   		}
 
-  		var maxPossible = Math.floor((end.getTime() - lesson.newDate.getTime())/msDay/lesson.frequency) + 1;
+  		var maxPossible = Math.floor((end.getTime() - lesson.newDate.getTime() + 10000)/msDay/lesson.frequency) + 1;
+
+      console.log(maxPossible, 'maxPossible')
 
   		if(lesson.instances !== 0 && (lesson.instances < maxPossible)){
   			maxPossible = lesson.instances;
