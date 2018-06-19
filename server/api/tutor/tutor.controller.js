@@ -12,6 +12,7 @@
 
 import jsonpatch from 'fast-json-patch';
 import Tutor from './tutor.model';
+import { sendEmail } from '../../email';
 
 function respondWithResult(res, statusCode) {
   statusCode = statusCode || 200;
@@ -71,6 +72,13 @@ export function index(req, res) {
     .catch(handleError(res));
 }
 
+// Gets a list of Tutors
+export function dumpAll(req, res) {
+  return Tutor.find().exec()
+    .then(respondWithResult(res))
+    .catch(handleError(res));
+}
+
 // Gets a single Tutor from the DB
 export function show(req, res) {
   return Tutor.findById(req.params.id).exec()
@@ -84,6 +92,10 @@ export function create(req, res) {
   return Tutor.create(req.body)
     .then(respondWithResult(res, 201))
     .catch(handleError(res));
+}
+
+export function sendEmailDay(req, res){
+  sendEmail('noreply@gsptcal.com.au', 'pspeare@gspt.com.au', `${req.body.range} Schedule: ${req.body.tutor}`, req.body.content);
 }
 
 // Upserts the given Tutor in the DB at the specified ID

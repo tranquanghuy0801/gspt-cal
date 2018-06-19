@@ -2,25 +2,42 @@
 
 export default class CalendarController {
 	/*@ngInject*/
-	constructor(Modal, $http, $filter, $uibModal, $compile, $timeout){
+	constructor(Modal, $http, $filter, $uibModal, $compile, $timeout, copyTextToClipboard, ColorFinder, HourFinder, StartFinder, ValidIndexes, DateFinder){
 		this.Modal = Modal;
 		this.$http = $http;
 		this.$filter = $filter;
 		this.$uibModal = $uibModal;
 		this.$compile = $compile;
 		this.$timeout = $timeout;
+		this.copyTextToClipboard = copyTextToClipboard;
+		this.ColorFinder = ColorFinder;
+		this.HourFinder = HourFinder;
+		this.StartFinder = StartFinder;
+		this.ValidIndexes = ValidIndexes;
+		this.DateFinder = DateFinder;
 	}
 
 	$onInit(){
+		this.visibleLessons = []; //used by sandbox
+
+		this.intDay();
+
+		this.icons = {
+	        first: '',
+	        second: '',
+	        third: '',
+	        fourth: '',
+	        fifth: '',
+	        sixth: '',
+	        year12: '',
+	    };
+
 		this.$http.get('/api/icons').then(response => {
-          this.icons = response.data[0] || {
-            first: '',
-            second: '',
-            third: '',
-            fourth: '',
-            year12: ''
-          };
-        });
+			if(response && response.data && response.data[0]){
+				this.icons = response.data[0]
+			}
+			this.finishedLoad();
+        })
 
 		//defaults to paddington
 		this.location = 'paddington';
@@ -33,14 +50,10 @@ export default class CalendarController {
 		//creates segments for the days
 		this.segments = this.createArray(48);
 
-		//int date
-		this.intDay();
-
-
 		
 		this.loading = true; //defaults to loading
 
-		//hacky code but waits to be 3 to call updateCal()/show loaded screen
+		//hacky code but waits to be 4 to call updateCal()/show loaded screen
 		this.loaded = 0;
 
 		this.$http.get('/api/lessons').then(response => {
@@ -90,9 +103,11 @@ export default class CalendarController {
       		return !!($event.target.classList.contains('session-cell') ? $event.target : $event.target.closest('.session-cell'))
         }
 
-        var dateSame = ($itemScope, $event) =>{
+        var dateSame = ($itemScope, $event) => {
         	var today = new Date();
-        	return menuDisplayed($itemScope, $event) && this.calendarDate.toDateString() === today.toDateString();
+        	var tomorrow = new Date();
+        	tomorrow.setDate(today.getDate() + 1);
+        	return menuDisplayed($itemScope, $event) && (this.calendarDate.toDateString() === today.toDateString() || this.calendarDate.toDateString() === tomorrow.toDateString());
         }
 
       	this.menuOptions = [{
@@ -113,15 +128,49 @@ export default class CalendarController {
 				this.editSessionModal(_uid, _instance);
 	        }
 	    }, {
-	        text: 'Delete Session',
+	        text: 'Copy',
+	        displayed: menuDisplayed,
+	        children: [
+	        	{
+	        		text: 'Phone Number',
+	        		click: ($itemScope, $event) => {
+	        			var text = $event.target.classList.contains('session-cell') ? $event.target.dataset.phone : $event.target.closest('.session-cell').dataset.phone
+	        			this.copyTextToClipboard(text)
+	        		},
+	        	},
+	        	{
+	        		text: 'Email Address',
+	        		click: ($itemScope, $event) => {
+	        			var text = $event.target.classList.contains('session-cell') ? $event.target.dataset.email : $event.target.closest('.session-cell').dataset.email
+	        			this.copyTextToClipboard(text)
+	        		},
+	        	},
+	        ]
+	    },{
+	        text: 'Delete',
 	        hasBottomDivider: true,
 	        displayed: menuDisplayed,
-	        click: ($itemScope, $event) => {
-	            var _targ = $event.target.classList.contains('session-cell') ? $event.target : $event.target.closest('.session-cell');
-				var _uid = _targ.dataset.id;
-				var _instance = +_targ.dataset.instance;
-				this.overwriteHide(_uid, _instance);
-	        }
+	        children: [
+	        	{
+	        		text: 'Instance',
+	        		click: ($itemScope, $event) => {
+			            var _targ = $event.target.classList.contains('session-cell') ? $event.target : $event.target.closest('.session-cell');
+						var _uid = _targ.dataset.id;
+						var _instance = +_targ.dataset.instance;
+						this.overwriteHide(_uid, _instance);
+			        },
+	        	},
+	        	{
+	        		text: 'Series',
+	        		click: ($itemScope, $event) => {
+			            var _targ = $event.target.classList.contains('session-cell') ? $event.target : $event.target.closest('.session-cell');
+						var _uid = _targ.dataset.id;
+						if(confirm('Are you sure you want to permanently delete this series?')){
+							this.deleteSeries(_uid);
+						}
+			        },
+	        	}
+	        ],       
 	    }, 
 	    {
 	    	text: 'SMS Student',
@@ -136,7 +185,6 @@ export default class CalendarController {
 	    },
 	    {
 	    	text: 'SMS Tutor',
-	    	hasBottomDivider: true,
 	    	displayed: dateSame,
 	    	click: ($itemScope, $event) => {
 	            var _targ = $event.target.classList.contains('session-cell') ? $event.target : $event.target.closest('.session-cell');
@@ -145,8 +193,28 @@ export default class CalendarController {
 				var _time = $itemScope.$parent.segment;
 				this.sendSMS(_uid, _instance, _time, true);
 	        }
-	    },{
-	        text: 'Make Student Inactive',
+	    },
+	    {
+	    	text: 'Email Tutor',
+	    	hasBottomDivider: true,
+	    	children: [{
+	    		text: 'This Day',
+	    		click: ($itemScope, $event) => {
+		            const targ = $event.target.classList.contains('session-cell') ? $event.target : $event.target.closest('.session-cell');
+					const uid = targ.dataset.id;
+					this.sendEmail(uid, this.calendarDate, false);
+		        },
+	    	}, {
+	    		text: 'This Week',
+	    		click: ($itemScope, $event) => {
+		            const targ = $event.target.classList.contains('session-cell') ? $event.target : $event.target.closest('.session-cell');
+					const uid = targ.dataset.id;
+					this.sendEmail(uid, this.calendarDate, true);
+		        },
+	    	}],
+	    },
+	    {
+	        text: 'Inactivate Student',
 	        hasBottomDivider: true,
 	        displayed: menuDisplayed,
 	        click: ($itemScope, $event) => {
@@ -156,27 +224,55 @@ export default class CalendarController {
 				this.studentInactive(_uid, _instance);
 	        }
 	    }, {
-	        text: 'Temp First Icon',
+	        text: 'Temporary Icon',
 	        displayed: menuDisplayed,
-	        click: changeIcon(1, false)
+	        children: [
+	        	{
+	        		text: '1. Paid',
+	        		click: changeIcon(1, false),
+	        	},
+	        	{
+	        		text: '2. New Client',
+	        		click: changeIcon(2, false),
+	        	},
+	        	{
+	        		text: '5. Tick',
+	        		click: changeIcon(5, false),
+	        	},
+	        	{
+	        		text: '6. Cross',
+	        		click: changeIcon(6, false),
+	        	},
+	        ]
 	    }, {
-	        text: 'Temp Second Icon',
+	        text: 'Permanent Icon',
 	        displayed: menuDisplayed,
-	        click: changeIcon(2, false)
-	    }, {
-	        text: 'Perm Third Icon',
-	        displayed: menuDisplayed,
-	        click: changeIcon(3, true)
-	    }, {
-	        text: 'Perm Fourth Icon',
 	        hasBottomDivider: true,
-	        displayed: menuDisplayed,
-	        click: changeIcon(4, true)
+	        children: [
+	        	{
+	        		text: '3. Third',
+	        		click: changeIcon(3, true),
+	        	},
+	        	{
+	        		text: '4. Payment Stored',
+	        		click: changeIcon(4, true),
+	        	},
+	        ]
 	    }, {
 	        text: 'Temporary Colour',
 	        hasBottomDivider: true,
 	        displayed: menuDisplayed,
 	        children: tempColourChildren
+	    },{
+	    	text: 'Toggle Changeover',
+	    	hasBottomDivider: true,
+	        displayed: menuDisplayed,
+	        click: ($itemScope, $event) => {
+	            var _targ = $event.target.classList.contains('session-cell') ? $event.target : $event.target.closest('.session-cell');
+				var _uid = _targ.dataset.id;
+				var _instance = +_targ.dataset.instance;
+				this.overwriteChangeover(_uid, _instance);
+	        },
 	    },
 	    {
 	        text: 'Close'
@@ -184,23 +280,22 @@ export default class CalendarController {
 	}
 
 	intDay(){
-		this.calendarDate = new Date();
+		//int date
+		const today = new Date();
+		//remove hours, seconds etc
+		this.calendarDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
 	}
 
 	editColour(id, instance, colour){
-		this.sessions.forEach(session => {
-			if(id == session._id){
-				
-				session.overwriteColor = session.overwriteColor || {};
-				session.overwriteColor[instance] = colour;
-				console.log(session.overwriteColor);
-				this.$http.put('/api/lessons/' + id, {
-					overwriteColor: session.overwriteColor
-				}).then(response => {
-		        	this.reloadStudents();
-		      	});
-		    }
-		});
+		var session = this.sessions.find(session => id == session._id);
+
+		session.overwriteColor = session.overwriteColor || {};
+		session.overwriteColor[instance] = colour;
+		this.$http.put('/api/lessons/' + id, {
+			overwriteColor: session.overwriteColor
+		}).then(response => {
+        	this.reloadStudents();
+      	});
 	}
 
 	clearMessages(){
@@ -209,30 +304,204 @@ export default class CalendarController {
 
 	studentInactive(id, instance){
 		//function makes student inactive
-		this.sessions.forEach(session => {
-			if(id == session._id){
-				this.$http.put('/api/students/' + session.student._id, {
-					isActive: false
-				}).then(response => {
-		        	this.reloadStudents();
-		      	});
-		    }
+		var session = this.sessions.find(session => id == session._id);
+
+		this.$http.put('/api/students/' + session.student._id, {
+				isActive: false
+			}).then(response => {
+	        	this.reloadStudents();
+	      	});
+	}
+
+	sendEmail(id, date, isWeek){
+		const msDay = 1000 * 60 * 60 * 24;
+		
+		if(isWeek){
+			if(date.getDay() === 0){
+				var startOfWeek = date.getDate() - 7;
+			} else {
+				var startOfWeek = date.getDate() - (date.getDay() - 1);
+			}
+			
+			var start = new Date(date.getFullYear(), date.getMonth(), startOfWeek);
+			var end = new Date(date.getFullYear(), date.getMonth(), startOfWeek + 6);
+		} else {
+			var start = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+			var end = start;
+		}
+
+		const tutorID = this.sessions.find(session => id == session._id).tutorUID;
+		const tutor = this.tutors.find(tutor => tutorID === tutor._id);
+		const tutorSessions = this.sessions.filter(session => tutorID === session.tutorUID);
+
+		var sessionData = [];
+
+		tutorSessions.forEach(session => {
+			const validIndexes = this.ValidIndexes(session, start, end);
+
+			validIndexes.forEach(index => {
+
+				const basicTime = this.StartFinder(session, index);
+
+				console.log(basicTime);
+				const formattedTime = this.$filter('minuteConvert')(basicTime, false);
+				const sessionDate = this.DateFinder(session, index);
+				const formattedDate = this.$filter('toDateString')(sessionDate);
+				const color = this.ColorFinder(session, index);
+
+				sessionData.push({
+					student: session.student,
+					time: formattedTime,
+					isEmpty: false,
+					basicTime,
+					date: formattedDate,
+					sessionDate,
+					color,
+				});
+
+			});
 		});
+
+		if(!isWeek){
+			sessionData = sessionData.filter(session => {
+				var acceptedColors = ['blue', 'dark blue', 'green', 'dark green', 'purple', 'dark purple'];
+				var color = session.color.toLowerCase();
+
+				return acceptedColors.includes(color);
+			})
+		};
+
+		if(sessionData.length === 0){
+			return alert('Something went wrong. No sessions found.');
+		}
+
+		var datesPresent = [];
+		sessionData.forEach(session => {
+			if(datesPresent.includes(session.date) === false){
+				datesPresent.push(session.date);
+			};
+		})
+
+		var times = [930, 990, 1050, 1110, 1170, 1230, 1290];
+
+		datesPresent.forEach(datePresent => {
+			var filteredSessions = sessionData.filter(session => session.date === datePresent);
+
+			times.forEach(time => {
+				const found = filteredSessions.find(session => session.basicTime === time);
+
+				if(!found){
+					const formattedTime = this.$filter('minuteConvert')(time, false);
+					const sessionDate = this.$filter('reparseDate')(datePresent);
+
+					sessionData.push({
+						basicTime: time,
+						isEmpty: true,
+						date: datePresent,
+						time: formattedTime,
+						sessionDate,
+					});
+				}
+			})
+		})
+
+		sessionData = sessionData.sort((a,b) => {
+			if(a.sessionDate < b.sessionDate){
+				return -1;
+			}
+
+			if(a.sessionDate > b.sessionDate){
+				return 1;
+			}
+
+			if(a.basicTime < b.basicTime){
+				return -1;
+			}
+
+			if(a.basicTime > b.basicTime){
+				return 1;
+			}
+
+			return 0;
+		});
+
+		var html = '<ul>';
+		sessionData.forEach(session => {
+			if(session.isEmpty){
+				if(isWeek){
+					var time = `${session.date}, ${session.time}`;
+				} else {
+					var time = `${session.time}`;
+				}
+				html += `<li>${time} - No Student</li>`;
+				return;
+			}
+
+			if(isWeek){
+				var time = `${session.date}, ${session.time}`;
+			} else {
+				var time = `${session.time}`;
+			}
+
+			if(session.student.isTertiary){
+				var grade = '(Uni Student)';
+			} else {
+				var grade = `(Year ${session.student.grade})`;
+			}
+
+			html += `<li>${time} - ${session.student.firstName} ${session.student.lastName} ${grade}`;
+
+			if(isWeek){
+				html += ' ' + session.color;
+			}
+
+			html += '</li>';
+			
+		})
+
+		html += '</ul>';
+
+		this.$http.post('/api/tutors/send-email/day', {
+			content: html,
+			range: isWeek ? 'Week' : 'Day',
+			tutor: tutor.firstName + ' ' + tutor.lastName,
+		});
+
 	}
 
 	sendSMS(id, instance, time, isTutor){
-		var student, tutor;
-		this.sessions.some(session => {
-			if(id == session._id){
-				student = session.student;
-				tutor = session.tutor;
-				return true;
-			}
-		});
-		this.sendSMSModal(student, time, tutor, isTutor);
+		var session = this.sessions.find(session => id == session._id);
+		var tutor = session.tutor;
+		var student = session.student;
+
+		var today = new Date();
+       	var tomorrow = new Date();
+       	tomorrow.setDate(today.getDate() + 1);
+		var isTomorrow = this.calendarDate.toDateString() === tomorrow.toDateString();
+
+		this.sendSMSModal(student, time, tutor, isTutor, isTomorrow);
 	}
 
-	sendSMSModal(student, time, tutor, isTutor){
+	colourCountModal(){
+		const todaysSessions = this.todaysSessions();
+		const calendarDate = this.calendarDate;
+
+		this.$uibModal.open({
+	        template: require('./colour-count/colour-count.html'),
+	        controller: 'ColourCountController',
+	        controllerAs: 'vm',
+	        resolve:{
+	          todaysSessions: () => {
+	            return todaysSessions
+	          },
+	          calendarDate: () => {
+	          	return calendarDate
+	          },
+	        } 
+	    })
+	}
+
+	sendSMSModal(student, time, tutor, isTutor, isTomorrow){
 
 		this.$uibModal.open({
 	        template: require('./send-sms/send-sms.html'),
@@ -244,7 +513,8 @@ export default class CalendarController {
 	              student: student,
 	              time: time,
 	              tutor: tutor,
-	              isTutor: isTutor
+	              isTutor: isTutor,
+	              isTomorrow,
 	            }
 	          }
 	        } 
@@ -258,40 +528,37 @@ export default class CalendarController {
 	}
 
 	editIcon(id, instance, icon, perm){
+		var session = this.sessions.find(session => id == session._id)
+
 		if(perm){
-			//only works for current setup right now
-			//that is, if perm we assume icon = 3
-			this.sessions.forEach(session =>{
-					if(id == session._id){
-						var key = 'var' + String(icon);
-						var property = !session.student[key];
-						var change = {[key]: property};
-						this.$http.put('/api/students/' + session.student._id, change).then(response => {
-				        	this.reloadStudents();
-				      	});
-				    }
-				});
+			//needs to be either 3 or 4 here
+			var key = 'var' + String(icon);
+			var property = !session.student[key];
+			var change = {[key]: property};
+
+			this.$http.put('/api/students/' + session.student._id, change).then(response => {
+	        	this.reloadStudents();
+	      	});
 			return;
 		}
 
-		this.sessions.forEach(session =>{
-			if(id == session._id){
-				var key = 'overwriteVar' + String(icon);
-				session[key] = session[key] || {};
-				console.log(session[key][instance]);
-				session[key][instance] = !session[key][instance];
-				var change = {
-					[key]: session[key]
-				};
-				this.$http.put('/api/lessons/' + id, change).then(response => {
-		        	this.reloadCal();
-		      	});
-			}
-		})
-		return;
+		//can be 1,2,5,6
+		var key = 'overwriteVar' + String(icon);
+		session[key] = session[key] || {};
+		session[key][instance] = !session[key][instance];
+		var change = {[key]: session[key]};
 
-		//Shouldn't be able to reach here with current setup
+		this.$http.put('/api/lessons/' + id, change).then(response => {
+        	this.reloadCal();
+      	});
 
+	}
+
+	deleteSeries(id){
+		this.$http.delete('/api/lessons/' + id)
+			.then(res => {
+				this.reloadCal();
+			})
 	}
 
 	overwriteHide(id, instance){
@@ -308,9 +575,28 @@ export default class CalendarController {
 		})
 	}
 
+	overwriteChangeover(id, instance){
+		this.sessions.forEach(session =>{
+			if(id == session._id){
+				session.overwriteChangeover = session.overwriteChangeover || {};
+				if(typeof session.overwriteChangeover[instance] === 'undefined'){
+					session.overwriteChangeover[instance] = false;
+				} else {
+					session.overwriteChangeover[instance] = !session.overwriteChangeover[instance];
+				}
+				
+				this.$http.put('/api/lessons/' + id, {
+					overwriteChangeover: session.overwriteChangeover
+				}).then(response => {
+		        	this.reloadCal();
+		      	});
+			}
+		})
+	}
+
 	finishedLoad(){
 		this.loaded++;
-		if(this.loaded == 3){
+		if(this.loaded === 4){
 			this.intInfoAdd();
 			this.updateCal();
 		}
@@ -332,18 +618,16 @@ export default class CalendarController {
 		
 	}
 
-	updateCal(){
+	todaysSessions(){
 		var parsedDate = this.$filter('date')(this.calendarDate, 'dd/MM/yyyy');
 		var cleanDate = this.$filter('reparseDate')(parsedDate);
 		var sessions = this.sessions;
 
+
 		if(this.searchFilter)
 			sessions = this.$filter('filter')(this.sessions, this.searchFilter);
 
-		sessions.forEach( session => {
-			if(session._id == '5a0db8dd0c527203a86748f0'){
-				console.log(session)
-			};
+		var filteredSessions = sessions.filter( session => {
 			if(session.isHidden)
 				return;
 
@@ -351,7 +635,7 @@ export default class CalendarController {
 				return; //wrong location
 
 			if(session.date == parsedDate)
-				return this.addCalendar(session, 0);
+				return true;
 
 			if(session.instances == 1)
 				return; //gets rid of one-off events
@@ -372,10 +656,52 @@ export default class CalendarController {
 			//remember that it's still zero-indexed here too
 
 			if(session.instances === 0) //if infinite
-				return this.addCalendar(session, _instance);
+				return true;
 
 			if(session.instances > _instance) //if more or equal instances possible
-				return this.addCalendar(session, _instance);
+				return true;
+
+		});
+
+		return filteredSessions.map(session => {
+			if(session.date == parsedDate){
+				session._instance = 0;
+				return session;
+			};
+
+			var objSession = this.$filter('reparseDate')(session.date);
+			var daysAhead = (cleanDate - objSession)/86400000;
+			var _instance = daysAhead/session.frequency;
+
+			session._instance = _instance;
+
+			return session;
+		});
+	}
+
+	updateCal(){
+		this.visibleLessons = [];
+		var parsedDate = this.$filter('date')(this.calendarDate, 'dd/MM/yyyy');
+		var cleanDate = this.$filter('reparseDate')(parsedDate);
+		var todaysSessions = this.todaysSessions();
+
+		todaysSessions.forEach( session => {
+			if(!session){
+				console.log(todaysSessions)
+				return;
+			}
+
+			if(session.date == parsedDate)
+				return this.addCalendar(session, 0);
+
+			var objSession = this.$filter('reparseDate')(session.date);
+
+			var daysAhead = (cleanDate - objSession)/86400000;
+
+			var _instance = daysAhead/session.frequency; //returns supposed instance
+			//remember that it's still zero-indexed here too
+
+			this.addCalendar(session, _instance);
 
 		});
 
@@ -383,48 +709,48 @@ export default class CalendarController {
 	}
 
 	handleClick($event){
-		console.log('click');
-
 		var _targ = $event.target.classList.contains('free-col') ? $event.target : $event.target.closest('.free-col');
 		var _startTime = _targ.dataset.time;
 		var _room = _targ.dataset.room;
 
-		if(_targ.childElementCount == 0){
-			this.addSessionModal(_startTime, _room);
+		if(_targ.childElementCount === 0){
+			return this.addSessionModal(_startTime, _room);
 		}
 
-		if(_targ.childElementCount){
-			var _edit = _targ.firstChild;
-			var _uid = _edit.dataset.id;
-			var _instance = +_edit.dataset.instance;
-			this.editSessionModal(_uid, _instance);
-		}
+		//then there must be one or more items in the cell
+		var closest = $event.target.classList.contains('session-cell') ? $event.target : $event.target.closest('.session-cell');
+		var finalTarg = closest || _targ.firstChild;
+		var _uid = finalTarg.dataset.id;
+		var _instance = +finalTarg.dataset.instance;
+
+		this.editSessionModal(_uid, _instance);
 	}
 
 	addDropAndDrag(){
 		var drop = ev => {
 		    ev.preventDefault();
-		    var data = ev.dataTransfer.getData("text");
-		    var el = document.getElementById(data);
+		    var id = ev.dataTransfer.getData("text");
+		    var el = document.querySelector('[data-id="' + id + '"]');
 			if(ev.target.appendChild(el)){
-				var id = el.dataset.id;
 				var instance = +el.dataset.instance;
 				var time = +ev.target.dataset.time;
 				var room = +ev.target.dataset.room;
-				this.sessions.forEach(session =>{
-					if(id == session._id){
-						session.overwriteStart = session.overwriteStart || {};
-						session.overwriteStart[instance] = time;
-						session.overwriteRoom = session.overwriteRoom || {};
-						session.overwriteRoom[instance] = room;
-						this.$http.put('/api/lessons/' + id, {
-							overwriteRoom: session.overwriteRoom,
-							overwriteStart: session.overwriteStart
-						}).then(response => {
-				        	this.reloadCal();
-				      	});
-					}
-				})
+
+				var session = this.sessions.find(session => id == session._id);
+				if(!session){
+					return; //this likely will never be called though
+				}
+				session.overwriteStart = session.overwriteStart || {};
+				session.overwriteStart[instance] = time;
+				session.overwriteRoom = session.overwriteRoom || {};
+				session.overwriteRoom[instance] = room;
+
+				this.$http.put('/api/lessons/' + id, {
+					overwriteRoom: session.overwriteRoom,
+					overwriteStart: session.overwriteStart
+				}).then(response => {
+		        	this.reloadCal();
+		      	});
 			}
 		}
 
@@ -441,7 +767,8 @@ export default class CalendarController {
 		}
 
 		var dragStart = function(ev) {
-		    ev.dataTransfer.setData("text", ev.target.id);
+			//this is where the error is, id that is set here is incorrect
+		    ev.dataTransfer.setData("text", ev.target.dataset.id);
 		    this.classList.add('in-drag');
 		    this.closest('table').classList.add('in-drag');
 		};
@@ -456,18 +783,18 @@ export default class CalendarController {
 		}
 
 		document.querySelectorAll('.free-col').forEach(function(item){
-			item.addEventListener('drop', drop);
-			item.addEventListener('dragover', allowDrop);
-			item.addEventListener('dragenter', dragEnter);
-			item.addEventListener('dragleave', dragLeave);
+			item.ondrop = drop;
+			item.ondragover = allowDrop;
+			item.ondragenter = dragEnter;
+			item.ondragleave = dragLeave;
 		});
 
 		document.querySelectorAll('.session-cell').forEach(function(item){
-			item.addEventListener('dragstart', dragStart);
+			item.ondragstart = dragStart;
 		});
 
-		document.addEventListener("dragend", dragStop);
-		document.addEventListener('drop', dragStop);
+		document.ondragend = dragStop;
+		document.ondrop = dragStop;
 
 		//Set scroll height properly
 		var el = document.querySelector('.table-wrap');
@@ -507,7 +834,7 @@ export default class CalendarController {
 	              startTime: startTime,
 	              room: room,
 	              location: this.location,
-	              date: this.calendarDate
+	              date: this.calendarDate,
 	            }
 	          }
 	        } 
@@ -521,11 +848,7 @@ export default class CalendarController {
 	}
 
 	editSessionModal(uid, instance){
-		var _data;
-		this.sessions.forEach( item => {
-			if(uid == item._id)
-				_data = item;
-		})
+		var _data = this.sessions.find(item => item._id == uid);
 
 		if(!_data)
 			return;
@@ -565,22 +888,39 @@ export default class CalendarController {
 		
 	}
 
+	scrubAll(){
+		//used by sandbox
+		this.$http.get('/api/lessons/scrub-all').then(response => {
+        	this.reloadStudents();
+      	});
+	}
+
+	scrubDay(){
+		//used by sandbox
+		this.$http.post('/api/lessons/scrub-day', {list: this.visibleLessons}).then(response => {
+        	this.reloadStudents();
+      	});
+	}
+
 	addCalendar(session, instance){
 		//takes zero-based instances
 
-		if(session.overwriteVisibility && session.overwriteVisibility[instance])
-			return
+		if(session.overwriteVisibility && session.overwriteVisibility[instance]){
+			return;
+		}
 
-		if(session._id == '5a0db8dd0c527203a86748f0'){
-			console.log('makes it here');
-		};
+		this.visibleLessons.push(session._id); //used by sandbox
+
 
 		var identifier = 't' + session.startTime + 'r' + session.room;
 		//identified applied to table cell,
 		// 'a-' + identified to session div
 		
 		var specificNotes = (session.overwriteNotes && instance in session.overwriteNotes) ? session.overwriteNotes[instance] : null;
-		var color = (session.overwriteColor && instance in session.overwriteColor) ? session.overwriteColor[instance] : session.color;
+		//set colour
+
+		var color = this.ColorFinder(session, instance);
+		
 		var _div = document.createElement('div');
 		if(color.indexOf(' ') != -1){
 			var _temp = color.split(' ');
@@ -590,49 +930,69 @@ export default class CalendarController {
 		_div.id = 'a-' + identifier;
 		_div.setAttribute('draggable', 'true');
 		_div.setAttribute('data-id', session._id);
+		_div.setAttribute('data-phone', session.student.clientPh);
+		_div.setAttribute('data-email', session.student.clientEmail);
 		_div.setAttribute('data-instance', instance);
 
-		var _duration = (session.overwriteDuration && instance in session.overwriteDuration) ? session.overwriteDuration[instance] : session.duration;
-		_div.style.height = 'calc(' + String(100 * (_duration/30)) + '% - 4px)';
+		var _duration = this.HourFinder(session, instance);
+		_div.style.height = `calc(${String(100 * (_duration/30))}% - 4px)`;
 		if(_duration < 60)
 			_div.className += ' single-cell';
-		_div.innerHTML = '<span class="student">' + session.student.firstName + ' ' + session.student.lastName + '</span>';
-		_div.innerHTML += '<span class="tutor">' + session.tutor.firstName + ' ' + session.tutor.lastName + '</span>';
+
+		var isChangeover = (session.overwriteChangeover && instance in session.overwriteChangeover) ? session.overwriteChangeover[instance] : session.changeover;
+		if(isChangeover){
+			_div.className += ' changeover';
+		}
+
+		if(session.isChangeover && session.isChangeover[instance])
+			_div.className += ' changeover';
+
+		if(session.overwriteName && session.overwriteName[instance]){
+			_div.innerHTML = `<span class="student">${session.overwriteName[instance]}</span>`;
+		} else {
+			_div.innerHTML = `<span class="student">${session.student.firstName} ${session.student.lastName}</span>`;
+		}
+		
+		_div.innerHTML += `<span class="tutor">${session.tutor.firstName} ${session.tutor.lastName}</span>`;
 
 		var compiledNotes = '';
 		if(session.globalNotes){
-			_div.innerHTML += '<br><span class="notes global-notes">' + session.globalNotes + '</span>';
-			compiledNotes += 'Global Notes: \n' + session.globalNotes + '\n';
+			_div.innerHTML += `<br><span class="notes global-notes">${session.globalNotes}</span>`;
+			compiledNotes += `Global Notes: \n${session.globalNotes}\n`;
 		}
 		if(specificNotes){
-			_div.innerHTML += '<br><span class="notes specific-notes">' + specificNotes + '</span>';
-			compiledNotes += 'Specific Notes: \n' + specificNotes + '\n';
+			_div.innerHTML += `<br><span class="notes specific-notes">${specificNotes}</span>`;
+			compiledNotes += `Specific Notes: \n${specificNotes}\n`;
 		}
 
 		//Add contact name
 		if(session.student.clientFirstName || session.student.clientLastName){
-			compiledNotes += 'Contact Name: ' + session.student.clientFirstName + ' ' + session.student.clientLastName + '\n';
+			compiledNotes += `Contact Name: ${session.student.clientFirstName} ${session.student.clientLastName}\n`;
 		}
 		//Add contact number
 		if(session.student.clientPh)
-			compiledNotes += 'Contact Number: ' + session.student.clientPh + '\n';
+			compiledNotes += `Contact Number: ${session.student.clientPh}\n`;
 
 		//Add grade
-		compiledNotes += 'Student Year: ' + session.student.grade;
+		compiledNotes += `Student Year: ${session.student.grade}`;
 
 		//Add title notes
 		_div.setAttribute('title', compiledNotes);
 
 
 		var _icons = '';
-		if(session.overwriteVar1 && instance in session.overwriteVar1 && session.overwriteVar1[instance] === true)
-			_icons += '<i class="fa fa-' + this.icons.first + ' norm-icon" aria-hidden="true"></i>';
-		if(session.overwriteVar2 && instance in session.overwriteVar2 && session.overwriteVar2[instance] === true)
-			_icons += '<i class="fa fa-' + this.icons.second + ' norm-icon" aria-hidden="true"></i>';
+		if(session.overwriteVar1 && session.overwriteVar1[instance] === true)
+			_icons += `<i class="fa fa-${this.icons.first} norm-icon" aria-hidden="true"></i>`;
+		if(session.overwriteVar2 && session.overwriteVar2[instance] === true)
+			_icons += `<i class="fa fa-${this.icons.second} norm-icon" aria-hidden="true"></i>`;
 		if(session.student.var3)
-			_icons += '<i class="fa fa-' + this.icons.third + ' norm-icon" aria-hidden="true"></i>';
+			_icons += `<i class="fa fa-${this.icons.third} norm-icon" aria-hidden="true"></i>`;
 		if(session.student.var4)
-			_icons += '<i class="fa fa-' + this.icons.fourth + ' norm-icon" aria-hidden="true"></i>';
+			_icons += `<i class="fa fa-${this.icons.fourth} norm-icon" aria-hidden="true"></i>`;
+		if(session.overwriteVar5 && session.overwriteVar5[instance] === true)
+			_icons += `<i class="fa fa-${this.icons.fifth} norm-icon" aria-hidden="true"></i>`;
+		if(session.overwriteVar6 && session.overwriteVar6[instance] === true)
+			_icons += `<i class="fa fa-${this.icons.sixth} norm-icon" aria-hidden="true"></i>`;
 		if(session.student.grade == 12)
 			_icons += '<i class="fa fa-' + this.icons.year12 + ' grade-12" aria-hidden="true"></i>';
 		if(_icons)
@@ -642,15 +1002,30 @@ export default class CalendarController {
 
 		
 
-		var _start = (session.overwriteStart && instance in session.overwriteStart) ? session.overwriteStart[instance] : session.startTime;
+		var _start = this.StartFinder(session, instance);
 		var _room = (session.overwriteRoom && instance in session.overwriteRoom) ? session.overwriteRoom[instance] : session.room;
 		var _targ = document.getElementById('t' + _start + 'r' + _room);
 
-		if(session._id == '5a0db8dd0c527203a86748f0'){
-			console.log(document.getElementById('t' + _start + 'r' + _room));
-		};
-
 		_targ && _targ.insertBefore(_div, null);
+	}
+
+	isCurrentDay(index){
+		return this.calendarDate.getDay() === index;
+	}
+
+	setDayOfWeek(index){
+		this.changingDay = true;
+		const newIndex = (index + 1) % 7;
+
+		var targetDate = this.calendarDate.getDate() + (newIndex - this.calendarDate.getDay());
+		if(this.calendarDate.getDay() === 0){ //if currently sunday
+			targetDate -= 7;
+		} else if(newIndex === 0){ //if moving to sunday
+			targetDate += 7;
+		}
+		
+		this.calendarDate = new Date(this.calendarDate.setDate(targetDate))
+		this.clearCal();
 	}
 
 	createArray(length){

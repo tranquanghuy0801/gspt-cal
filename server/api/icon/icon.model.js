@@ -24,11 +24,25 @@ var IconSchema = new mongoose.Schema({
     required: true,
     lowercase: true
   },
+  fifth: {
+    type: String,
+    required: true,
+    lowercase: true
+  },
+  sixth: {
+    type: String,
+    required: true,
+    lowercase: true
+  },
   year12: {
   	type: String,
   	required: true,
   	lowercase: true
-  }
+  },
+  __v: { 
+      type: Number, 
+      select: false,
+  },
 });
 
 registerEvents(IconSchema);

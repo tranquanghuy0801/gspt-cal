@@ -39,6 +39,12 @@ export default class TutorController {
     }
   }
 
+  toggleActive(tutor){
+    tutor.isActive = !tutor.isActive;
+    this.$http.put('/api/tutors/' + String(tutor._id), {isActive: tutor.isActive})
+
+  }
+
   patchTutor(tutor, callback){
     if(tutor) {
       tutor.fullName = tutor.firstName + ' ' + tutor.lastName;

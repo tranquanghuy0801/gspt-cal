@@ -1,4 +1,4 @@
-<div class="navbar navbar-default navbar-static-top">
+<div class="navbar navbar-default navbar-static-top" ng-class="{'red-nav': $ctrl.isSandbox}">
   <div class="container">
     <div class="navbar-header">
       <a ui-sref="calendar" class="navbar-brand">GSPT Calendar</a>
@@ -8,13 +8,16 @@
       <li ui-sref-active="active"><a ui-sref="admin.tutor">Tutors</a></li>
       <li ui-sref-active="active"><a ui-sref="admin.settings">Settings</a></li>
       <li ui-sref-active="active"><a ui-sref="admin.colourSearch">Colour Search</a></li>
-      <li ui-sref-active="active"><a ui-sref="admin.studentInfo">Student Info</a></li>
-      <li ui-sref-active="active"><a ui-sref="admin.exportTutor">Export Tutor</a></li>
-      <!-- <li ui-sref-active="active"><a ui-sref="admin.session">Sessions</a></li> -->
+      <li ui-sref-active="active"><a ui-sref="admin.studentInfo">Student Report</a></li>
+      <li ui-sref-active="active"><a ui-sref="admin.exportTutor">Tutor Report</a></li>
+      <li ng-show="$ctrl.isSandbox"><a ng-click="$ctrl.update()" href="javascript:;">New DB</a></li>
+
     </ul>
     <div uib-collapse="$ctrl.isCollapsed" class="navbar-collapse collapse" id="navbar-main">
       <ul class="nav navbar-nav navbar-right">
         <li ng-hide="$ctrl.isLoggedIn()" ui-sref-active="active"><a ui-sref="main">Login</a></li>
+        <li ng-show="!$ctrl.isSandbox"><a href="http://www.gsptcal.com.au:8082/">Sandbox</a></li>
+        <li ng-show="$ctrl.isSandbox"><a href="http://www.gsptcal.com.au/">Real</a></li>
         <li ng-show="$ctrl.isLoggedIn()" ui-sref-active="active"><a ui-sref="settings"><span class="glyphicon glyphicon-cog"></span></a></li>
         <li ng-show="$ctrl.isLoggedIn()"><a ui-sref="logout">Logout - {{ $ctrl.getCurrentUser().name }}</a></li>
       </ul>

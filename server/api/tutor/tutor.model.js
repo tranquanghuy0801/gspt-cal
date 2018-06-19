@@ -27,9 +27,13 @@ var TutorSchema = new mongoose.Schema({
   },
   dateCreated:{
     type: Date,
-    default: Date.now()
+    default: Date.now,
   },
-  dateModified: Date
+  dateModified: Date,
+  __v: { 
+      type: Number, 
+      select: false,
+  },
 });
 
 TutorSchema

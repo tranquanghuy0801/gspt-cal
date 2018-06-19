@@ -39,7 +39,7 @@
     <div class="col-sm-3">
       <div class="form-group">
         <label style="opacity: 0">Start Date</label>
-        <button type="button" class="btn btn-success btn-block" ng-click="admin.processLessons()">
+        <button type="button" class="btn btn-success btn-block" ng-disabled="!admin.search.start || !admin.search.end || !admin.search.colour || !admin.search.colour[0]" ng-click="admin.processLessons()">
           <span>Search</span>
         </button>
       </div>
@@ -50,34 +50,21 @@
     <code>{{admin.error}}</code>
   </div>
 <hr>
-<div class="row">
-  <div class="col-sm-9">
-  </div>
-  <div class="col-sm-3 text-right">
-    <div ng-init="currentPage = 0; pageSize = 100;">
-      <button class="btn btn-default" ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1">
-        Previous
-      </button>
-      {{currentPage + 1}}/{{(admin.less.length/pageSize | roundUp) || 1}}
-      <button class="btn btn-default" ng-disabled="currentPage >= admin.less.length/pageSize - 1" ng-click="currentPage=currentPage+1">
-        Next
-      </button>
-    </div>
-  </div>
-</div>
 <table class="table table-striped">
   <thead>
     <tr>
-      <th>#</th>
       <th>Student Name</th>
       <th>Occurences</th>
     </tr>
   </thead>
   <tbody>
-    <tr ng-repeat="lesson in admin.less | startFrom:currentPage*pageSize | limitTo:pageSize">
-      <th scope="row">{{$index + 1}}</th>
+    <tr ng-repeat="lesson in admin.less">
       <td>{{lesson.student.firstName + ' ' + lesson.student.lastName}}</td>
       <td>{{lesson.found}}</td>
+    </tr>
+    <tr>
+      <th>Total</th>
+      <th>{{admin.total}}</th>
     </tr>
   </tbody>
 </table>

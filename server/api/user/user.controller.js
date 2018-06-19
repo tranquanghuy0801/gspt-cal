@@ -3,6 +3,11 @@
 import User from './user.model';
 import config from '../../config/environment';
 import jwt from 'jsonwebtoken';
+import Lesson from '../lesson/lesson.model'
+import Student from '../student/student.model'
+import Tutor from '../tutor/tutor.model'
+var request = require('request');
+
 
 function validationError(res, statusCode) {
   statusCode = statusCode || 422;
@@ -40,7 +45,7 @@ export function create(req, res) {
   newUser.save()
     .then(function(user) {
       var token = jwt.sign({ _id: user._id }, config.secrets.session, {
-        expiresIn: 60 * 60 * 24 * 30 //30 days
+        expiresIn: 60 * 60 * 24 * 5 //5 days
       });
       res.json({ token });
     })
@@ -62,6 +67,56 @@ export function show(req, res, next) {
     })
     .catch(err => next(err));
 }
+
+
+export function newDatabase(req, res){
+  if(global.isSandbox !== true){
+    return;
+  }
+
+    Tutor.remove({});
+    Student.remove({});
+    Lesson.remove({});
+    User.find({}).remove()
+      .then(() => {
+        User.create({
+          provider: 'local',
+          role: 'admin',
+          name: 'Admin',
+          email: 'contact@personaltutors.com.au',
+          password: 'admin'
+        })
+        .then(() => console.log('finished populating users'))
+        .catch(err => console.log('error populating users', err));
+      });
+
+
+    request('http://www.gsptcal.com.au/api/students/dump-all', function (error, response, body) {
+      if (!error && response.statusCode == 200) {
+        var data = JSON.parse(body);
+
+        Student.create(data)
+      }
+    })
+    
+    request('http://www.gsptcal.com.au/api/tutors/dump-all', function (error, response, body) {
+      if (!error && response.statusCode == 200) {
+        var data = JSON.parse(body);
+
+        Tutor.create(data)
+      }
+    })
+
+    return request('http://www.gsptcal.com.au/api/lessons/dump-all', function (error, response, body) {
+      if (!error && response.statusCode == 200) {
+        var data = JSON.parse(body);
+
+        Lesson.create(data)
+      }
+    })
+
+}
+
 
 /**
  * Deletes a user

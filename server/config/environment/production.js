@@ -10,10 +10,10 @@ module.exports = {
     || undefined,
 
   // Server port
-  port: 80,
+  port: global.isStaging ? 8082 : 8081,
 
   // MongoDB connection options
   mongo: {
-    uri: 'mongodb://localhost/calendar'
+    uri: global.isStaging ? 'mongodb://localhost/calendar-sandbox' : 'mongodb://localhost/calendar'
   }
 };

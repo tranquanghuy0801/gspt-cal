@@ -5,6 +5,7 @@ export default class {
 	constructor($http, $filter) {
     	this.$http = $http;
     	this.$filter = $filter;
+    	this.showNotes = false;
   	}
 
   	$onInit(){
@@ -33,8 +34,20 @@ export default class {
 
   	returnFilter(results, $query){
 	    return results.filter(function(item){
+	    	if(item.isActive === false){
+	    		return false;
+	    	}
 	    	return item.fullName.toLowerCase().indexOf($query.toLowerCase()) != -1;
 	    })
+	}
+
+	changeDuration(duration){
+		this.newSession.duration = duration;
+
+		if(duration === 30){
+			console.log('showing notes...')
+			this.showNotes = true;
+		}
 	}
 
 	submit(data, callback){
@@ -49,6 +62,14 @@ export default class {
 		this.newSession.date = this.$filter('date')(data.date, 'dd/MM/yyyy');
 		this.newSession.clientUID = this.selectedStudent[0]._id;
 		this.newSession.tutorUID = this.selectedTutor[0]._id;
+
+		if(this.newSession._changeover === 'present'){
+			this.newSession.changeover = true;
+		}
+
+		if(this.newSession._changeover === 'one off'){
+			this.newSession.overwriteChangeover = {0: true};
+		}
 
 		//if one off, set instances to 1
 		if(!this.newSession.frequency)

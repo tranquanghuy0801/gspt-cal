@@ -19,12 +19,6 @@ export default function routes($stateProvider) {
     controller: 'TutorController',
     controllerAs: 'admin',
     authenticate: 'admin'
-  }).state('admin.session', {
-    url: '/session',
-    template: require('./session/session.html'),
-    controller: 'SessionController',
-    controllerAs: 'admin',
-    authenticate: 'admin'
   })
   .state('admin.settings', {
     url: '/settings',

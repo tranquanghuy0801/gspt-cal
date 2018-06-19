@@ -71,6 +71,38 @@ export function index(req, res) {
     .catch(handleError(res));
 }
 
+// Gets a list of Lessons
+export function dumpAll(req, res) {
+  return Lesson.find().exec()
+    .then(respondWithResult(res))
+    .catch(handleError(res));
+}
+
+export function scrubAll(req, res){
+  if(global.isSandbox !== true){
+    return;
+  }
+
+  return Lesson.find({}).remove().then(entity =>{
+    res.sendStatus(200);
+  }).catch(entity => {
+    res.sendStatus(500);
+  })
+}
+
+export function scrubDay(req, res){
+  if(global.isSandbox !== true){
+    return;
+  }
+  
+  return Lesson.find({_id: {$in: req.body.list}}).remove().then(entity =>{
+    res.sendStatus(200);
+  }).catch(entity => {
+    res.sendStatus(500);
+  })
+}
+
+
 // Gets a single Lesson from the DB
 export function show(req, res) {
   return Lesson.findById(req.params.id).exec()

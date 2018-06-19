@@ -1,6 +1,6 @@
 <div class="row">
   <div class="col-sm-12">
-    <h1>Student Info</h1>
+    <h1>Student Report</h1>
   </div>
 </div>
 <br>
@@ -14,7 +14,7 @@
                 placeholder=" "
                 add-from-autocomplete-only="true"
                 replace-spaces-with-dashes="false"
-                display-property="fullName" required>
+                display-property="fullName">
           <auto-complete source="admin.returnFilter(admin.students, $query)" 
                        min-length="1" ></auto-complete>
         </tags-input>
@@ -42,47 +42,33 @@
         </div>
       </div>
     </div>
+    <div class="col-sm-3">
+      <label style="opacity: 0">start</label>
+      <button type="button" class="btn btn-success btn-block" ng-click="admin.processLessons()" ng-disabled="!admin.search.end || !admin.search.start || !admin.search.student || !admin.search.student[0]">
+      <span>Search</span>
+    </button>
+    </div>
   </div>
   <div class="alert alert-danger" ng-show="admin.error">
     There was an error:<br>
     <code>{{admin.error}}</code>
   </div>
-  <div>
-    <button type="button" class="btn btn-success btn-block" ng-click="admin.processLessons()">
-      <span>Search</span>
-    </button>
-  </div>
 <hr>
-<div class="row">
-  <div class="col-sm-9">
-  </div>
-  <div class="col-sm-3 text-right">
-    <div ng-init="currentPage = 0; pageSize = 100;">
-      <button class="btn btn-default" ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1">
-        Previous
-      </button>
-      {{currentPage + 1}}/{{(admin.less.length/pageSize | roundUp) || 1}}
-      <button class="btn btn-default" ng-disabled="currentPage >= admin.less.length/pageSize - 1" ng-click="currentPage=currentPage+1">
-        Next
-      </button>
-    </div>
-  </div>
-</div>
 <table class="table table-striped">
   <thead>
     <tr>
-      <th>#</th>
-      <th>Student Name</th>
-      <th>Colours</th>
-      <th>Total</th>
+      <th>Colour</th>
+      <th>Count</th>
     </tr>
   </thead>
-  <tbody ng-init="tableOrder = 'found'">
-    <tr ng-repeat="lesson in admin.less | startFrom:currentPage*pageSize | limitTo:pageSize | orderBy: tableOrder">
-      <th scope="row">{{$index + 1}}</th>
-      <td>{{lesson.student.firstName + ' ' + lesson.student.lastName}}</td>
-      <td>{{lesson.found}}</td>
-      <td>{{lesson.total}}</td>
+  <tbody>
+    <tr ng-repeat="count in admin.counts">
+      <td style="text-transform: capitalize;">{{count[0]}}</td>
+      <td>{{count[1]}}</td>
+    </tr>
+    <tr>
+      <th>Total</th>
+      <th>{{admin.total}}</th>
     </tr>
   </tbody>
 </table>

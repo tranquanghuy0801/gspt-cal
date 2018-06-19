@@ -2,8 +2,9 @@
 
 export default class {
 	/*@ngInject*/
-	constructor($http){
+	constructor($http, appConfig){
 		this.$http = $http;
+		this.appConfig = appConfig;
 	}
 
 	$onInit(){
@@ -18,10 +19,22 @@ export default class {
 	        	first: '',
 	        	second: '',
 	        	third: '',
-	        	year12: ''
+	        	fourth: '',
+	        	fifth: '',
+	        	sixth: '',
+	        	year12: '',
 	        };
 	      });
+
+	    this.isSandbox = appConfig.isSandbox;
 	}
+
+	resetDatabase(){
+		if(confirm('Are you sure you want to refresh the database?')){
+      		this.$http.get('/api/users/new-database')
+    	}
+	}
+
 
 	addYear(){
 	    if(confirm('Are you sure you want to do this?')){

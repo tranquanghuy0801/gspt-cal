@@ -13,11 +13,11 @@
 	                  placeholder=" "
 	                  add-from-autocomplete-only="true"
 	                  replace-spaces-with-dashes="false"
-	                  display-property="fullName" required>
+	                  display-property="fullName" required tabindex="-1">
 		        	<auto-complete source="vm.returnFilter(vm.students, $query)" 
 		                       min-length="1" ></auto-complete>
 		      	</tags-input>
-		      	<button class="btn btn-danger" ng-click="vm.selectedStudent = null" ng-show="vm.selectedStudent">Edit</button>
+		      	<button class="btn btn-danger" ng-click="vm.selectedStudent = null" ng-show="vm.selectedStudent" tabindex="-1">Edit</button>
 	      	</div>
 		</div>
 		<div class="form-group">
@@ -33,13 +33,13 @@
 		        	<auto-complete source="vm.returnFilter(vm.tutors, $query)" 
 		                       min-length="1" ></auto-complete>
 		      	</tags-input>
-		      	<button type="button" class="btn btn-danger" ng-click="vm.selectedTutor = null" ng-show="vm.selectedTutor">Edit</button>
+		      	<button type="button" class="btn btn-danger" ng-click="vm.selectedTutor = null" ng-show="vm.selectedTutor" tabindex="-1">Edit</button>
 	      	</div>
 		</div>
 		<div class="form-group duration-group">
 			<label>Duration</label>
 			<div>
-				<button type="button" class="btn btn-default" ng-repeat="duration in [60,90,120,150,180,210,240]" ng-click="vm.newSession.duration = duration" ng-class="{'btn-primary': vm.newSession.duration == duration}">{{duration}} m</button>
+				<button type="button" class="btn btn-default" ng-repeat="duration in [30,60,90,120,150,180,210,240]" ng-click="vm.changeDuration(duration)" ng-class="{'btn-primary': vm.newSession.duration == duration}">{{duration}} m</button>
 			</div>
 		</div>
 		<div class="form-group color-group">
@@ -60,7 +60,7 @@
 				<div class="col-md-8">
 					<label>Frequency</label>
 					<div>
-						<button type="button" class="btn btn-default" ng-click="vm.newSession.frequency = 0" ng-class="{'btn-primary': vm.newSession.frequency == 0}">One Off</button>
+						<button type="button" class="btn btn-default" ng-click="vm.newSession.frequency = 0; vm.showNotes = true;" ng-class="{'btn-primary': vm.newSession.frequency == 0}">One Off</button>
 						<button type="button" class="btn btn-default" ng-click="vm.newSession.frequency = 7" ng-class="{'btn-primary': vm.newSession.frequency == 7}">Weekly</button>
 						<button type="button" class="btn btn-default" ng-click="vm.newSession.frequency = 14" ng-class="{'btn-primary': vm.newSession.frequency == 14}">Fortnightly</button>
 					</div>
@@ -75,7 +75,25 @@
 				</div>
 			</div>
 		</div>
-		<div class="form-group" ng-show="notes">
+		<div class="form-group row">
+			<div class="col-sm-6">
+  				<label>Overwrite Student Name</label>
+  				<input type="text" class="form-control" ng-model="vm.newSession.overwriteName[0]" ng-disabled="vm.newSession.duration === 30">
+  			</div>
+  			<div class="col-sm-6">
+  				<label>Changeover Line</label>
+  				<div>
+  					<button type="button" class="btn btn-default" ng-click="vm.newSession._changeover = 'present';" ng-class="{'btn-primary': vm.newSession._changeover ===  'present'}">Series</button>
+					<button type="button" 
+						class="btn btn-default" 
+						ng-hide="vm.newSession.frequency === 0"
+						ng-click="vm.newSession._changeover = 'one off'" 
+						ng-class="{'btn-primary': vm.newSession._changeover === 'one off'}">Instance</button>
+					<button type="button" class="btn btn-default" ng-click="vm.newSession._changeover = null;" ng-class="{'btn-primary': !vm.newSession._changeover}">None</button>
+  				</div>
+  			</div>
+  		</div>
+		<div class="form-group" ng-show="vm.showNotes">
 			<hr>
 			<label>Notes</label>
 			<textarea class="form-control" ng-model="vm.newSession.globalNotes" rows="4" placeholder="Global notes section"></textarea>
@@ -87,7 +105,7 @@
 </div>
 <div class="modal-footer">
 	<button type="submit" class="btn btn-default" ng-click="$dismiss('close')">Close</button>
-	<button type="button" class="btn btn-default" ng-click="notes = !notes" ng-bind="notes ? 'Hide Notes' : 'Add Notes'"></button>
+	<button type="button" class="btn btn-default" ng-click="vm.showNotes = !vm.showNotes" ng-bind="vm.showNotes ? 'Hide Notes' : 'Add Notes'"></button>
 	<button type="submit" class="btn btn-success">Create</button>
 </div>
 </form>

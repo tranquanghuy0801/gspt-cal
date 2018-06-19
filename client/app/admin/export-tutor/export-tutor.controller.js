@@ -2,102 +2,96 @@
 
 export default class {
 	/*@ngInject*/
-	constructor($http, $filter, JSONToCSVConvertor) {
+	constructor($http, $filter, JSONToCSVConvertor, HourFinder, ColorFinder, ValidIndexes) {
     	this.$http = $http;
     	this.$filter = $filter;
     	this.search = {};
     	this.JSONToCSVConvertor = JSONToCSVConvertor;
+      this.HourFinder = HourFinder;
+      this.ColorFinder = ColorFinder;
+      this.ValidIndexes = ValidIndexes;
   	}
 
-  	$onInit(){
-  		this.$http.get('/api/tutors')
-	      .then(response => {
-	      	this.tutors = response.data
-	    });
+  $onInit(){
+    this.$http.get('/api/tutors')
+    .then(response => {
+      this.tutors = response.data;
+    });
 
-      this.$http.get('/api/lessons')
-      	.then(response => {
-      		this.lessons = response.data
-      	})
+    this.$http.get('/api/lessons')
+    .then(response => {
+      this.lessons = response.data;
+    })
 
-      	this.$http.get('/api/students')
-      		.then(response => {
-      			this.students = response.data
-      		})
-  	}
+    this.$http.get('/api/students')
+    .then(response => {
+      this.students = response.data;
+    })
+  }
 
-  	export(data){
+  export(data){
 		data = data.map( entity => {
 			var newObj = {};
 			if(entity.student){
-				newObj.clientName = entity.student.firstName + ' ' + entity.student.lastName
+				newObj.clientName = entity.student.firstName + ' ' + entity.student.lastName;
 			} else {
-				newObj.clientName = 'Hidden User'
+				newObj.clientName = 'Hidden User';
 			}
 
-      newObj.time = entity.totalTime
+      newObj.time = entity.totalTime;
 
-      return newObj
-			
+      return newObj;			
 		})
 
-    data.push({clientName: 'Total Time', time: this.totalTime})
+    data.push({clientName: 'Total Time', time: this.totalTime});
 
    
 		this.JSONToCSVConvertor(data, 'Tutor Export ' + this.search.tutor[0].fullName, true);
 	}
 
 	returnFilter(results, $query){
-        return results.filter(function(item){
-          return item.fullName.toLowerCase().indexOf($query.toLowerCase()) != -1;
-        })
-    }
+    return results.filter(function(item){
+      return item.fullName.toLowerCase().indexOf($query.toLowerCase()) != -1;
+    })
+  }
 
 	submit(){
-    var msDay = 1000 * 60 * 60 * 24;
+    const msDay = 1000 * 60 * 60 * 24;
 		var {start, end, tutor} = this.search;            
 
-  		if(!start || !end || !tutor.length){
-  			return;
-  		}
+		if(!start || !end || !tutor.length){
+			return;
+		}
 
-    tutor = tutor[0];
-    var temp;
+   	tutor = tutor[0]
+   	var temp;
 
-    //filters lessons that don't match to the tutor's ID
 		temp = this.lessons.filter(entity => entity.tutorUID === tutor._id);
-
-    //figures out minutes for each lesson
 		temp = temp.map(entity => this.timeCompress(entity, start, end))
-
-    console.log(temp);
 
 		var temper2 = [];
 
     temp.forEach(lesson => {
-			var foundEr = false;
-			temper2.some(found => {
+			var found = temper2.some(found => {
 				if(found.clientUID === lesson.clientUID){
-
-	       found.totalTime += lesson.totalTime
-				foundEr = true;
-				return true;
+          found.totalTime += lesson.totalTime
+					return true;
 				}
 				
 			})
 
-			if(foundEr === false){
+			if(found === false){
 				temper2.push(lesson)
 			}
 		})
 
     temper2 = temper2.map(ent => {
-      ent.totalTime /= 60
-      return ent
-    })
+      ent.totalTime /= 60; //convert mins to hours
+      return ent;
+    });
 
+    temper2 = temper2.filter(ent => ent.totalTime !== 0);
 
-    temper2 = temper2.filter(ent => ent.totalTime !== 0)
     temper2 = temper2.sort((a,b) =>  {
       if(a.student.firstName < b.student.firstName) return -1;
       if(a.student.firstName > b.student.firstName) return 1;
@@ -115,63 +109,21 @@ export default class {
 	}
 
 	timeCompress(lesson, start, end){
-		var msDay = 1000 * 60 * 60 * 24
+		lesson.student = this.students.find(student => lesson.clientUID == student._id);
+    lesson.totalTime = 0;
 
-  		this.students.forEach(student =>{
-  			if(lesson.clientUID == student._id)
-  				lesson.student = student;
-  		});
+		const validIndexes = this.ValidIndexes(lesson, start, end);
 
-      console.log(end);
+    validIndexes.forEach(index => {
+      const effectiveColor = this.ColorFinder(lesson, index); //effective being the actual colour of the sessions
+      if(effectiveColor.includes('red') || effectiveColor.includes('grey') || effectiveColor.includes('yellow')){
+        return;
+      };
 
-  		lesson.newDate = this.$filter('reparseDate')(lesson.date)
-  		lesson.totalTime = 0;
+      const effectiveDuration = this.HourFinder(lesson, index);
+      lesson.totalTime += effectiveDuration;
+    })
 
-  		if(lesson.newDate > end){
-  			return lesson
-  		}
-
-  		var maxPossible = Math.floor((end.getTime() - lesson.newDate.getTime() + 10000)/msDay/lesson.frequency) + 1;
-
-      console.log(maxPossible, 'maxPossible')
-
-  		if(lesson.instances !== 0 && (lesson.instances < maxPossible)){
-  			maxPossible = lesson.instances;
-  		}
-
-  		var startIndex = 0;
-  		if(start > lesson.newDate){
-  			var dif = (start.getTime() - lesson.newDate.getTime())/msDay;
-  			startIndex = Math.ceil(dif/lesson.frequency)
-  		}
-
-  		for(var i = startIndex; i < maxPossible; i++){
-  			if(lesson.overwriteVisibility && lesson.overwriteVisibility[i] === true){
-  				continue;
-  			}
-
-  			if(lesson.overwriteColor && lesson.overwriteColor[i]){
-  				if(lesson.overwriteColor[i].includes('red')){
-  					continue;
-  				}
-  			} else {
-  				if(lesson.color.includes('red')){
-  					continue;
-  				}
-  			}
-
-  			if(lesson.overwriteDuration && lesson.overwriteDuration[i]){
-  				//if overwrite exists and it's the colour we're looking for
-  				//add a found
-          		lesson.totalTime += lesson.overwriteDuration[i]
-  			} else {
-  				//if no overwrite is found and default color is the colour
-  				//we're after then we're all sweet
-          		lesson.totalTime += lesson.duration
-  			}
-
-  		}
-
-  		return lesson;
+		return lesson;
 	}
 }

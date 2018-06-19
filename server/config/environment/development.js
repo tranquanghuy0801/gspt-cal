@@ -10,7 +10,4 @@ module.exports = {
     uri: 'mongodb://localhost/cal-dev'
   },
 
-  // Seed database on startup
-  seedDB: true
-
 };

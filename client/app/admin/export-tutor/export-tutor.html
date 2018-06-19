@@ -1,6 +1,6 @@
 <div class="row">
   <div class="col-sm-12">
-    <h1>Tutor Data<button type="button" class="btn btn-lg btn-default pull-right" ng-disabled="!admin.less || !admin.less.length" ng-click="admin.export(admin.less)">Export Data</button></h1>
+    <h1>Tutor Report<button type="button" class="btn btn-lg btn-default pull-right" ng-disabled="!admin.less || !admin.less.length" ng-click="admin.export(admin.less)">Export Data</button></h1>
   </div>
 </div>
 <br>
@@ -13,7 +13,7 @@
                 placeholder=" "
                 add-from-autocomplete-only="true"
                 replace-spaces-with-dashes="false"
-                display-property="fullName" required>
+                display-property="fullName">
           <auto-complete source="admin.returnFilter(admin.tutors, $query)" 
                        min-length="1" ></auto-complete>
         </tags-input>
@@ -61,19 +61,18 @@
 <table class="table table-striped">
   <thead>
     <tr>
-      <th>#</th>
       <th>Student Name</th>
       <th>Total Time</th>
     </tr>
   </thead>
   <tbody>
     <tr ng-repeat="lesson in admin.less">
-      <th scope="row">{{$index + 1}}</th>
       <td>{{lesson.student.fullName}}</td>
       <td>{{lesson.totalTime}}</td>
     </tr>
+    <tr>
+      <th>Total</th>
+      <th>{{admin.totalTime || 0}}</th>
+    </tr>
   </tbody>
 </table>
-<div>
-  <span><strong style="margin-right: 10px">Total Time:</strong> {{admin.totalTime || 0}} hours
-</div>

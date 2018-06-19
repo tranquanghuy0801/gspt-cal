@@ -23,6 +23,26 @@
                                   supported by Chrome and Opera */
 }
 
+.single-cell span.student{
+  display: none !important;
+}
+
+.single-cell span.tutor{
+    font-size: 13px;
+    font-weight: 700;
+    padding-top: 1px;
+}
+
+.session-cell.changeover::after{
+  content: '';
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  height: 4px;
+  right: 0px;
+  background-color: #565656;
+}
+
 .free-col{
   position: relative;
 
@@ -238,6 +258,12 @@
   }
 }
 
+.color-house > div{
+  margin-bottom: 8px;
+  margin-left: -8px;
+  margin-right: -8px;
+}
+
 .color-group{
   > div{
     margin-bottom: 12px;
@@ -245,11 +271,11 @@
   }
 
   span.color-box{
-    width: 50px;
+    width: 70px;
     height: 50px;
     display: inline-block;
     text-align: center;
-    margin: 0 12px;
+    margin: 0 5px;
     border-radius: 3px;
     vertical-align: bottom;
 

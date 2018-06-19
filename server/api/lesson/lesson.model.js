@@ -19,13 +19,13 @@ var LessonSchema = new mongoose.Schema({
     startTime:{
         type: Number,
         min: 0,
-        max: 2400,
+        max: 2400, //likely should be 1440 instead
         required: true
     },
     duration:{
         type: Number,
         min: 0,
-        max: 2400,
+        max: 2400, //likely should be 1440 instead
         required: true
     },
     location:{
@@ -62,7 +62,17 @@ var LessonSchema = new mongoose.Schema({
         lowercase: true,
         default: 'blue'
     },
+    changeover: {
+        type: Boolean,
+        default: false,
+    },
+    overwriteChangeover: {
+        type: mongoose.Schema.Types.Mixed,
+    },
     overwriteColor: {
+        type: mongoose.Schema.Types.Mixed
+    },
+    overwriteFromHere: {
         type: mongoose.Schema.Types.Mixed
     },
     overwriteVisibility: {
@@ -88,11 +98,24 @@ var LessonSchema = new mongoose.Schema({
     overwriteVar2: {
         type: mongoose.Schema.Types.Mixed
     },
+     overwriteVar5: {
+        type: mongoose.Schema.Types.Mixed
+    },
+     overwriteVar6: {
+        type: mongoose.Schema.Types.Mixed
+    },
+    overwriteName: {
+        type: mongoose.Schema.Types.Mixed
+    },
     dateCreated:{
         type: Date,
-        default: Date.now()
+        default: Date.now,
     },
-    dateModified: Date
+    dateModified: Date,
+    __v: { 
+        type: Number, 
+        select: false,
+    },
 });
 
 LessonSchema

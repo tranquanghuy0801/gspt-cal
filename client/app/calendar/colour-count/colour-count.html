@@ -1,0 +1,37 @@
+<div class="modal-header">
+	<h4 class="modal-title">Daily Colour Count</h4>
+	<button type="button" tabindex="-1" class="close" aria-label="Close" ng-click="$dismiss('close')"><span aria-hidden="true">&times;</span></button>
+</div>
+<div class="modal-body">
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th>Colour</th>
+				<th>Count</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="count in vm.counts">
+				<td style="text-transform: capitalize;">{{count[0]}}</td>
+				<td>{{count[1]}}</td>
+			</tr>
+			<tr>
+				<th>Total</th>
+				<th>{{vm.total}}</th>
+			</tr>
+		</tbody>
+	</table>
+	<p>Note that the total is only counted with Blue, Dark Blue, Green, Dark Green, Dark Orange, Purple & Dark Purple.</p>
+	<hr>
+	<div class="text-right">
+		<span style="margin-right: 30px" ng-show="vm.saved">Saved</span>
+		<span style="margin-right: 30px">
+			<span>Last Save:</span>
+			<span ng-hide="vm.loaded">Loading...</span>
+			<span ng-show="vm.loaded">{{(vm.lastWrite | date:'dd/MM/yyyy') || 'Never'}}</span>
+		</span>
+		<button class="btn btn-lg btn-success" type="button" ng-click="vm.writeDB()" ng-disabled="!vm.counts || vm.counts.length === 0">
+			<span>Write to DB</span>
+		</button>
+	</div>
+</div>
