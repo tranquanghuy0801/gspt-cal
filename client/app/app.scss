@@ -20,10 +20,6 @@ $fa-font-path: '/assets/fonts/font-awesome/';
   background-color: #710000 !important;
 }
 
-.flex{
-  display: flex !important;
-}
-
 body{
   text-rendering: optimizeLegibility !important;
   -webkit-font-smoothing: antialiased !important;
@@ -138,6 +134,277 @@ navbar .navbar-default{
     color: white !important;
     opacity: 0.7;
   }
+}
+
+.flex{
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+
+  .flex-grow{
+    -webkit-box-flex: 1;
+    -webkit-flex-grow: 1;
+        -ms-flex-positive: 1;
+            flex-grow: 1;
+  }
+
+  &.flex-wrap{
+    -webkit-flex-wrap: wrap;
+        -ms-flex-wrap: wrap;
+            flex-wrap: wrap;
+  }
+
+  &.h-center{
+    -webkit-box-pack: center;
+    -webkit-justify-content: center;
+        -ms-flex-pack: center;
+            justify-content: center;
+  }
+  &.h-right{
+    -webkit-box-pack: end;
+    -webkit-justify-content: flex-end;
+        -ms-flex-pack: end;
+            justify-content: flex-end;
+  }
+  &.v-center{
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+        -ms-flex-align: center;
+            align-items: center;
+  }
+
+  &.v-bottom{
+    -webkit-box-align: end;
+    -webkit-align-items: flex-end;
+        -ms-flex-align: end;
+    align-items: flex-end;
+  }
+  &.h-separate{
+    -webkit-box-pack: justify;
+    -webkit-justify-content: space-between;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+  }
+  &.child-stretch{
+    > *{
+      -webkit-box-flex: 1;
+      -webkit-flex-grow: 1;
+          -ms-flex-positive: 1;
+              flex-grow: 1;
+      -webkit-flex-basis: 0;
+          -ms-flex-preferred-size: 0;
+              flex-basis: 0;
+    }
+
+    .no-stretch{
+      -webkit-box-flex: 0;
+      -webkit-flex-grow: 0;
+          -ms-flex-positive: 0;
+              flex-grow: 0;
+    }
+  }
+  &.v-flex{
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
+  }
+}
+
+.row-bleed{
+  margin-left: -10px;
+  margin-right: -10px;
+}
+
+.o70{
+  opacity: 0.70;
+}
+
+.o0{
+  opacity: 0;
+}
+
+.w600{
+  font-weight: 600;
+}
+
+.w700{
+  font-weight: 700;
+}
+
+.width60{
+  width: 60%;
+}
+
+.fs18{
+  font-size: 18px;
+}
+
+.fs16{
+  font-size: 16px;
+}
+
+.fs-15{
+  font-size: 16px;
+}
+
+.fs14{
+  font-size: 14px;
+}
+
+.fs12{
+  font-size: 12px;
+}
+
+.fs10{
+  font-size: 10px;
+}
+
+.no-click{
+  pointer-events: none;
+  cursor: default;
+}
+
+.big-shadow{
+  -webkit-box-shadow: 0 20px 66px 0 rgba(34,48,73,0.2);
+    box-shadow: 0 20px 66px 0 rgba(34,48,73,0.2);
+}
+
+.small-shadow{
+  -webkit-box-shadow: 0 0 10px 0 rgba(34,48,73,0.2);
+    box-shadow: 0 0 10px 0 rgba(34,48,73,0.2);
+}
+
+.smaller-shadow{
+  -webkit-box-shadow: 0 0 5px 0 rgba(34,48,73,0.2);
+    box-shadow: 0 0 5px 0 rgba(34,48,73,0.2);
+}
+
+.m-r-xs{
+  margin-right: 6px;
+}
+
+.m-r-sm{
+  margin-right: 12px;
+}
+
+.m-r-md{
+  margin-right: 18px;
+}
+
+.m-r-lg{
+  margin-right: 24px;
+}
+
+.m-r-xl{
+  margin-right: 30px;
+}
+
+.m-l-xs{
+  margin-left: 6px;
+}
+
+.m-l-sm{
+  margin-left: 12px;
+}
+
+.m-l-md{
+  margin-left: 18px;
+}
+
+.m-l-lg{
+  margin-left: 24px;
+}
+
+.m-l-xl{
+  margin-left: 30px;
+}
+
+.m-t-xs{
+  margin-top: 6px;
+}
+
+.m-t-sm{
+  margin-top: 12px;
+}
+
+.m-t-md{
+  margin-top: 18px;
+}
+
+.m-t-lg{
+  margin-top: 24px;
+}
+
+.m-t-xl{
+  margin-top: 30px;
+}
+
+.m-b-xs{
+  margin-bottom: 6px;
+}
+
+.m-b-sm{
+  margin-bottom: 12px;
+}
+
+.m-b-md{
+  margin-bottom: 18px;
+}
+
+.m-b-lg{
+  margin-bottom: 24px;
+}
+
+.m-b-xl{
+  margin-bottom: 30px;
+}
+
+.p-xs{
+  padding: 6px;
+}
+
+.p-sm{
+  padding: 12px;
+}
+
+.p-md{
+  padding: 18px;
+}
+
+.p-lg{
+  padding: 24px;
+}
+
+.p-xl{
+  padding: 30px;
+}
+
+.b-r{
+  border-radius: 4px;
+}
+
+.abs-cover{
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.fill-bg{
+  background-size: cover;
+  background-position: center;
+}
+
+.bg-white{
+  background-color: white;
+}
+
+.border-grey{
+  border: 1px solid #ccc;
 }
 
 

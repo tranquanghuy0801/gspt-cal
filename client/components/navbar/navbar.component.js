@@ -11,18 +11,17 @@ export class NavbarComponent {
 
   isCollapsed = true;
 
-  constructor(Auth, appConfig, $http){
+  constructor(Auth, $http){
     'ngInject';
 
     this.isLoggedIn = Auth.isLoggedInSync;
     this.isAdmin = Auth.isAdminSync;
     this.getCurrentUser = Auth.getCurrentUserSync;
-    this.appConfig = appConfig;
     this.$http = $http;
   }
 
   $onInit(){
-    this.isSandbox = this.appConfig.isSandbox;
+    this.isSandbox = location.host.includes('sandbox');
   }
 
   update(){

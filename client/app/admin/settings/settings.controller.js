@@ -2,9 +2,8 @@
 
 export default class {
 	/*@ngInject*/
-	constructor($http, appConfig){
+	constructor($http){
 		this.$http = $http;
-		this.appConfig = appConfig;
 	}
 
 	$onInit(){
@@ -26,7 +25,7 @@ export default class {
 	        };
 	      });
 
-	    this.isSandbox = appConfig.isSandbox;
+	    this.isSandbox = location.hostname.includes('sandbox');
 	}
 
 	resetDatabase(){

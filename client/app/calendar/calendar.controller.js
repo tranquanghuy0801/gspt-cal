@@ -18,6 +18,8 @@ export default class CalendarController {
 	}
 
 	$onInit(){
+		this.isSandbox = location.host.includes('sandbox');
+
 		this.visibleLessons = []; //used by sandbox
 
 		this.intDay();
