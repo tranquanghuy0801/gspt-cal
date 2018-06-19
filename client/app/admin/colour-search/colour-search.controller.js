@@ -87,8 +87,6 @@ export default class {
     var msDay = 1000 * 60 * 60 * 24
     colour = colour.toLowerCase();
 
-    console.log(colour)
-
     this.students.forEach(student => {
       if (lesson.clientUID == student._id)
         lesson.student = student;
@@ -103,9 +101,6 @@ export default class {
 
     var maxPossible = Math.floor((end.getTime() - lesson.newDate.getTime()) / msDay / lesson.frequency) + 1;
 
-    console.log(lesson.newDate, 'newDate');
-    console.log('max', maxPossible)
-
     if (lesson.instances !== 0 && (lesson.instances < maxPossible)) {
       maxPossible = lesson.instances;
     }
@@ -116,7 +111,6 @@ export default class {
       startIndex = Math.ceil(dif / lesson.frequency)
     }
 
-    console.log(startIndex, 'start', maxPossible)
 
     for (var i = startIndex; i < maxPossible; i++) {
       if (lesson.overwriteVisibility && lesson.overwriteVisibility[i] === true) {
@@ -130,8 +124,6 @@ export default class {
       }
 
     }
-
-    console.log(maxPossible, startIndex)
 
     return lesson;
   }

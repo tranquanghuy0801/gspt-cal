@@ -87,8 +87,6 @@ export default class {
     });
   }
 
-  //don't count red
-
   colourInstances(lesson, start, end) {
     //attaches number of colour instances between the dates.
     var msDay = 1000 * 60 * 60 * 24

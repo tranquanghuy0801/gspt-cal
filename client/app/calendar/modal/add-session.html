@@ -67,9 +67,9 @@
 				</div>
 				<div class="col-md-4" ng-show="vm.newSession.frequency">
 					<label>Occurences</label>
-					<div class="a-table-row">
+					<div class="flex">
 			          <input type="number" class="form-control" min="2" placeholder="Occurences" ng-model="vm.newSession.instances" ng-disabled="vm.inf" ng-required="!vm.inf && vm.newSession.frequency">
-			          <button type="button" class="btn btn-default tertiary" ng-click="vm.inf = !vm.inf" ng-class="{'btn-primary': vm.inf}">∞
+			          <button type="button" class="btn btn-default tertiary" style="margin-left: 3px" ng-click="vm.inf = !vm.inf" ng-class="{'btn-primary': vm.inf}">∞
 			          </button>
 			        </div>
 				</div>

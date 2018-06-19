@@ -20,6 +20,10 @@ $fa-font-path: '/assets/fonts/font-awesome/';
   background-color: #710000 !important;
 }
 
+.flex{
+  display: flex !important;
+}
+
 body{
   text-rendering: optimizeLegibility !important;
   -webkit-font-smoothing: antialiased !important;

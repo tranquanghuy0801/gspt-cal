@@ -5,7 +5,7 @@ export default function(){
 	    //If JSONData is not an object then JSON.parse will parse the JSON string in an Object
 	    var arrData = typeof JSONData != 'object' ? JSON.parse(JSONData) : JSONData;
 	    
-	    var CSV = 'sep=,' + '\r\n\n';
+	    var CSV = '';
 
 	    //This condition will generate the Label/Header
 	    if (ShowLabel) {

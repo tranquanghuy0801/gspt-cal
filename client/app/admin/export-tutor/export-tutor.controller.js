@@ -10,6 +10,7 @@ export default class {
       this.HourFinder = HourFinder;
       this.ColorFinder = ColorFinder;
       this.ValidIndexes = ValidIndexes;
+      this.results = []; // [{}, {}]
   	}
 
   $onInit(){
@@ -31,16 +32,10 @@ export default class {
 
   export(data){
 		data = data.map( entity => {
-			var newObj = {};
-			if(entity.student){
-				newObj.clientName = entity.student.firstName + ' ' + entity.student.lastName;
-			} else {
-				newObj.clientName = 'Hidden User';
-			}
-
-      newObj.time = entity.totalTime;
-
-      return newObj;			
+      return {
+        clientName: entity.student.fullName,
+        time: entity.totalTime,
+      };			
 		})
 
     data.push({clientName: 'Total Time', time: this.totalTime});
@@ -64,35 +59,17 @@ export default class {
 		}
 
    	tutor = tutor[0]
-   	var temp;
 
-		temp = this.lessons.filter(entity => entity.tutorUID === tutor._id);
-		temp = temp.map(entity => this.timeCompress(entity, start, end))
+   	const tutorsLessons = this.lessons.filter(entity => entity.tutorUID === tutor._id);
+		tutorsLessons.forEach(entity => this.timeCompress(entity, start, end));
 
-		var temper2 = [];
 
-    temp.forEach(lesson => {
-			var found = temper2.some(found => {
-				if(found.clientUID === lesson.clientUID){
-          found.totalTime += lesson.totalTime
-					return true;
-				}
-				
-			})
-
-			if(found === false){
-				temper2.push(lesson)
-			}
-		})
-
-    temper2 = temper2.map(ent => {
-      ent.totalTime /= 60; //convert mins to hours
-      return ent;
+    this.results = this.results.map(result => {
+      result.totalTime /= 60; //convert mins to hours
+      return result;
     });
 
-    temper2 = temper2.filter(ent => ent.totalTime !== 0);
-
-    temper2 = temper2.sort((a,b) =>  {
+    this.results = this.results.sort((a,b) =>  {
       if(a.student.firstName < b.student.firstName) return -1;
       if(a.student.firstName > b.student.firstName) return 1;
       return 0;
@@ -100,12 +77,11 @@ export default class {
 
     this.totalTime = 0;
 
-    temper2.forEach(ent => {
+    this.results.forEach(ent => {
       this.totalTime += ent.totalTime
     })
 
-  	this.less = temper2
-
+  	this.less = this.results;
 	}
 
 	timeCompress(lesson, start, end){
@@ -120,10 +96,32 @@ export default class {
         return;
       };
 
-      const effectiveDuration = this.HourFinder(lesson, index);
-      lesson.totalTime += effectiveDuration;
-    })
+      var student = {
+        first: lesson.student.firstName,
+        last: lesson.student.lastName,
+        fullName: lesson.student.fullName,
+      };
 
-		return lesson;
+      if(lesson.overwriteName && lesson.overwriteName[index]){
+        student.first = lesson.overwriteName[index];
+        student.last = null;
+        student.fullName =  lesson.overwriteName[index] + ' - Overwritten Name';
+      }
+      
+      this.addToResults({
+        student,
+        totalTime: this.HourFinder(lesson, index),
+      });
+    })
 	}
+
+  addToResults(data){
+    const foundIndex = this.results.findIndex(result => result.student.fullName === data.student.fullName);
+
+    if(foundIndex === -1){
+      return this.results.push(data);
+    }
+
+    this.results[foundIndex].totalTime += data.totalTime;
+  }
 }
