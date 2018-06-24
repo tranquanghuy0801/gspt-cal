@@ -51,8 +51,9 @@ export default class {
   }
 
 	submit(){
+    this.results = [];
     const msDay = 1000 * 60 * 60 * 24;
-		var {start, end, tutor} = this.search;            
+		var {start, end, tutor} = this.search;  
 
 		if(!start || !end || !tutor.length){
 			return;
@@ -62,12 +63,6 @@ export default class {
 
    	const tutorsLessons = this.lessons.filter(entity => entity.tutorUID === tutor._id);
 		tutorsLessons.forEach(entity => this.timeCompress(entity, start, end));
-
-
-    this.results = this.results.map(result => {
-      result.totalTime /= 60; //convert mins to hours
-      return result;
-    });
 
     this.results = this.results.sort((a,b) =>  {
       if(a.student.firstName < b.student.firstName) return -1;
@@ -86,7 +81,6 @@ export default class {
 
 	timeCompress(lesson, start, end){
 		lesson.student = this.students.find(student => lesson.clientUID == student._id);
-    lesson.totalTime = 0;
 
 		const validIndexes = this.ValidIndexes(lesson, start, end);
 
@@ -95,6 +89,8 @@ export default class {
       if(effectiveColor.includes('red') || effectiveColor.includes('grey') || effectiveColor.includes('yellow')){
         return;
       };
+
+      console.log(lesson, index, effectiveColor);
 
       var student = {
         first: lesson.student.firstName,
@@ -110,7 +106,7 @@ export default class {
       
       this.addToResults({
         student,
-        totalTime: this.HourFinder(lesson, index),
+        totalTime: this.HourFinder(lesson, index)/60,
       });
     })
 	}

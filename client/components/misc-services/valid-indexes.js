@@ -7,10 +7,6 @@ export default function(){
 		const msDay = 1000 * 60 * 60 * 24;
 		const sessionStart = this.$filter('reparseDate')(session.date);
 
-		console.log(start, end);
-
-
-
 		if(!start || !(start instanceof Date)){
 			console.warn('Invalid start date passed to service: Valid Indexes');
 			return;
@@ -30,27 +26,52 @@ export default function(){
 			return [];
 		}
 
-		//i'm unsure why the 10000 is there, I believe it's a hacky bug fix
-		var maxPossible = Math.floor((end.getTime() - sessionStart.getTime())/msDay/session.frequency);
-
-		if(session.instances !== 0 && (session.instances < maxPossible)){
-			maxPossible = session.instances;
-		}
-
-		var startIndex = 0;
-		if(start > sessionStart){
-			console.log(start, sessionStart);
-			var dif = (start.getTime() - sessionStart.getTime())/msDay;
-			startIndex = Math.ceil(dif/session.frequency)
-		}
-
-		if(startIndex > maxPossible){
+		if(session.isHidden){
 			return [];
 		}
+
+		if(session.frequency === 0){
+			if(end >= sessionStart && start <= sessionStart){
+				var maxPossible = 1;
+				var startIndex = 0;
+			} else {
+				return [];
+			}
+		} else {
+			var maxPossible = Math.floor((end.getTime() - sessionStart.getTime())/msDay/session.frequency);
+
+			if(session.instances !== 0 && (session.instances < maxPossible)){
+				maxPossible = session.instances;
+			}
+
+			var startIndex = 0;
+			if(start > sessionStart){
+				var dif = (start.getTime() - sessionStart.getTime())/msDay;
+				startIndex = Math.ceil(dif/session.frequency);
+
+				if(startIndex < 0){
+					console.warn('Negative index in service: Valid Indexes');
+
+					startIndex = 0;
+				}
+			}
+
+			if(startIndex > maxPossible){
+				return [];
+			}
+
+			if(session.instances !== 0 && session.instances <= startIndex){
+				return [];
+			}
+		}
+		
 
 		var validIndexes = [];
 
 		for(var i = startIndex; i <= maxPossible; i++){
+			if(session.instances !== 0 && session.instances === i){
+				continue;
+			}
 			if(session.overwriteVisibility && session.overwriteVisibility[i] === true){
 				continue;
 			}
