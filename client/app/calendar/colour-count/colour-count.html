@@ -11,9 +11,9 @@
 			</tr>
 		</thead>
 		<tbody>
-			<tr ng-repeat="count in vm.counts">
-				<td style="text-transform: capitalize;">{{count[0]}}</td>
-				<td>{{count[1]}}</td>
+			<tr ng-repeat="(key, count) in vm.counts" ng-if="count">
+				<td style="text-transform: capitalize;">{{key}}</td>
+				<td>{{count}}</td>
 			</tr>
 			<tr>
 				<th>Total</th>
@@ -21,7 +21,8 @@
 			</tr>
 		</tbody>
 	</table>
-	<p>Note that the total is only counted with Blue, Dark Blue, Green, Dark Green, Dark Orange, Purple & Dark Purple.</p>
+	<p>The colour count only includes Blue, Green, Dark Green, Purple, Dark Purple, Orange, Dark Orange, Red and Dark Blue.</p>
+	<p>Note that the colour Red does not contribute to the final total.</p>
 	<hr>
 	<div class="text-right">
 		<span style="margin-right: 30px" ng-show="vm.saved">Saved</span>

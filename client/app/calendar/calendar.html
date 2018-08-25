@@ -25,6 +25,14 @@
 			</span>
 			<button class="btn btn-default" ng-click="vm.scrubDay()" ng-show="vm.isSandbox" style="margin-left: 40px;">Scrub Day</button>
 			<button class="btn btn-default" ng-click="vm.scrubAll()" ng-show="vm.isSandbox">Scrub All</button>
+			<span class="btn-group" style="margin-left: 20px;">
+				<button class="btn btn-default" ng-click="vm.clearIconFilters(); vm.clearCal()">
+					<i class="fa fa-close" aria-hidden="true"></i>
+				</button>
+				<button class="btn" ng-click="vm.iconFilterChange(key)" ng-repeat="(key, value) in vm.icons" ng-show="key[0] !== '_'" ng-class="vm.iconFilters[key] ? 'btn-primary' : 'btn-default'">
+					<i class="fa fa-{{vm.icons[key]}}" aria-hidden="true"></i>
+				</button>
+			</span>
 		</div>
 		<div class="col-lg-3 text-right">
 			<button class="btn btn-default" style="margin-right: 30px" type="button" ng-click="vm.colourCountModal()">

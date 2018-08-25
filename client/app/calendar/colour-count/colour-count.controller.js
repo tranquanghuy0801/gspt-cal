@@ -14,8 +14,17 @@ export default class {
 	/*@ngInject*/
 	constructor(todaysSessions, calendarDate, $http, ColorFinder, HourFinder, StartFinder){
 		this.todaysSessions = todaysSessions;
-		this.counts = []; // [[colour, count],[colour, count]] etc...
-		this.countColours = ['blue', 'dark blue', 'green', 'dark green', 'dark orange', 'purple', 'dark purple'];
+		this.counts = {
+			'blue': 0,
+			'green': 0,
+			'dark green': 0,
+			'dark blue': 0,
+			'purple': 0,
+			'dark purple': 0,
+			'orange': 0,
+			'dark orange': 0,
+			'red': 0,
+		};
 		this.total = 0;
 		this.calendarDate = calendarDate;
 		this.$http = $http;
@@ -57,45 +66,34 @@ export default class {
 			//only 3:30 PM onwards for mon - fri
 			var _date = dateStringToDate(session.date);
 			var day = _date.getDay();
-			if(day !== 6 && day !== 1){
-				//if isn't sunday or saturday
 
-				//this time function could potentially be refactored to a service
-				var time = this.StartFinder(session, instance);
-				//skip sessions before 3:30 PM (930)
-				if(time < 930){
-					return;
-				}
+			var time = this.StartFinder(session, instance);
+
+			const isWeekend = day === 0 || day === 6;
+			
+			//skip sessions before 3:30 PM (930) during the wesek
+			if(!isWeekend && (time < 930)){
+				return;
 			}
 
 			//set colour
 			var color = this.ColorFinder(session, instance);
 			var hours = this.HourFinder(session, instance)/60;
 
-			if(this.countColours.includes(color.toLowerCase())){
-				this.addColour(color, hours);
-			};
+			if(typeof this.counts[color] !== 'undefined'){
+				this.counts[color] += hours;
+			}
+
 		})
 
+		this.total = Object.keys(this.counts).reduce((previous, key) => {
+			if(key === 'red'){
+				return previous;
+			}
 
+		    return previous + this.counts[key];
+		}, 0);
 
-		this.counts.forEach(count => {
-			this.total += count[1];
-		})
-
-	}
-
-	addColour(colour, hours){
-		var countIndex = this.counts.findIndex(count => count[0] === colour);
-
-		if(countIndex === -1){
-			//if not found then push it
-			this.counts.push([colour, hours]);
-			return;
-		}
-
-		//if it exists then increment it
-		this.counts[countIndex][1] += hours;
 	}
 
 	writeDB(){

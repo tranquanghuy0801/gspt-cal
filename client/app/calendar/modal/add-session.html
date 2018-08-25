@@ -57,7 +57,7 @@
 		<hr>
 		<div class="form-group">
 			<div class="row">
-				<div class="col-md-8">
+				<div class="col-md-6">
 					<label>Frequency</label>
 					<div>
 						<button type="button" class="btn btn-default" ng-click="vm.newSession.frequency = 0; vm.showNotes = true;" ng-class="{'btn-primary': vm.newSession.frequency == 0}">One Off</button>
@@ -65,7 +65,7 @@
 						<button type="button" class="btn btn-default" ng-click="vm.newSession.frequency = 14" ng-class="{'btn-primary': vm.newSession.frequency == 14}">Fortnightly</button>
 					</div>
 				</div>
-				<div class="col-md-4" ng-show="vm.newSession.frequency">
+				<div class="col-md-6" ng-show="vm.newSession.frequency">
 					<label>Occurences</label>
 					<div class="flex">
 			          <input type="number" class="form-control" min="2" placeholder="Occurences" ng-model="vm.newSession.instances" ng-disabled="vm.inf" ng-required="!vm.inf && vm.newSession.frequency">

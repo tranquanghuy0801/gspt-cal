@@ -65,8 +65,8 @@ export default class {
 		tutorsLessons.forEach(entity => this.timeCompress(entity, start, end));
 
     this.results = this.results.sort((a,b) =>  {
-      if(a.student.firstName < b.student.firstName) return -1;
-      if(a.student.firstName > b.student.firstName) return 1;
+      if(a.student.fullName < b.student.fullName) return -1;
+      if(a.student.fullName > b.student.fullName) return 1;
       return 0;
     });
 

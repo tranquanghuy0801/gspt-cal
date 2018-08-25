@@ -34,6 +34,8 @@ export default class CalendarController {
 	        year12: '',
 	    };
 
+	    this.clearIconFilters();
+
 		this.$http.get('/api/icons').then(response => {
 			if(response && response.data && response.data[0]){
 				this.icons = response.data[0]
@@ -313,6 +315,18 @@ export default class CalendarController {
 			}).then(response => {
 	        	this.reloadStudents();
 	      	});
+	}
+
+	clearIconFilters(){
+		 this.iconFilters = {
+	        first: false,
+	        second: false,
+	        third: false,
+	        fourth: false,
+	        fifth: false,
+	        sixth: false,
+	        year12: false,
+	    };
 	}
 
 	sendEmail(id, date, isWeek){
@@ -596,6 +610,11 @@ export default class CalendarController {
 		})
 	}
 
+	iconFilterChange(key){
+		this.iconFilters[key] = !this.iconFilters[key];
+		this.clearCal();
+	}
+
 	finishedLoad(){
 		this.loaded++;
 		if(this.loaded === 4){
@@ -629,6 +648,44 @@ export default class CalendarController {
 		if(this.searchFilter)
 			sessions = this.$filter('filter')(this.sessions, this.searchFilter);
 
+		//filter via icons
+		sessions = sessions.filter(session => {
+			var objSession = this.$filter('reparseDate')(session.date);
+			var daysAhead = (cleanDate - objSession)/86400000;
+			var instance = daysAhead/session.frequency;
+
+			if(this.iconFilters.first && (!session.overwriteVar1 || session.overwriteVar1[instance] !== true)){
+				return;
+			}
+
+			if(this.iconFilters.second && (!session.overwriteVar2 || session.overwriteVar2[instance] !== true)){
+				return;
+			}
+
+			if(this.iconFilters.third && session.student.var3 !== true){
+				return;
+			}
+
+			if(this.iconFilters.fourth && session.student.var4 !== true){
+				return;
+			}
+
+			if(this.iconFilters.fifth && (!session.overwriteVar5 || session.overwriteVar5[instance] !== true)){
+				return;
+			}
+
+			if(this.iconFilters.sixth && (!session.overwriteVar6 || session.overwriteVar6[instance] !== true)){
+				return;
+			}
+
+			if(this.iconFilters.year12 && session.student.grade !== 12){
+				return;
+			}
+
+			return true;
+		})
+
+
 		var filteredSessions = sessions.filter( session => {
 			if(session.isHidden)
 				return;
@@ -638,6 +695,8 @@ export default class CalendarController {
 
 			if(session.date == parsedDate)
 				return true;
+
+			console.log(session);
 
 			if(session.instances == 1)
 				return; //gets rid of one-off events
