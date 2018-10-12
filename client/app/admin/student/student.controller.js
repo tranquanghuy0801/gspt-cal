@@ -13,6 +13,11 @@ export default class StudentController {
   $onInit() {
     this.grab();
 
+    this.$http.get('/api/students/active')
+      .then(response => {
+        this.actives = response.data;
+      });
+
     this.$http.get('/api/icons')
         .then(response => {
           this.icons = response.data[0] || {
@@ -26,8 +31,28 @@ export default class StudentController {
   }
 
   export(data){
+
+    data = data.map(student => {
+      return {
+        'Full Name': student.firstName + ' ' + student.lastName,
+        'First Name': student.firstName || ' ' ,
+        'Last Name': student.lastName || ' ' ,
+        'Client Full Name': student.clientFirstName + ' ' + student.clientLastName,
+        'Client First Name': student.clientFirstName || ' ',
+        'Client Last Name': student.clientLastName || ' ',
+        'Email': student.clientEmail || ' ',
+        'Phone': student.clientPh || ' ',
+        'Grade': student.grade || ' ',
+        'CRM ID': student.crmID || ' ',
+        'Is Active': student.isActive || 'false',
+        'Is Tertiary': student.isTertiary || 'false',
+      };
+    })
+
+
     this.JSONToCSVConvertor(data, 'Student Export', true);
   }
+
 
   grab(){
     this.$http.get('/api/students')
