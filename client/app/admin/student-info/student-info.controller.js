@@ -26,7 +26,7 @@ export default class {
   }
 
   returnFilter(results, $query) {
-    return results.filter(function(item) {
+    return results.filter(function (item) {
       return item.fullName.toLowerCase().indexOf($query.toLowerCase()) != -1;
     })
   }
@@ -50,8 +50,6 @@ export default class {
     temper = temper.filter(lesson => student._id === lesson.clientUID);
     temper = temper.map(lesson => this.colourInstances(lesson, start, end))
 
-    console.log(temper);
-
     //merge together now
 
     var counts = []; //this will be [[color, count], [color, count]] etc...
@@ -60,17 +58,17 @@ export default class {
 
       const lessonCount = lesson.found;
 
-      if(!lessonCount){
+      if (!lessonCount) {
         return;
       }
 
-      for(var key in lessonCount){
-        if(key.includes('red')){
+      for (var key in lessonCount) {
+        if (key.includes('red')) {
           continue; //remove any red colours
         }
         const countIndex = counts.findIndex(count => count[0] === key);
 
-        if(countIndex === -1){
+        if (countIndex === -1) {
           counts.push([key, lessonCount[key]]);
         } else {
           counts[countIndex][1] += lessonCount[key];
@@ -122,8 +120,6 @@ export default class {
       } else {
         lesson.found[fonCol] = 1;
       }
-
-      console.log(lesson.found)
 
     }
 
