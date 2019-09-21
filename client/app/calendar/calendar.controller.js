@@ -635,9 +635,6 @@ export default class CalendarController {
 		var sessions = this.sessions;
 
 
-		if (this.searchFilter)
-			sessions = this.$filter('filter')(this.sessions, this.searchFilter);
-
 		//filter via icons
 		sessions = sessions.filter(session => {
 			if (!session.date) {
@@ -680,6 +677,19 @@ export default class CalendarController {
 			return true;
 		})
 
+		sessions = sessions.map(session => {
+			if (!session.student && session.clientUID) {
+				session.student = this.students.find(s => s._id === session.clientUID);
+			}
+
+			if (!session.tutor && session.tutorUID) {
+				session.tutor = this.tutors.find(t => t._id === session.tutorUID);
+			}
+			return session;
+		});
+
+		if (this.searchFilter)
+			sessions = this.$filter('filter')(this.sessions, this.searchFilter);
 
 		var filteredSessions = sessions.filter(session => {
 			if (session.isHidden)
@@ -969,10 +979,6 @@ export default class CalendarController {
 		}
 
 		this.visibleLessons.push(session._id); //used by sandbox
-
-
-		session.student = this.students.find(s => s._id === session.clientUID);
-		session.tutor = this.tutors.find(t => t._id === session.tutorUID);
 
 
 		var identifier = 't' + session.startTime + 'r' + session.room;
