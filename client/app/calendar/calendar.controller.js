@@ -348,7 +348,7 @@ export default class CalendarController {
 
 		const tutorID = this.sessions.find(session => id == session._id).tutorUID;
 		const tutor = this.tutors.find(tutor => tutorID === tutor._id);
-		const tutorSessions = this.sessions.filter(session => tutorID === session.tutorUID);
+		const tutorSessions = this.sessions.filter(session => tutorID === session.tutorUID).filter(session => session.date);
 
 		var sessionData = [];
 
