@@ -628,6 +628,8 @@ export default class CalendarController {
 	}
 
 	todaysSessions() {
+
+
 		var parsedDate = this.$filter('date')(this.calendarDate, 'dd/MM/yyyy');
 		var cleanDate = this.$filter('reparseDate')(parsedDate);
 		var sessions = this.sessions;
@@ -638,6 +640,11 @@ export default class CalendarController {
 
 		//filter via icons
 		sessions = sessions.filter(session => {
+			if (!session.date) {
+				console.log(session)
+				return;
+			}
+
 			var objSession = this.$filter('reparseDate')(session.date);
 			var daysAhead = (cleanDate - objSession) / 86400000;
 			var instance = daysAhead / session.frequency;
