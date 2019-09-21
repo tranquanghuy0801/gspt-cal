@@ -1,8 +1,10 @@
 <div class="row">
   <div class="col-sm-12">
     <h1>Students
-      <button type="button" class="btn btn-lg btn-default pull-right" ng-click="admin.export(admin.students)">Export All</button>
-      <button type="button" class="btn btn-lg btn-default pull-right" style="margin-right: 10px" ng-click="admin.export(admin.actives)">Export Active</button>
+      <button type="button" class="btn btn-lg btn-default pull-right" ng-click="admin.export(admin.students)"
+        ng-disabled="!admin.students">Export All</button>
+      <button type="button" class="btn btn-lg btn-default pull-right" style="margin-right: 10px"
+        ng-click="admin.export(admin.actives)" ng-disabled="!admin.actives">Export Active</button>
     </h1>
   </div>
 </div>
@@ -26,8 +28,12 @@
       <div class="form-group">
         <label>Data</label>
         <div class="data-button-wrap">
-          <button type="button" ng-init="newStudent.var3 = false" ng-click="newStudent.var3 =! newStudent.var3" ng-class="{'active': newStudent.var3}"><i class="fa fa-{{admin.icons.third}}" aria-hidden="true"></i></button>
-          <button type="button" ng-init="newStudent.var4 = false" ng-click="newStudent.var4 =! newStudent.var4" ng-class="{'active': newStudent.var4}"><i class="fa fa-{{admin.icons.fourth}}" aria-hidden="true"></i></button>
+          <button type="button" ng-init="newStudent.var3 = false" ng-click="newStudent.var3 =! newStudent.var3"
+            ng-class="{'active': newStudent.var3}"><i class="fa fa-{{admin.icons.third}}"
+              aria-hidden="true"></i></button>
+          <button type="button" ng-init="newStudent.var4 = false" ng-click="newStudent.var4 =! newStudent.var4"
+            ng-class="{'active': newStudent.var4}"><i class="fa fa-{{admin.icons.fourth}}"
+              aria-hidden="true"></i></button>
         </div>
       </div>
     </div>
@@ -35,8 +41,10 @@
       <div class="form-group">
         <label>Grade</label>
         <div class="input-group">
-          <input type="number" class="form-control" ng-min="1" ng-max="12" placeholder="Grade" ng-model="newStudent.grade" ng-disabled="newStudent.isTertiary" ng-required="!newStudent.isTertiary">
-          <span class="input-group-addon tertiary" ng-click="newStudent.isTertiary = !newStudent.isTertiary" ng-class="{'active': newStudent.isTertiary}" title="Is this a tertiary student?">
+          <input type="number" class="form-control" ng-min="1" ng-max="12" placeholder="Grade"
+            ng-model="newStudent.grade" ng-disabled="newStudent.isTertiary" ng-required="!newStudent.isTertiary">
+          <span class="input-group-addon tertiary" ng-click="newStudent.isTertiary = !newStudent.isTertiary"
+            ng-class="{'active': newStudent.isTertiary}" title="Is this a tertiary student?">
             <i class="fa fa-graduation-cap" aria-hidden="true"></i>
           </span>
         </div>
@@ -55,8 +63,8 @@
         <label>Client Last Name</label>
         <input type="text" class="form-control" ng-model="newStudent.clientLastName" placeholder="Client Last Name">
       </div>
-  </div>
-  <div class="col-sm-4">
+    </div>
+    <div class="col-sm-4">
       <div class="form-group">
         <label>CRM ID</label>
         <input type="text" class="form-control" ng-model="newStudent.crmID" placeholder="CRM ID">
@@ -64,7 +72,7 @@
     </div>
   </div>
   <div class="row">
-    
+
     <div class="col-sm-4">
       <div class="form-group">
         <label>Contact Email</label>
@@ -79,7 +87,8 @@
     </div>
     <div class="col-sm-4">
       <div class="form-group add-notes-group">
-        <button type="button" class="btn btn-primary btn-lg btn-block" ng-init="notes = false" ng-click="notes =! notes">Add Notes</button>
+        <button type="button" class="btn btn-primary btn-lg btn-block" ng-init="notes = false"
+          ng-click="notes =! notes">Add Notes</button>
       </div>
     </div>
   </div>
@@ -95,7 +104,7 @@
     <div class="col-sm-12">
       <button type="submit" class="btn btn-success btn-lg btn-block">Add Student</button>
     </div>
-    
+
   </div>
   <div class="alert alert-danger" ng-show="admin.error">
     There was an error:<br>
@@ -115,7 +124,8 @@
         Previous
       </button>
       {{currentPage + 1}}/{{(admin.students.length/pageSize | roundUp) || 1}}
-      <button class="btn btn-default" ng-disabled="currentPage >= admin.students.length/pageSize - 1" ng-click="currentPage=currentPage+1">
+      <button class="btn btn-default" ng-disabled="currentPage >= admin.students.length/pageSize - 1"
+        ng-click="currentPage=currentPage+1">
         Next
       </button>
     </div>
@@ -138,7 +148,8 @@
     </tr>
   </thead>
   <tbody ng-init="tableOrder = '-dateCreated'">
-    <tr ng-repeat="student in admin.students | filter: admin.search | startFrom:currentPage*pageSize | limitTo:pageSize | orderBy: tableOrder">
+    <tr
+      ng-repeat="student in admin.students | filter: admin.search | startFrom:currentPage*pageSize | limitTo:pageSize | orderBy: tableOrder">
       <th scope="row">{{$index + 1}}</th>
       <td>{{student.firstName + ' ' + student.lastName}}</td>
       <td>{{student.clientFirstName + ' ' + student.clientLastName}}</td>
