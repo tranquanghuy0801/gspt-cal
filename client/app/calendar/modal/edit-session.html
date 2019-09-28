@@ -1,14 +1,25 @@
 <form ng-submit="vm.submit(vm.data, $close)">
-<div class="modal-header">
-	<h4 class="modal-title">Edit Session</h4>
-	<button type="button" tabindex="-1" class="close" aria-label="Close" ng-click="$dismiss('close')"><span aria-hidden="true">&times;</span></button>
-</div>
-<div class="modal-body">
+	<div class="modal-header">
+		<h4 class="modal-title">Edit Session</h4>
+		<button type="button" tabindex="-1" class="close" aria-label="Close" ng-click="$dismiss('close')"><span
+				aria-hidden="true">&times;</span></button>
+	</div>
+	<div class="modal-body">
+		<div class="form-group" ng-if="vm.tutors">
+			<label>Tutor</label>
+			<div class="select-wrap">
+				<tags-input ng-model="vm.selectedTutor" ng-disabled="vm.selectedTutor.length" name="selectedTutor"
+					placeholder=" " add-from-autocomplete-only="true" replace-spaces-with-dashes="false"
+					display-property="fullName" required>
+					<auto-complete source="vm.returnFilter(vm.tutors, $query)" min-length="1"></auto-complete>
+				</tags-input>
+				<button type="button" class="btn btn-danger" ng-click="vm.selectedTutor = []"
+					ng-show="vm.selectedTutor.length" tabindex="-1">Edit</button>
+			</div>
+		</div>
 		<div class="form-group row">
 			<label class="col-sm-3">Student</label>
 			<div class="col-sm-3">{{vm.returnName(vm.data)}}</div>
-			<label class="col-sm-3">Tutor</label>
-			<div class="col-sm-3">{{vm.data.tutor.firstName + ' ' + vm.data.tutor.lastName}}</div>
 		</div>
 		<div class="form-group row">
 			<label class="col-sm-3">Client Name</label>
@@ -20,47 +31,70 @@
 		<div class="form-group duration-group">
 			<label>Duration (exception change)</label>
 			<div>
-				<button type="button" class="btn btn-default" ng-repeat="duration in [30,60,90,120,150,180,210,240]" ng-click="vm.data.overwriteDuration[vm.instance] = duration" ng-class="{'btn-primary': vm.data.overwriteDuration[vm.instance] ? vm.data.overwriteDuration[vm.instance] === duration : vm.data.duration === duration}">{{duration}} m</button>
+				<button type="button" class="btn btn-default" ng-repeat="duration in [30,60,90,120,150,180,210,240]"
+					ng-click="vm.data.overwriteDuration[vm.instance] = duration"
+					ng-class="{'btn-primary': vm.data.overwriteDuration[vm.instance] ? vm.data.overwriteDuration[vm.instance] === duration : vm.data.duration === duration}">{{duration}}
+					m</button>
 			</div>
 		</div>
 		<hr>
 		<div class="form-group color-group">
 			<ul class="nav nav-tabs" style="margin-bottom: 15px;">
-			  <li role="presentation" ng-class="{active: vm.tab === 'instance'}"><a href="#" ng-click="vm.tab = 'instance'">Instance Colour</a></li>
-			  <li role="presentation" ng-class="{active: vm.tab === 'series'}"><a href="#" ng-click="vm.tab = 'series'">Series Colour</a></li>
-			  <li role="presentation" ng-class="{active: vm.tab === 'starting'}"><a href="#" ng-click="vm.tab = 'starting'">From Here Colour</a></li>
+				<li role="presentation" ng-class="{active: vm.tab === 'instance'}"><a href="#"
+						ng-click="vm.tab = 'instance'">Instance Colour</a></li>
+				<li role="presentation" ng-class="{active: vm.tab === 'series'}"><a href="#"
+						ng-click="vm.tab = 'series'">Series Colour</a></li>
+				<li role="presentation" ng-class="{active: vm.tab === 'starting'}"><a href="#"
+						ng-click="vm.tab = 'starting'">From Here Colour</a></li>
 			</ul>
 			<div ng-show="vm.tab === 'instance'" class="color-house">
 				<div>
-					<span class="color-box aa{{color}}" ng-repeat="color in vm.colors" ng-click="vm.data.overwriteColor[vm.instance] = color" ng-class="{'active': vm.data.overwriteColor[vm.instance] === color}"></span>
+					<span class="color-box aa{{color}}" ng-repeat="color in vm.colors"
+						ng-click="vm.data.overwriteColor[vm.instance] = color"
+						ng-class="{'active': vm.data.overwriteColor[vm.instance] === color}"></span>
 				</div>
 				<div>
-					<span class="color-box dark aa{{color}}" ng-repeat="color in vm.colors" ng-click="vm.data.overwriteColor[vm.instance] = 'dark ' + color" ng-class="{'active': vm.data.overwriteColor[vm.instance] === 'dark ' + color}"></span>
+					<span class="color-box dark aa{{color}}" ng-repeat="color in vm.colors"
+						ng-click="vm.data.overwriteColor[vm.instance] = 'dark ' + color"
+						ng-class="{'active': vm.data.overwriteColor[vm.instance] === 'dark ' + color}"></span>
 				</div>
 				<div>
-					<span class="color-box striped aa{{color}}" ng-repeat="color in vm.colors" ng-click="vm.data.overwriteColor[vm.instance] = 'striped ' + color" ng-class="{'active': vm.data.overwriteColor[vm.instance] === 'striped ' + color}"></span>
+					<span class="color-box striped aa{{color}}" ng-repeat="color in vm.colors"
+						ng-click="vm.data.overwriteColor[vm.instance] = 'striped ' + color"
+						ng-class="{'active': vm.data.overwriteColor[vm.instance] === 'striped ' + color}"></span>
 				</div>
 			</div>
 			<div ng-show="vm.tab === 'series'" class="color-house">
 				<div>
-					<span class="color-box aa{{color}}" ng-repeat="color in vm.colors" ng-click="vm.data.color = color" ng-class="{'active': vm.data.color === color}"></span>
+					<span class="color-box aa{{color}}" ng-repeat="color in vm.colors" ng-click="vm.data.color = color"
+						ng-class="{'active': vm.data.color === color}"></span>
 				</div>
 				<div>
-					<span class="color-box dark aa{{color}}" ng-repeat="color in vm.colors" ng-click="vm.data.color = 'dark ' + color" ng-class="{'active': vm.data.color === 'dark ' + color}"></span>
+					<span class="color-box dark aa{{color}}" ng-repeat="color in vm.colors"
+						ng-click="vm.data.color = 'dark ' + color"
+						ng-class="{'active': vm.data.color === 'dark ' + color}"></span>
 				</div>
 				<div>
-					<span class="color-box striped aa{{color}}" ng-repeat="color in vm.colors" ng-click="vm.data.color = 'striped ' + color" ng-class="{'active': vm.data.color === 'striped ' + color}"></span>
+					<span class="color-box striped aa{{color}}" ng-repeat="color in vm.colors"
+						ng-click="vm.data.color = 'striped ' + color"
+						ng-class="{'active': vm.data.color === 'striped ' + color}"></span>
 				</div>
 			</div>
 			<div ng-show="vm.tab === 'starting'" class="color-house">
 				<div>
-					<span class="color-box aa{{color}}" ng-repeat="color in vm.colors" ng-click="vm.data.overwriteFromHere[vm.instance] = color" ng-class="{'active': vm.data.overwriteFromHere[vm.instance] === color}"></span>
+					<span class="color-box aa{{color}}" ng-repeat="color in vm.colors"
+						ng-click="vm.data.overwriteFromHere[vm.instance] = color"
+						ng-class="{'active': vm.data.overwriteFromHere[vm.instance] === color}"></span>
 				</div>
 				<div>
-					<span class="color-box dark aa{{color}}" ng-repeat="color in vm.colors" ng-click="vm.data.overwriteFromHere[vm.instance] = 'dark ' + color" ng-class="{'active': vm.data.overwriteFromHere[vm.instance] === 'dark ' + color}"></span>
+					<span class="color-box dark aa{{color}}" ng-repeat="color in vm.colors"
+						ng-click="vm.data.overwriteFromHere[vm.instance] = 'dark ' + color"
+						ng-class="{'active': vm.data.overwriteFromHere[vm.instance] === 'dark ' + color}"></span>
 				</div>
 				<div>
-					<span class="color-box striped aa{{color}}" ng-repeat="color in vm.colors" ng-click="vm.data.overwriteFromHere[vm.instance] = 'striped ' + color" ng-class="{'active': vm.data.overwriteFromHere[vm.instance] === 'striped ' + color}"></span>
+					<span class="color-box striped aa{{color}}" ng-repeat="color in vm.colors"
+						ng-click="vm.data.overwriteFromHere[vm.instance] = 'striped ' + color"
+						ng-class="{'active': vm.data.overwriteFromHere[vm.instance] === 'striped ' + color}"></span>
 				</div>
 			</div>
 		</div>
@@ -75,30 +109,32 @@
 				<textarea class="form-control" ng-model="vm.data.overwriteNotes[vm.instance]" rows="4"></textarea>
 			</div>
 		</div>
-  		<hr>
-  		<div class="form-group row">
-  			<div class="col-md-8">
-  				<label>Overwrite Student Name</label>
-  				<input type="text" class="form-control" ng-model="vm.data.overwriteName[vm.instance]">
-  			</div>
-  			<div class="col-sm-4">
-  				<label>Changeover Line</label>
-  				<div>
-  					<button type="button" class="btn btn-default" ng-click="vm.data.changeover = true;" ng-class="{'btn-primary': vm.data.changeover}">Series</button>
-					<button type="button" class="btn btn-default" ng-click="vm.data.changeover = false;" ng-class="{'btn-primary': !vm.data.changeover}">None</button>
-  				</div>
-  			</div>
-  		</div>
-  		<span ng-show="!vm.data.instances">
-  		<hr>
-  		<label><input type="checkbox" ng-model="vm.lastInstance">  Make Last Instance</label>
-  		</span>
-  		<div class="alert alert-danger" ng-show="vm.error">
-    		There was an error:<br>
-    		<code>{{vm.error}}</code>
-  		</div>
+		<hr>
+		<div class="form-group row">
+			<div class="col-md-8">
+				<label>Overwrite Student Name</label>
+				<input type="text" class="form-control" ng-model="vm.data.overwriteName[vm.instance]">
+			</div>
+			<div class="col-sm-4">
+				<label>Changeover Line</label>
+				<div>
+					<button type="button" class="btn btn-default" ng-click="vm.data.changeover = true;"
+						ng-class="{'btn-primary': vm.data.changeover}">Series</button>
+					<button type="button" class="btn btn-default" ng-click="vm.data.changeover = false;"
+						ng-class="{'btn-primary': !vm.data.changeover}">None</button>
+				</div>
+			</div>
+		</div>
+		<span ng-show="!vm.data.instances">
+			<hr>
+			<label><input type="checkbox" ng-model="vm.lastInstance"> Make Last Instance</label>
+		</span>
+		<div class="alert alert-danger" ng-show="vm.error">
+			There was an error:<br>
+			<code>{{vm.error}}</code>
+		</div>
 	</div>
-<div class="modal-footer">
-	<button type="submit" class="btn btn-success btn-block btn-lg">Save</button>
-</div>
+	<div class="modal-footer">
+		<button type="submit" class="btn btn-success btn-block btn-lg">Save</button>
+	</div>
 </form>
