@@ -643,7 +643,7 @@ export default class CalendarController {
 			}
 
 			var objSession = this.$filter('reparseDate')(session.date);
-			var daysAhead = (cleanDate - objSession) / 86400000;
+			var daysAhead = Math.round((cleanDate - objSession) / 86400000);
 			var instance = daysAhead / session.frequency;
 
 			if (this.iconFilters.first && (!session.overwriteVar1 || session.overwriteVar1[instance] !== true)) {
@@ -713,7 +713,7 @@ export default class CalendarController {
 			if (objSession > cleanDate)
 				return; //first session is after cal date
 
-			var daysAhead = (cleanDate - objSession) / 86400000;
+			var daysAhead = Math.round((cleanDate.getTime() - objSession.getTime()) / 86400000);
 
 			if (daysAhead % session.frequency !== 0)
 				return; //if mod returns > 0 then it must be a dif day
@@ -736,7 +736,7 @@ export default class CalendarController {
 			};
 
 			var objSession = this.$filter('reparseDate')(session.date);
-			var daysAhead = (cleanDate - objSession) / 86400000;
+			var daysAhead = Math.round((cleanDate - objSession) / 86400000);
 			var _instance = daysAhead / session.frequency;
 
 			session._instance = _instance;
@@ -762,7 +762,7 @@ export default class CalendarController {
 
 			var objSession = this.$filter('reparseDate')(session.date);
 
-			var daysAhead = (cleanDate - objSession) / 86400000;
+			var daysAhead = Math.round((cleanDate - objSession) / 86400000);
 
 			var _instance = daysAhead / session.frequency; //returns supposed instance
 			//remember that it's still zero-indexed here too
@@ -1110,7 +1110,7 @@ export default class CalendarController {
 		//with regular setTime()
 		//hacky fix
 		this.changingDay = true;
-		this.calendarDate = new Date(this.calendarDate.getTime() + (days * 86400000));
+		this.calendarDate = new Date(this.calendarDate.getFullYear(), this.calendarDate.getMonth(), this.calendarDate.getDate() + days);
 		this.clearCal();
 	}
 
