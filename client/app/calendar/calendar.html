@@ -34,13 +34,14 @@
 				</button>
 			</span>
 		</div>
-		<div class="col-lg-3 text-right">
-			<button class="btn btn-default" style="margin-right: 30px" type="button" ng-click="vm.colourCountModal()">
-				<span>Colour Count</span>
-			</button>
-			<button class="btn btn-default" ng-class="{'btn-primary': vm.location == 'paddington'}" ng-click="vm.changeLocation('paddington')">Paddington</button>
-			<button class="btn btn-default" ng-class="{'btn-primary': vm.location == 'cannon hill'}" ng-click="vm.changeLocation('cannon hill')">Cannon Hill</button>
-		</div>
+    <div class="col-lg-3 text-right">
+      <button class="btn btn-default" style="margin-right: 30px" type="button" ng-click="vm.colourCountModal()">
+        <span>Colour Count</span>
+      </button>
+      <button class="btn btn-default" ng-class="{'btn-primary': vm.location == 'paddington'}" ng-click="vm.changeLocation('paddington')">Paddington</button>
+      <button class="btn btn-default" ng-class="{'btn-primary': vm.location == 'cannon hill'}" ng-click="vm.changeLocation('cannon hill')">Cannon Hill</button>
+      <button class="btn btn-default" ng-class="{'btn-primary': vm.location == 'mt. gravatt'}" ng-click="vm.changeLocation('mt. gravatt')">Mt. Gravatt</button>
+    </div>
 	</div>
 	<div class="row">
 		<table class="table table-striped a-calendar" ng-class="{'loading': vm.loading}">
