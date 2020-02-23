@@ -29,7 +29,7 @@ export default class {
 				this.tutors = response.data;
 			});
 
-		this.colors = ['blue', 'orange', 'red', 'purple', 'grey', 'green', 'yellow'];
+      this.colors = ['blue', 'orange', 'red', 'purple', 'grey', 'green', 'yellow', 'lime'];
 	}
 
 	returnFilter(results, $query) {

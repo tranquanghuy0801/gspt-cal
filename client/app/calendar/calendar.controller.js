@@ -894,7 +894,8 @@ export default class CalendarController {
 		this.$uibModal.open({
 			template: require('./modal/add-session.html'),
 			controller: 'SessionController',
-			controllerAs: 'vm',
+      controllerAs: 'vm',
+      windowClass: 'session-modal',
 			resolve: {
 				data: () => {
 					return {
@@ -926,7 +927,8 @@ export default class CalendarController {
 		this.$uibModal.open({
 			template: require('./modal/edit-session.html'),
 			controller: 'EditSessionController',
-			controllerAs: 'vm',
+      controllerAs: 'vm',
+      windowClass: 'session-modal',
 			resolve: {
 				data: () => {
 					return _data

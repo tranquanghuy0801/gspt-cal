@@ -90,3 +90,16 @@ td .striped{
     background: -webkit-linear-gradient(45deg, #eee 25%, #d2be4a 25%, #d2be4a 50%, #eee 50%, #eee 75%, #d2be4a 75%);
   }
 }
+
+
+.aalime {
+  background-color: #d7f542;
+
+  &.dark {
+    background-color: #b7d03a;
+  }
+
+  &.striped {
+    background: -webkit-linear-gradient(45deg, #eee 25%, #d7f542 25%, #d7f542 50%, #eee 50%, #eee 75%, #d7f542 75%);
+  }
+}

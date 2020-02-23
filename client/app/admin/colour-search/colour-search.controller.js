@@ -22,7 +22,8 @@ export default class {
       'Purple', 'Dark Purple', 'Striped Purple',
       'Grey', 'Dark Grey', 'Striped Grey',
       'Green', 'Dark Green', 'Striped Green',
-      'Yellow', 'Dark Yellow', 'Striped Yellow'
+      'Yellow', 'Dark Yellow', 'Striped Yellow',
+      'Lime', 'Dark Lime', 'Striped Lime'
     ];
     this.$http.get('/api/lessons/')
       .then(res => {
