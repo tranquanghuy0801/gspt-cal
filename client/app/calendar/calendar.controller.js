@@ -48,8 +48,10 @@ export default class CalendarController {
 		//setting locations and number of rooms with [0,1,2] arrays to loop through
 		//a bit hacky but is OK
 		this.rooms = {
-			'paddington': this.createArray(9),
-			'cannon hill': this.createArray(6)
+			'paddington': this.createArray(7), // from 9 changed to 7
+			'cannon hill': this.createArray(6),
+      'mt. gravatt': this.createArray(6) // added for testing purposes
+
 		};
 		//creates segments for the days
 		this.segments = this.createArray(48);
@@ -254,7 +256,7 @@ export default class CalendarController {
 			hasBottomDivider: true,
 			children: [
 				{
-					text: '3. Third',
+					text: '3. Different Pay Rate',
 					click: changeIcon(3, true),
 				},
 				{
@@ -892,7 +894,8 @@ export default class CalendarController {
 		this.$uibModal.open({
 			template: require('./modal/add-session.html'),
 			controller: 'SessionController',
-			controllerAs: 'vm',
+      controllerAs: 'vm',
+      windowClass: 'session-modal',
 			resolve: {
 				data: () => {
 					return {
@@ -924,7 +927,8 @@ export default class CalendarController {
 		this.$uibModal.open({
 			template: require('./modal/edit-session.html'),
 			controller: 'EditSessionController',
-			controllerAs: 'vm',
+      controllerAs: 'vm',
+      windowClass: 'session-modal',
 			resolve: {
 				data: () => {
 					return _data

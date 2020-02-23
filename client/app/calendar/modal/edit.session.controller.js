@@ -13,7 +13,7 @@ export default class {
 	}
 
 	$onInit() {
-		this.colors = ['blue', 'orange', 'red', 'purple', 'grey', 'green', 'yellow'];
+		this.colors = ['blue', 'orange', 'red', 'purple', 'grey', 'green', 'yellow', 'lime'];
 		this.tab = 'instance';
 
 		this.$http.get('/api/tutors')
