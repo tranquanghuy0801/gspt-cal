@@ -1,18 +1,17 @@
 /**
  * Using Rails-like standard naming convention for endpoints.
- * GET     /api/tutors              ->  index
- * POST    /api/tutors              ->  create
- * GET     /api/tutors/:id          ->  show
- * PUT     /api/tutors/:id          ->  upsert
- * PATCH   /api/tutors/:id          ->  patch
- * DELETE  /api/tutors/:id          ->  destroy
+ * GET     /api/term-settings              ->  index
+ * POST    /api/term-settings              ->  create
+ * GET     /api/term-settings/:id          ->  show
+ * PUT     /api/term-settings/:id          ->  upsert
+ * PATCH   /api/term-settings/:id          ->  patch
+ * DELETE  /api/term-settings/:id          ->  destroy
  */
 
 'use strict';
 
 import jsonpatch from 'fast-json-patch';
-import Tutor from './tutor.model';
-import { sendEmail } from '../../email';
+import TermSettings from './termsettings.model';
 
 function respondWithResult(res, statusCode) {
   statusCode = statusCode || 200;
@@ -65,65 +64,54 @@ function handleError(res, statusCode) {
   };
 }
 
-// Gets a list of Tutors
+// Gets a list of TermSettingss
 export function index(req, res) {
-  return Tutor.find().exec()
+  return TermSettings.find().exec()
     .then(respondWithResult(res))
     .catch(handleError(res));
 }
 
-// Gets a list of Tutors
-export function dumpAll(req, res) {
-  return Tutor.find().exec()
-    .then(respondWithResult(res))
-    .catch(handleError(res));
-}
-
-// Gets a single Tutor from the DB
+// Gets a single TermSettings from the DB
 export function show(req, res) {
-  return Tutor.findById(req.params.id).exec()
+  return TermSettings.findById(req.params.id).exec()
     .then(handleEntityNotFound(res))
     .then(respondWithResult(res))
     .catch(handleError(res));
 }
 
-// Creates a new Tutor in the DB
+// Creates a new TermSettings in the DB
 export function create(req, res) {
-  return Tutor.create(req.body)
+  return TermSettings.create(req.body)
     .then(respondWithResult(res, 201))
     .catch(handleError(res));
 }
 
-export function sendEmailDay(req, res){
-  sendEmail('noreply@gsptcal.com.au', 'clarissa.boac@gmail.com', `${req.body.range} Schedule: ${req.body.tutor}`, req.body.content);
-}
-
-// Upserts the given Tutor in the DB at the specified ID
+// Upserts the given TermSettings in the DB at the specified ID
 export function upsert(req, res) {
   if(req.body._id) {
     Reflect.deleteProperty(req.body, '_id');
   }
-  return Tutor.findOneAndUpdate({_id: req.params.id}, req.body, {new: true, upsert: true, setDefaultsOnInsert: true, runValidators: true}).exec()
+  return TermSettings.findOneAndUpdate({_id: req.params.id}, req.body, {new: true, upsert: true, setDefaultsOnInsert: true, runValidators: true}).exec()
 
     .then(respondWithResult(res))
     .catch(handleError(res));
 }
 
-// Updates an existing Tutor in the DB
+// Updates an existing TermSettings in the DB
 export function patch(req, res) {
   if(req.body._id) {
     Reflect.deleteProperty(req.body, '_id');
   }
-  return Tutor.findById(req.params.id).exec()
+  return TermSettings.findById(req.params.id).exec()
     .then(handleEntityNotFound(res))
     .then(patchUpdates(req.body))
     .then(respondWithResult(res))
     .catch(handleError(res));
 }
 
-// Deletes a Tutor from the DB
+// Deletes a TermSettings from the DB
 export function destroy(req, res) {
-  return Tutor.findById(req.params.id).exec()
+  return TermSettings.findById(req.params.id).exec()
     .then(handleEntityNotFound(res))
     .then(removeEntity(res))
     .catch(handleError(res));

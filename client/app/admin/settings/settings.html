@@ -6,78 +6,136 @@
 <br>
 <hr>
 <div>
-	<h4>Student Settings</h4>
-	<div class="row">
-		<div class="col-md-6">
-			<h4>Student Settings</h4>
-			<button type="button" ng-click="admin.addYear()" class="btn btn-default btn-lg" style="margin-top: 20px">Start New School Year</button>
-		</div>
-		<div class="col-md-6" ng-if="admin.isSandbox">
-			<h4>Database Settings</h4>
-			<button type="button" ng-click="admin.resetDatabase()" class="btn btn-default btn-lg" style="margin-top: 20px;">Reset Database</button>
-		</div>
-	</div>
+  <h4>Student Settings</h4>
+  <div class="row">
+    <div class="col-md-6">
+      <button type="button" ng-click="admin.addYear()" class="btn btn-default btn-lg" style="margin-top: 20px">Start New School Year</button>
+    </div>
+    <div class="col-md-6" ng-if="admin.isSandbox">
+      <h4>Database Settings</h4>
+      <button type="button" ng-click="admin.resetDatabase()" class="btn btn-default btn-lg" style="margin-top: 20px;">Reset Database</button>
+    </div>
+  </div>
 
 </div>
 <hr>
 <div>
-	<h4>Icon Settings</h4>
-	<p>Only use the name of the icon, i.e., don't include 'fa'. <a href="http://fontawesome.io/icons/" target="_blank">Click here for a list of icons.</a></p>
-	<form ng-submit="admin.saveIcons()">
-		<div class="row">
-			<div class="col-md-4">
-				<div class="form-group">
-					<label>First Icon (temp) (lesson)</label>
-					<input class="form-control" type="text" ng-model="admin.icons.first" required placeholder="'Phone', 'Cross', etc." />
-				</div>
-			</div>
-			<div class="col-md-4">
-				<div class="form-group">
-					<label>Second Icon (temp) (lesson)</label>
-					<input class="form-control" type="text" ng-model="admin.icons.second" required placeholder="'Phone', 'Cross', etc." />
-				</div>
-			</div>
-			<div class="col-md-4">
-				<div class="form-group">
-					<label>Third Icon (permanent) (student)</label>
-					<input class="form-control" type="text" ng-model="admin.icons.third" required placeholder="'Phone', 'Cross', etc." />
-				</div>
-			</div>
-			<div class="col-md-4">
-				<div class="form-group">
-					<label>Fourth Icon (permanent) (student)</label>
-					<input class="form-control" type="text" ng-model="admin.icons.fourth" required placeholder="'Phone', 'Cross', etc." />
-				</div>
-			</div>
-			<div class="col-md-4">
-				<div class="form-group">
-					<label>Fifth Icon (temp) (lesson)</label>
-					<input class="form-control" type="text" ng-model="admin.icons.fifth" required placeholder="'Phone', 'Cross', etc." />
-				</div>
-			</div>
-			<div class="col-md-4">
-				<div class="form-group">
-					<label>Sixth Icon (temp) (lesson)</label>
-					<input class="form-control" type="text" ng-model="admin.icons.sixth" required placeholder="'Phone', 'Cross', etc." />
-				</div>
-			</div>
-			<div class="col-md-4">
-				<div class="form-group">
-					<label>Year 12 Icon</label>
-					<input class="form-control" type="text" ng-model="admin.icons.year12" required placeholder="'Phone', 'Cross', etc." />
-				</div>
-			</div>
-		</div>
-		<div>
-			<div class="alert alert-danger" ng-show="admin.fail">
-			    There was an error. Please refresh and try again.
-			</div>
-			<div class="alert alert-success" ng-show="admin.success">
-			   	Icons successfully updated.
-			</div>
-		</div>
-		<div class="text-right">
-			<button class="btn btn-success" type="submit">Save Icons</button>
-		</div>
-	</form>
+  <h4>Term Settings</h4>
+  <div class="row">
+    <div class="col-sm-2">
+      <div class="form-group">
+        <label>Term</label>
+        <input type="text" class="form-control" required ng-model="admin.term.termNo" placeholder="admin.term.termNo">
+      </div>
+    </div>
+    <div class="col-sm-2">
+      <div class="form-group">
+        <label>Start Date</label>
+        <div class="input-group">
+          <input type="text" class="form-control" uib-datepicker-popup="dd/MM/y" required ng-model="admin.term.startDate" placeholder="Start Date" is-open="opened" close-text="Close">
+          <span class="input-group-btn">
+            <button type="button" class="btn btn-default" ng-click="opened = true"><i class="glyphicon glyphicon-calendar"></i></button>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-2">
+      <div class="form-group">
+        <label>End Date</label>
+        <div class="input-group">
+          <input type="text" class="form-control" uib-datepicker-popup="dd/MM/y" required ng-model="admin.term.endDate" placeholder="End Date" is-open="opened2" close-text="Close">
+          <span class="input-group-btn">
+            <button type="button" class="btn btn-default" ng-click="opened2 = true"><i class="glyphicon glyphicon-calendar"></i></button>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-2">
+      <div class="form-group">
+        <label>6th Sunday of Term</label>
+        <div class="input-group">
+          <input type="text" class="form-control" required ng-model="admin.term.sixthSunday" placeholder="6th Sunday of Term">
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-2">
+      <div class="form-group">
+        <label style="opacity: 0">Save Term Details</label>
+        <button type="button" class="btn btn-success btn-block" ng-disabled="!admin.term.termNo || !admin.term.startDate || !admin.term.endDate || !admin.term.sixthSunday" ng-click="admin.updateSettings()">
+          <span>Save</span>
+        </button>
+      </div>
+    </div>
+    <div class="col-sm-2">
+      <div class="form-group">
+        <label style="opacity: 0">Generate Emails</label>
+        <button type="button" class="btn btn-success btn-block" ng-click="admin.generateEmails()">
+          <span>Generate Emails</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
 </div>
+<hr>
+  <div>
+    <h4>Icon Settings</h4>
+    <p>Only use the name of the icon, i.e., don't include 'fa'. <a href="http://fontawesome.io/icons/" target="_blank">Click here for a list of icons.</a></p>
+    <form ng-submit="admin.saveIcons()">
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label>First Icon (temp) (lesson)</label>
+            <input class="form-control" type="text" ng-model="admin.icons.first" required placeholder="'Phone', 'Cross', etc." />
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label>Second Icon (temp) (lesson)</label>
+            <input class="form-control" type="text" ng-model="admin.icons.second" required placeholder="'Phone', 'Cross', etc." />
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label>Third Icon (permanent) (student)</label>
+            <input class="form-control" type="text" ng-model="admin.icons.third" required placeholder="'Phone', 'Cross', etc." />
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label>Fourth Icon (permanent) (student)</label>
+            <input class="form-control" type="text" ng-model="admin.icons.fourth" required placeholder="'Phone', 'Cross', etc." />
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label>Fifth Icon (temp) (lesson)</label>
+            <input class="form-control" type="text" ng-model="admin.icons.fifth" required placeholder="'Phone', 'Cross', etc." />
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label>Sixth Icon (temp) (lesson)</label>
+            <input class="form-control" type="text" ng-model="admin.icons.sixth" required placeholder="'Phone', 'Cross', etc." />
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label>Year 12 Icon</label>
+            <input class="form-control" type="text" ng-model="admin.icons.year12" required placeholder="'Phone', 'Cross', etc." />
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="alert alert-danger" ng-show="admin.fail">
+          There was an error. Please refresh and try again.
+        </div>
+        <div class="alert alert-success" ng-show="admin.success">
+          Icons successfully updated.
+        </div>
+      </div>
+      <div class="text-right">
+        <button class="btn btn-success" type="submit">Save Icons</button>
+      </div>
+    </form>
+  </div>

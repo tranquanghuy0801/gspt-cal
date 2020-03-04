@@ -23,6 +23,16 @@ export default class {
 	        	sixth: '',
 	        	year12: '',
 	        };
+		  });
+		  
+		this.$http.get('/api/termsettings')
+	      .then(response => {
+	        this.term = response.data[0] || {
+	        	term: '',
+	        	startDate: '',
+	        	endDate: '',
+	        	sixthSunday: '',
+	        };
 	      });
 
 	    this.isSandbox = location.hostname.includes('sandbox');
@@ -69,5 +79,32 @@ export default class {
     			this.fail = true;
     		});
     	}
-    }
+	}
+	
+	updateSettings(){
+		this.success = false;
+		this.fail = false;
+		
+		if(this.term._id){
+    		this.$http.put('/api/termsettings/' + String(this.term._id), this.term).then(res =>{
+    			this.success = true;
+    		}).catch(res =>{
+    			this.fail = true;
+    		});
+    	} else {
+    		this.$http.post('/api/termsettings', this.term).then(res =>{
+    			this.success = true;
+    		}).catch(res =>{
+    			this.fail = true;
+    		});
+    	}
+
+	}
+
+	generateEmails(){
+		if(confirm('Are you sure you want to send student e-mails?')){
+			
+		}
+
+	}
  }

@@ -43,6 +43,13 @@ export default class CalendarController {
 			this.finishedLoad();
 		})
 
+		this.$http.get('/api/termsettings').then(response => {
+	        if (response && response.data && response.data[0]) {
+				this.term = response.data[0]
+			}
+			this.finishedLoad();
+	    });
+
 		//defaults to paddington
 		this.location = 'paddington';
 		//setting locations and number of rooms with [0,1,2] arrays to loop through
@@ -219,6 +226,15 @@ export default class CalendarController {
 				},
 			}],
 		},
+    {
+      text: 'Email Student Reminder',
+      hasBottomDivider: true,
+      click: ($itemScope, $event) => {
+        const targ = $event.target.classList.contains('session-cell') ? $event.target : $event.target.closest('.session-cell');
+        const uid = targ.dataset.id;
+        this.sendEmailScheduleNotif(uid, this.calendarDate);
+      },
+    },
 		{
 			text: 'Inactivate Student',
 			hasBottomDivider: true,
@@ -486,6 +502,156 @@ export default class CalendarController {
 		});
 
 	}
+  sendEmailScheduleNotif(id, date) {
+
+
+	/**
+	1. get dates for filtering student sessions
+	2. get student information from each sessions
+	3. get distinct student 
+	4. add distinct student info in list
+	5. check for other conditions later
+	6. map values to email template
+	*/
+    //change to get exact of week 6
+
+
+    var dateToday = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    var start = new Date(this.term.startDate);
+	var end = new Date(this.term.endDate);
+	var termNo = this.term.termNo 
+	var sixthSunday = this.term.sixthSunday;
+
+    if (date.getDay() === 0) {
+      var startOfWeek = date.getDate() - 7;
+    } else {
+      var startOfWeek = date.getDate() - (date.getDay() - 1);
+    }
+
+    var weekEnderResults = [];
+    var day = 0;
+    var current = new Date(start);
+
+    current.setDate(current.getDate() + (day - current.getDay() + 7) % 7);
+    end.setDate(end.getDate() + ((7 - end.getDay()) % 7));
+
+    while (current <= end) {
+	  var weekEnder = new Date(+current);
+      weekEnderResults.push({
+		  value : weekEnder,
+		  duration :0
+		});
+      current.setDate(current.getDate() + 7);
+	}
+
+    var studentId = this.sessions.find(session => id == session._id).clientUID;
+    var student = this.sessions.find(session => id == session._id).student;
+
+    
+    var sessionData = [];
+    var sessions = this.sessions.filter( session => session.clientUID == studentId);
+
+    sessions.forEach(session => {
+      const validIndexes = this.ValidIndexes(session, start, end);
+
+      validIndexes.forEach(index => {
+
+		const sessionDate = this.DateFinder(session, index);
+		const formattedDate = this.$filter('toDateString')(sessionDate);
+		const parsedDate = this.$filter('reparseDate')(formattedDate);
+		const color = this.ColorFinder(session, index);
+        sessionData.push({
+          duration: session.duration / 60,
+		  sessionDate,
+		  date: parsedDate,
+		  color
+        });
+ 
+      });
+	});
+
+	sessionData = sessionData.filter(session => {
+		var acceptedColors = ['blue', 'dark blue', 'green', 'dark green', 'purple', 'dark purple'];
+		var color = session.color.toLowerCase();
+		return acceptedColors.includes(color);
+	  });
+	
+	sessionData = sessionData.sort((a, b) => {
+		if (a.sessionDate < b.sessionDate) {
+			return -1;
+		}
+
+		if (a.sessionDate > b.sessionDate) {
+			return 1;
+		}
+
+		if (a.basicTime < b.basicTime) {
+			return -1;
+		}
+
+		if (a.basicTime > b.basicTime) {
+			return 1;
+		}
+
+		return 0;
+	});
+
+	console.log(sessionData);
+
+    var hoursCompleted = 0;
+	var weekList = []
+
+	 weekEnderResults.forEach((weekend, i, weekends) => {
+		var weekendDate = new Date(weekend.value);
+		
+		sessionData.forEach(session => {
+			let sessionDate = new Date(session.date);
+			if(i==0 && sessionDate <= weekendDate){
+				weekend.duration += session.duration;
+			} else if(i>0){
+				var weekendStart = new Date(weekends[i-1].value);
+				if(sessionDate >= weekendStart && sessionDate <= weekendDate){
+					weekend.duration += session.duration;
+				}
+			}
+		});
+		
+	
+		var month = ("0" + (weekendDate.getMonth() + 1)).slice(-2);
+		var date = ("0" + weekendDate.getDate()).slice(-2);
+
+		var status = i > 4 ? `Scheduled` : `Completed`; 
+
+		if (i >= 0 && i <= 4) {
+			hoursCompleted += weekend.duration;
+		} else if (i == 9) {
+			status += `  (Does This Session Need To Be Rescheduled?)`;
+		}
+		weekList.push(`Week Ending  ${date}/${month} â€“ ${weekend.duration} hour(s) ${status}`); 
+
+	}); 
+	console.log(weekEnderResults);
+ 
+	var studentInfo = {
+		clientEmailAddress: student.clientEmail,
+		clientName: student.clientFirstName,
+		studentName: student.firstName,
+		termNo,
+		sixthSunday: sixthSunday,
+		hoursCompleted,
+		hoursToFinish : 10- hoursCompleted,
+		weekList
+	  };
+
+	console.log(studentInfo);
+
+    this.$http.post('/api/students/send-email-notif', {
+	  subject: `Tuition Schedule to Finish Term ${termNo}`,
+	  studentInfo
+    });
+     
+    
+  }
 
 	sendSMS(id, instance, time, isTutor) {
 		var session = this.sessions.find(session => id == session._id);
@@ -624,7 +790,7 @@ export default class CalendarController {
 
 	finishedLoad() {
 		this.loaded++;
-		if (this.loaded === 4) {
+		if (this.loaded === 5) {
 			this.updateCal();
 		}
 	}
