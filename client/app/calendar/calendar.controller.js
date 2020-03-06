@@ -349,7 +349,6 @@ export default class CalendarController {
 
 	sendEmail(id, date, isWeek) {
 		const msDay = 1000 * 60 * 60 * 24;
-
 		if (isWeek) {
 			if (date.getDay() === 0) {
 				var startOfWeek = date.getDate() - 7;
@@ -505,28 +504,10 @@ export default class CalendarController {
   sendEmailScheduleNotif(id, date) {
 
 
-	/**
-	1. get dates for filtering student sessions
-	2. get student information from each sessions
-	3. get distinct student 
-	4. add distinct student info in list
-	5. check for other conditions later
-	6. map values to email template
-	*/
-    //change to get exact of week 6
-
-
-    var dateToday = new Date(date.getFullYear(), date.getMonth(), date.getDate());
     var start = new Date(this.term.startDate);
 	var end = new Date(this.term.endDate);
 	var termNo = this.term.termNo 
 	var sixthSunday = this.term.sixthSunday;
-
-    if (date.getDay() === 0) {
-      var startOfWeek = date.getDate() - 7;
-    } else {
-      var startOfWeek = date.getDate() - (date.getDay() - 1);
-    }
 
     var weekEnderResults = [];
     var day = 0;
@@ -621,13 +602,20 @@ export default class CalendarController {
 		var date = ("0" + weekendDate.getDate()).slice(-2);
 
 		var status = i > 4 ? `Scheduled` : `Completed`; 
-
+		var toBeRescheduled = false;
 		if (i >= 0 && i <= 4) {
 			hoursCompleted += weekend.duration;
+			if(weekend.duration ==0){
+				status  += " (To Be Rescheduled)";
+				toBeRescheduled = true;
+			}
 		} else if (i == 9) {
 			status += `  (Does This Session Need To Be Rescheduled?)`;
 		}
-		weekList.push(`Week Ending  ${date}/${month} â€“ ${weekend.duration} hour(s) ${status}`); 
+		weekList.push({
+			value:	`Week Ending ${date}/${month} - ${weekend.duration} Hour ${status}`,
+			toBeRescheduled
+		}); 
 
 	}); 
 	console.log(weekEnderResults);

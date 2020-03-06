@@ -1,39 +1,49 @@
-<div style="color:#000000"><%= studentInfo.clientEmailAddress %>  <br/><br/>
-    Hi <%= studentInfo.clientName %> , <br/><br/>
-    I hope this email finds you well and you’re having a great week.
-    Now that we’ve finished the first half of Term <%= studentInfo.termNo %>, I just wanted to send you a quick email to update you on <%= studentInfo.studentName %>’s 
-    current tuition schedule and start to organise the rescheduling(if required) of any sessions in order to complete the Tuition Cycle for Term <%= studentInfo.termNo %>  (10 Sessions).
-     Please find below the current schedule: <br/>
-    <ul>
-        <% for(var i=0; i< studentInfo.weekList.length;i++){ %>
-            <% if(i< 5){ %>
-                <li style="color:#339966"><strong><%= studentInfo.weekList[i] %></strong></li>
-            <% } %>
-            <% if(i> 4 && i< 9){ %>
-                <li style="columns: #000000;"><strong><%= studentInfo.weekList[i] %></strong></li>
-            <% } %>
-            <% if(i==9) { %>
-                <li style="color:#ff9900"><strong><%= studentInfo.weekList[i] %></strong></li>
-            <% } %>
-        <% } %>
-    </ul>
-    <ul style="color:#000000">
-        <li><strong>TOTAL = <%= studentInfo.hoursCompleted %>  Hours out of 10 Hours Completed To Date (<%= studentInfo.hoursToFinish %>  Hours Remain to Complete Tuition Cycle) <strong></li>
-    </ul><br/>
-</div><div style="color:#000000">
-    I trust you find this to be of interest and if you could please let me know if you would like to reschedule any of the above sessions to coincide with exams or assignments that would be greatly appreciated.
-    If you do want to move sessions to earlier in the term, please let me know what days and times would be suitable
-    so I can start organising this. We will now also be tutoring on Sundays from the <%= studentInfo.sixthSunday %> until the end of term so this might be an option to consider if availability is limited.<br/><br/>
-     Please also note that tuition doesn’t have to be with your regular tutor and can be organised for any subjects where additional assistance would be beneficial.
-     Alternatively, if you have another child that you would like to attend tuition and use any remaining sessions in Term <%= studentInfo.termNo %>, please just let me know and I’m sure we will be able to accommodate this. <br/><br/>
-    Thank you in advance and as always if you have any questions or queries please feel free to contact me on 0414 504 002 or by reply email. <br/><br/>
-    
-    Kind Regards, <br/><br/>
-    Pat<br/><br/>
-    <strong>Patrick Speare | Administration | <span style="color:#339966;">Grace Simpkins Personal Tutors</span> </strong> <br/>
-
-     PO Box 317, Morningside, QLD, 4170, Australia <br/>
-     <span style="color:#339966;">Tel:</span> 1300 360 245 | <span style="color:#339966;">Fax:</span> 1300 360 237 <br/><br/>
-
-     <span style="color:#339966;">Email:</span> contact@gspt.com.au | <span style="color:#339966;">Web:</span> www.personaltutors.com.au <br/><br/>
-</div>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "https://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+    <body>
+        <div style="color:#000000"><%= studentInfo.clientEmailAddress %><br/><br/>
+            Hi <%= studentInfo.clientName %>,<br/><br/>
+            <span style="color:#000000">I hope this email finds you well and you’re having a great week.</span><br/><br/>
+            Now that we’ve finished the first half of Term <%= studentInfo.termNo %>, I just wanted to send you a quick email to update you on <%= studentInfo.studentName %>’s 
+            current tuition schedule and start to organise the rescheduling (if required) of any sessions in order to complete the Tuition Cycle for Term <%= studentInfo.termNo %>  (10 Sessions).
+             Please find below the current schedule: <br/>
+            <ul>
+                <% for(var i=0; i< studentInfo.weekList.length;i++){ %>
+                    <% if(i< 5 && !studentInfo.weekList[i].toBeRescheduled){ %>
+                        <li style="color:#00b050"><strong><%= studentInfo.weekList[i].value %></strong></li>
+                    <% } %>
+                    <% if(i> 4 && i< 9 && !studentInfo.weekList[i].toBeRescheduled){ %>
+                        <li style="color:#000000"><strong><%= studentInfo.weekList[i].value %></strong></li>
+                    <% } %>
+                    <% if(i==9 || (i< 5 && studentInfo.weekList[i].toBeRescheduled)) { %>
+                        <li style="color:#ed7d31"><strong><%= studentInfo.weekList[i].value %></strong></li>
+                    <% } %>
+                <% } %>
+            </ul>
+            <ul style="color:#000000">
+                <li><strong>TOTAL = <%= studentInfo.hoursCompleted %>  Hours out of 10 Hours Completed To Date (<%= studentInfo.hoursToFinish %>  Hours Remain to Complete Tuition Cycle) </strong></li>
+            </ul><br/>
+            <p style="color:#000000">
+                I trust you find this to be of interest and if you could please let me know if you would like to reschedule any of the above sessions to coincide with exams or assignments that would be greatly appreciated.
+                If you do want to move sessions to earlier in the term, please let me know what days and times would be suitable
+                so I can start organising this. We will now also be tutoring on Sundays from the <%= studentInfo.sixthSunday %> until the end of term so this might be an option to consider if availability is limited.<br/><br/>
+                Please also note that tuition doesn’t have to be with your regular tutor and can be organised for any subjects where additional assistance would be beneficial.
+                Alternatively, if you have another child that you would like to attend tuition and use any remaining sessions in Term <%= studentInfo.termNo %>, please just let me know and I’m sure we will be able to accommodate this. <br/><br/>
+                Thank you in advance and as always if you have any questions or queries please feel free to contact me on 0414 504 002 or by reply email. 
+                <br/><br/>
+            Kind Regards, <br/><br/>
+            Pat
+            </p><br/>
+            <p style="color:#999999; font-size:9.0pt;">
+                <span style="color:#666666;"><b>Patrick Speare | Administration | </b> </span><span style="color:#41a046"><b>Grace Simpkins Personal Tutors</b></span><br/>
+                <span style="color:#999999;">PO Box 317, Morningside, QLD, 4170, Australia</span><span><br></span>
+                <span style="color:#41a046"><b>Tel: </b></span></b><span >1300 360 245 |</span>
+                <span style="color:#41a046"><b>Fax: </b></span></b><span >1300 360 237 </span><br/>
+                <b><span style="color:#41a046">Email: </span></b><a href="mailto:contact@gspt.com.au" target="_blank"><span>contact@gspt.com.au</span></a>
+                <span></span><span>| </span>
+                <b><span style="color:#41a046">Web: </span></b><span></span><a href="http://www.personaltutors.com.au/" target="_blank" data-saferedirecturl="https://www.google.com/url?hl=en&q=http://www.personaltutors.com.au/&source=gmail&ust=1583485714723000&usg=AFQjCNFWzXfXuOH_lS1Ezdy1bVr77ed3Hg">
+                <span>www.personaltutors.com.<wbr>au</span></a>
+            </p>
+        </div>
+    </body>
+</html>

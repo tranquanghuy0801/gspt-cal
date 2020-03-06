@@ -23,7 +23,7 @@ export function sendEmail(from, to, subject, html){
 
 
 export function sendEmailReminder(from, to, subject, studentInfo) {
-  ejs.renderFile(__dirname + '\\templates\\student-schedule-notif.ejs', {studentInfo}, function (err, data) {
+  ejs.renderFile(__dirname + '\/templates\/student-schedule-notif.ejs', {studentInfo}, function (err, data) {
 	if (err) {
 		console.log(err);
 	} else {
