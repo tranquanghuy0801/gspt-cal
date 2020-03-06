@@ -1,12 +1,20 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "https://www.w3.org/TR/html4/strict.dtd">
 <html lang="en">
+    <head>
+    <style type="text/css">
+        div,
+        p {
+            color:#000000
+        }
+    </style>
+    </head>
     <body>
-        <div style="color:#000000"><%= studentInfo.clientEmailAddress %><br/><br/>
-            Hi <%= studentInfo.clientName %>,<br/><br/>
-            <span style="color:#000000">I hope this email finds you well and you’re having a great week.</span><br/><br/>
+        <div><%= studentInfo.clientEmailAddress %><br/><br/>
+            <span>Hi <%= studentInfo.clientName %>,<br/><br/>
+            I hope this email finds you well and you’re having a great week.</span><br/><br/>
             Now that we’ve finished the first half of Term <%= studentInfo.termNo %>, I just wanted to send you a quick email to update you on <%= studentInfo.studentName %>’s 
             current tuition schedule and start to organise the rescheduling (if required) of any sessions in order to complete the Tuition Cycle for Term <%= studentInfo.termNo %>  (10 Sessions).
-             Please find below the current schedule: <br/>
+             Please find below the current schedule: <br/></span>
             <ul>
                 <% for(var i=0; i< studentInfo.weekList.length;i++){ %>
                     <% if(i< 5 && !studentInfo.weekList[i].toBeRescheduled){ %>
@@ -23,10 +31,12 @@
             <ul style="color:#000000">
                 <li><strong>TOTAL = <%= studentInfo.hoursCompleted %>  Hours out of 10 Hours Completed To Date (<%= studentInfo.hoursToFinish %>  Hours Remain to Complete Tuition Cycle) </strong></li>
             </ul><br/>
-            <p style="color:#000000">
+            <p>
                 I trust you find this to be of interest and if you could please let me know if you would like to reschedule any of the above sessions to coincide with exams or assignments that would be greatly appreciated.
                 If you do want to move sessions to earlier in the term, please let me know what days and times would be suitable
                 so I can start organising this. We will now also be tutoring on Sundays from the <%= studentInfo.sixthSunday %> until the end of term so this might be an option to consider if availability is limited.<br/><br/>
+            </p>
+            <p>
                 Please also note that tuition doesn’t have to be with your regular tutor and can be organised for any subjects where additional assistance would be beneficial.
                 Alternatively, if you have another child that you would like to attend tuition and use any remaining sessions in Term <%= studentInfo.termNo %>, please just let me know and I’m sure we will be able to accommodate this. <br/><br/>
                 Thank you in advance and as always if you have any questions or queries please feel free to contact me on 0414 504 002 or by reply email. 
