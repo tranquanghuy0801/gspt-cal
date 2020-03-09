@@ -25,7 +25,7 @@
     <div class="col-sm-2">
       <div class="form-group">
         <label>Term</label>
-        <input type="text" class="form-control" required ng-model="admin.term.termNo" placeholder="admin.term.termNo">
+        <input type="text" class="form-control" required ng-model="admin.term.termNo" placeholder="Term">
       </div>
     </div>
     <div class="col-sm-2">
@@ -73,6 +73,14 @@
           <span>Generate Emails</span>
         </button>
       </div>
+    </div>
+  </div>
+  <div>
+    <div class="alert alert-danger" ng-show="admin.term.fail">
+      There was an error. Please refresh and try again.
+    </div>
+    <div class="alert alert-success" ng-show="admin.term.success">
+      Term settings successfully updated.
     </div>
   </div>
 
@@ -138,4 +146,9 @@
         <button class="btn btn-success" type="submit">Save Icons</button>
       </div>
     </form>
+  </div>
+  <div class="loading-wrap" ng-show="admin.loading">
+    <svg id="load" x="0px" y="0px" viewBox="0 0 150 150">
+        <circle id="loading-inner" cx="75" cy="75" r="60"/>
+    </svg>
   </div>

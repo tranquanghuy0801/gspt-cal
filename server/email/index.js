@@ -25,6 +25,7 @@ export function sendEmail(from, to, subject, html){
 export function sendEmailReminder(from, to, subject, studentInfo) {
   ejs.renderFile(__dirname + '\/templates\/student-schedule-notif.ejs', {studentInfo}, function (err, data) {
 	if (err) {
+		console.log("Error rendering e-mail template");
 		console.log(err);
 	} else {
 		var mainOptions = {
@@ -33,7 +34,6 @@ export function sendEmailReminder(from, to, subject, studentInfo) {
 			subject,
 			html: data
 		};
-		console.log("html data ======================>", mainOptions.html);
 		nodemail.sendMail(mainOptions, function (err, info) {
 			if (err) {
 				console.log(err);
