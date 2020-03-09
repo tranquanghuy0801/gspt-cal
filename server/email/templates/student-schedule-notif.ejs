@@ -3,15 +3,16 @@
     <head>
     <style type="text/css">
         div,
-        p {
+        p,
+        span {
             color:#000000
         }
     </style>
     </head>
     <body>
         <div><%= studentInfo.clientEmailAddress %><br/><br/>
-            <span>Hi <%= studentInfo.clientName %>,<br/><br/>
-            I hope this email finds you well and you’re having a great week.</span><br/><br/>
+            <span>Hi <%= studentInfo.clientName %>,</span><br/><br/>
+            <span>I hope this email finds you well and you’re having a great week.</span><br/><br/>
             Now that we’ve finished the first half of Term <%= studentInfo.termNo %>, I just wanted to send you a quick email to update you on <%= studentInfo.studentName %>’s 
             current tuition schedule and start to organise the rescheduling (if required) of any sessions in order to complete the Tuition Cycle for Term <%= studentInfo.termNo %>  (10 Sessions).
              Please find below the current schedule: <br/></span>
