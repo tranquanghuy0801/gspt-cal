@@ -1,6 +1,7 @@
 var nodemailer = require('nodemailer');
 var mg = require('nodemailer-mailgun-transport');
 var ejs = require('ejs');
+var async = require('async');
 
 var auth = {
   auth: {
@@ -21,28 +22,28 @@ export function sendEmail(from, to, subject, html){
 	}); 
 }
 
-
-export function sendEmailReminder(from, to, subject, studentInfo) {
-  ejs.renderFile(__dirname + '\/templates\/student-schedule-notif.ejs', {studentInfo}, function (err, data) {
-	if (err) {
-		console.log("Error rendering e-mail template");
-		console.log(err);
-	} else {
-		var mainOptions = {
-			from,
-			to, 
-			subject,
-			html: data
-		};
-		nodemail.sendMail(mainOptions, function (err, info) {
+export async function sendEmailReminder(from, to, subject, studentsInfo){
+	console.log("send emails");
+	async.forEach(studentsInfo, (studentInfo) => {
+		ejs.renderFile(__dirname + '\/templates\/student-schedule-notif.ejs', {studentInfo}, function (err, data) {
 			if (err) {
+				console.log("Error rendering e-mail template");
 				console.log(err);
-			} 
+			} else {
+				var mainOptions = {
+					from,
+					to,
+					subject,
+					html: data
+				};
+				nodemail.sendMail(mainOptions, function (err, info) {
+					if (err) {
+						console.log(err);
+					} 
+				});
+			}		
 		});
-	}
-  });
-	
+	});
+	console.log("asynchronous function call done");
 
-  
-
-};
+}

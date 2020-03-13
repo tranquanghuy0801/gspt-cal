@@ -95,7 +95,7 @@ export function create(req, res) {
 }
 
 export function sendEmailDay(req, res){
-  sendEmail('noreply@gsptcal.com.au', 'clarissa.boac@gmail.com', `${req.body.range} Schedule: ${req.body.tutor}`, req.body.content);
+  sendEmail('noreply@gsptcal.com.au', 'pspeare@gspt.com.au', `${req.body.range} Schedule: ${req.body.tutor}`, req.body.content);
 }
 
 // Upserts the given Tutor in the DB at the specified ID

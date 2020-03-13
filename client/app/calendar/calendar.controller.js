@@ -57,7 +57,7 @@ export default class CalendarController {
 		this.rooms = {
 			'paddington': this.createArray(7), // from 9 changed to 7
 			'cannon hill': this.createArray(6),
-      'mt. gravatt': this.createArray(6) // added for testing purposes
+      		//'mt. gravatt': this.createArray(6) // might need this soon
 
 		};
 		//creates segments for the days
@@ -577,7 +577,7 @@ export default class CalendarController {
 		return 0;
 	});
 
-	console.log(sessionData);
+
 
     var hoursCompleted = 0;
 	var weekList = []
@@ -618,7 +618,6 @@ export default class CalendarController {
 		}); 
 
 	}); 
-	console.log(weekEnderResults);
  
 	var studentInfo = {
 		clientEmailAddress: student.clientEmail,
@@ -635,7 +634,7 @@ export default class CalendarController {
 
     this.$http.post('/api/students/send-email-notif', {
 	  subject: `Tuition Schedule to Finish Term ${termNo}`,
-	  studentInfo
+	  studentInfo: [studentInfo]
     });
      
     

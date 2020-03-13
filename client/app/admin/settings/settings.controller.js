@@ -123,9 +123,7 @@ export default class {
 
 	generateEmails(){
 		if(confirm('Are you sure you want to send student e-mails?')){
-			this.loading = true;
-			// ++++++++++++++++++++ get student sessions here
-			
+			this.loading = true;		
 			var start = new Date(this.term.startDate);
 			var end = new Date(this.term.endDate);
 			var termNo = this.term.termNo 
@@ -134,7 +132,6 @@ export default class {
 			
 			var studentSessions = this.sessions.filter(session => studentIds.has(session.clientUID));
 		
-			
 			var sessionData = [];
 			studentSessions.forEach(session => {
 			const validIndexes = this.ValidIndexes(session, start, end);
@@ -154,6 +151,7 @@ export default class {
 			
 				});
 			});
+			
 
 			sessionData = sessionData.filter(session => {
 				var acceptedColors = ['blue', 'dark blue', 'green', 'dark green', 'purple', 'dark purple'];
@@ -181,7 +179,7 @@ export default class {
 				return 0;
 			});
 		
-
+			console.log(sessionData.length); 
 			var studentsData = [];
 			var weekEnderResults = this.getWeekendsOfTerm();
 			studentIds.forEach(sID => {
@@ -189,7 +187,7 @@ export default class {
 				let weekListInfo = this.retrieveHoursPerWeek(weekEnderResults, sessionsForStudent);
 				var student = this.students.find(s=> s._id == sID);
 				studentsData.push({
-					clientEmailAddress: student.clientEmail,
+					clientEmailAddress: student.clientEmail.toLowerCase(),
 					clientName: student.clientFirstName,
 					studentName: student.firstName,
 					termNo,
@@ -200,16 +198,24 @@ export default class {
 				}); 
 			})
 		
-			studentsData = studentsData.filter(s => s.clientEmailAddress != "contact@gspt.com.au");
+			studentsData = studentsData.filter(s => s.clientEmailAddress != "contact@gspt.com.au").sort((a, b) => {
+				if (a.clientEmailAddress < b.clientEmailAddress) {
+					return -1;
+				}
+		
+				if (a.clientEmailAddress > b.clientEmailAddress) {
+					return 1;
+				}
+				return 0;
+			});
 			console.log(studentsData);
-		
-		
-			studentsData.forEach(studentInfo => {
-				this.$http.post('/api/students/send-email-notif', {
-					subject: `Tuition Schedule to Finish Term ${termNo}`,
-					studentInfo
-				});
-			})
+
+			this.$http.post('/api/students/send-email-notif', {
+				subject: `Tuition Schedule to Finish Term ${termNo}`,
+				studentInfo:studentsData
+			}).then(()=> console.log("success"), ()=> console.log("error"),);
+
+			console.log("reached end of generate emails");
 			
 		}
 		this.loading = false; 
@@ -308,8 +314,6 @@ export default class {
 	}
 
 	getWeekendsOfTerm(){
-
-		console.log(this.term);
 		var start = new Date(this.term.startDate);
 		var end = new Date(this.term.endDate);
 		var weekEnderResults = [];

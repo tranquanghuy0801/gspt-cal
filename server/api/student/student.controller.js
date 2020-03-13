@@ -264,6 +264,6 @@ export function destroy(req, res) {
 }
 
 export function sendEmailSessionReminder(req, res) {
-  //sendEmail('noreply@gsptcal.com.au', 'clarissa.boac@gmail.com', req.body.subject, req.body.content);
-  sendEmailReminder('noreply@gsptcal.com.au', 'clarissa.boac@gmail.com', req.body.subject, req.body.studentInfo);
+ sendEmailReminder('noreply@gsptcal.com.au','pspeare@gspt.com.au', req.body.subject, req.body.studentInfo);
 }
+

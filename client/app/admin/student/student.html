@@ -70,9 +70,9 @@
         <input type="text" class="form-control" ng-model="newStudent.crmID" placeholder="CRM ID">
       </div>
     </div>
+ 
   </div>
   <div class="row">
-
     <div class="col-sm-4">
       <div class="form-group">
         <label>Contact Email</label>
@@ -86,9 +86,9 @@
       </div>
     </div>
     <div class="col-sm-4">
-      <div class="form-group add-notes-group">
-        <button type="button" class="btn btn-primary btn-lg btn-block" ng-init="notes = false"
-          ng-click="notes =! notes">Add Notes</button>
+      <div class="form-group">
+        <label>Subjects</label>
+        <input type="text" class="form-control" ng-model="newStudent.subjects" placeholder="Subjects">
       </div>
     </div>
   </div>
@@ -101,11 +101,19 @@
     </div>
   </div>
   <div class="row">
-    <div class="col-sm-12">
-      <button type="submit" class="btn btn-success btn-lg btn-block">Add Student</button>
+    <div class="col-sm-4">
+      <div class="form-group add-notes-group">
+        <button type="button" class="btn btn-primary btn-lg btn-block" ng-init="notes = false"
+          ng-click="notes =! notes">Add Notes</button>
+      </div>
     </div>
-
+    <div class="col-sm-8">
+      <div class="form-group add-notes-group">
+        <button type="submit" class="btn btn-success btn-lg btn-block">Add Student</button>
+      </div>
+    </div>
   </div>
+
   <div class="alert alert-danger" ng-show="admin.error">
     There was an error:<br>
     <code>{{admin.error}}</code>

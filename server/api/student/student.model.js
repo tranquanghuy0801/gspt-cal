@@ -27,6 +27,10 @@ var StudentSchema = new mongoose.Schema({
   		return !this.isTertiary;
     }
   },
+  subjects:{
+    type: String,
+    required: true
+  },
   isTertiary:{
   	type: Boolean,
   	default: false
