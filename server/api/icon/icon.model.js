@@ -39,6 +39,41 @@ var IconSchema = new mongoose.Schema({
   	required: true,
   	lowercase: true
   },
+  _note:{
+    type: String,
+  	required: true,
+  	lowercase: true
+  },
+  _tempUnknown:{
+    type: String,
+  	required: true,
+  	lowercase: true
+  },
+  _permUnknown:{
+    type: String,
+  	required: true,
+  	lowercase: true
+  },
+  _perm2Unknown:{
+    type: String,
+  	required: true,
+  	lowercase: true
+  },
+  _sixty:{
+    type: String,
+  	required: true,
+  	lowercase: true
+  },
+  _seventy:{
+    type: String,
+  	required: true,
+  	lowercase: true
+  },
+  _eighty:{
+    type: String,
+  	required: true,
+  	lowercase: true
+  },
   __v: { 
       type: Number, 
       select: false,

@@ -1,0 +1,36 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "https://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+    <head>
+    <style type="text/css">
+        div,
+        p,
+        span {
+            color:#000000
+        }
+    </style>
+    </head>
+    <body>
+        <div><%= emailAddress %><br/><br/>
+            <span>Hi <%= tutor %>,</span><br/><br/>
+            <span>I hope this email finds you well and you’re having a great week.</span><br/><br/>
+            Please find below your current schedule for <%= schedule %>. Please note that it is likely that there will be modifications to this schedule that I will organise via SMS.
+            <%- content%>
+            <p>
+                As always if you have any questions or queries please just let me know.
+                <br/><br/>
+            Kind Regards, <br/><br/>
+            Pat
+            </p><br/>
+            <p style="color:#999999; font-size:9.0pt;">
+                <span style="color:#666666;"><b>Patrick Speare | Administration | </b> </span><span style="color:#41a046"><b>Grace Simpkins Personal Tutors</b></span><br/>
+                <span style="color:#999999;">PO Box 317, Morningside, QLD, 4170, Australia</span><span><br></span>
+                <span style="color:#41a046"><b>Tel: </b></span></b><span style="color:#999999;">1300 360 245 |</span>
+                <span style="color:#41a046"><b>Fax: </b></span></b><span style="color:#999999;">1300 360 237 </span><br/>
+                <b><span style="color:#41a046">Email: </span></b><a href="mailto:contact@gspt.com.au" target="_blank"><span style="color:#999999;">contact@gspt.com.au</span></a>
+                <span></span><span>| </span>
+                <b><span style="color:#41a046">Web: </span></b><span></span><a href="http://www.personaltutors.com.au/" target="_blank" data-saferedirecturl="https://www.google.com/url?hl=en&q=http://www.personaltutors.com.au/&source=gmail&ust=1583485714723000&usg=AFQjCNFWzXfXuOH_lS1Ezdy1bVr77ed3Hg">
+                <span style="color:#999999;">www.personaltutors.com.au</span></a>
+            </p>
+        </div>
+    </body>
+</html>

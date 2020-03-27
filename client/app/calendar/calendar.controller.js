@@ -43,6 +43,13 @@ export default class CalendarController {
 			this.finishedLoad();
 		})
 
+		this.$http.get('/api/termsettings').then(response => {
+	        if (response && response.data && response.data[0]) {
+				this.term = response.data[0]
+			}
+			this.finishedLoad();
+	    });
+
 		//defaults to paddington
 		this.location = 'paddington';
 		//setting locations and number of rooms with [0,1,2] arrays to loop through
@@ -50,7 +57,7 @@ export default class CalendarController {
 		this.rooms = {
 			'paddington': this.createArray(7), // from 9 changed to 7
 			'cannon hill': this.createArray(6),
-      'mt. gravatt': this.createArray(6) // added for testing purposes
+      		//'mt. gravatt': this.createArray(6) // might need this soon
 
 		};
 		//creates segments for the days
@@ -125,15 +132,6 @@ export default class CalendarController {
 				this.addSessionModal(_time, $itemScope.room)
 			}
 		}, {
-			text: 'Edit',
-			displayed: menuDisplayed,
-			click: ($itemScope, $event) => {
-				var _targ = $event.target.classList.contains('session-cell') ? $event.target : $event.target.closest('.session-cell');
-				var _uid = _targ.dataset.id;
-				var _instance = +_targ.dataset.instance;
-				this.editSessionModal(_uid, _instance);
-			}
-		}, {
 			text: 'Copy',
 			displayed: menuDisplayed,
 			children: [
@@ -191,6 +189,7 @@ export default class CalendarController {
 		},
 		{
 			text: 'SMS Tutor',
+			hasBottomDivider: true,
 			displayed: dateSame,
 			click: ($itemScope, $event) => {
 				var _targ = $event.target.classList.contains('session-cell') ? $event.target : $event.target.closest('.session-cell');
@@ -202,34 +201,45 @@ export default class CalendarController {
 		},
 		{
 			text: 'Email Tutor',
-			hasBottomDivider: true,
 			children: [{
 				text: 'This Day',
 				click: ($itemScope, $event) => {
 					const targ = $event.target.classList.contains('session-cell') ? $event.target : $event.target.closest('.session-cell');
 					const uid = targ.dataset.id;
-					this.sendEmail(uid, this.calendarDate, false);
+					this.sendEmail(uid, this.calendarDate, false, false);
+				},
+			},{
+				text: 'This Day - With Subjects',
+				click: ($itemScope, $event) => {
+					const targ = $event.target.classList.contains('session-cell') ? $event.target : $event.target.closest('.session-cell');
+					const uid = targ.dataset.id;
+					this.sendEmail(uid, this.calendarDate, false, true);
 				},
 			}, {
 				text: 'This Week',
 				click: ($itemScope, $event) => {
 					const targ = $event.target.classList.contains('session-cell') ? $event.target : $event.target.closest('.session-cell');
 					const uid = targ.dataset.id;
-					this.sendEmail(uid, this.calendarDate, true);
+					this.sendEmail(uid, this.calendarDate, true, false);
+				},
+			}, {
+				text: 'This Week - With Subjects',
+				click: ($itemScope, $event) => {
+					const targ = $event.target.classList.contains('session-cell') ? $event.target : $event.target.closest('.session-cell');
+					const uid = targ.dataset.id;
+					this.sendEmail(uid, this.calendarDate, true, true);
 				},
 			}],
 		},
-		{
-			text: 'Inactivate Student',
-			hasBottomDivider: true,
-			displayed: menuDisplayed,
-			click: ($itemScope, $event) => {
-				var _targ = $event.target.classList.contains('session-cell') ? $event.target : $event.target.closest('.session-cell');
-				var _uid = _targ.dataset.id;
-				var _instance = +_targ.dataset.instance;
-				this.studentInactive(_uid, _instance);
-			}
-		}, {
+    {
+      text: 'Email Student Schedule',
+      hasBottomDivider: true,
+      click: ($itemScope, $event) => {
+        const targ = $event.target.classList.contains('session-cell') ? $event.target : $event.target.closest('.session-cell');
+        const uid = targ.dataset.id;
+        this.sendEmailScheduleNotif(uid, this.calendarDate);
+      },
+    }, {
 			text: 'Temporary Icon',
 			displayed: menuDisplayed,
 			children: [
@@ -249,6 +259,10 @@ export default class CalendarController {
 					text: '6. Cross',
 					click: changeIcon(6, false),
 				},
+				{
+					text: 'Unknown',
+					click: changeIcon(7, false),
+				},
 			]
 		}, {
 			text: 'Permanent Icon',
@@ -263,13 +277,16 @@ export default class CalendarController {
 					text: '4. Payment Stored',
 					click: changeIcon(4, true),
 				},
+				{
+					text: 'Direct Debit',
+					click: changeIcon(8, true),
+				},
+				{
+					text: 'Credit Card Stored',
+					click: changeIcon(9, true),
+				},
 			]
-		}, {
-			text: 'Temporary Colour',
-			hasBottomDivider: true,
-			displayed: menuDisplayed,
-			children: tempColourChildren
-		}, {
+		},  {
 			text: 'Toggle Changeover',
 			hasBottomDivider: true,
 			displayed: menuDisplayed,
@@ -331,9 +348,8 @@ export default class CalendarController {
 		};
 	}
 
-	sendEmail(id, date, isWeek) {
+	sendEmail(id, date, isWeek, withSubjects) {
 		const msDay = 1000 * 60 * 60 * 24;
-
 		if (isWeek) {
 			if (date.getDay() === 0) {
 				var startOfWeek = date.getDate() - 7;
@@ -348,6 +364,7 @@ export default class CalendarController {
 			var end = start;
 		}
 
+		var tutorInfo = [];
 		const tutorID = this.sessions.find(session => id == session._id).tutorUID;
 		const tutor = this.tutors.find(tutor => tutorID === tutor._id);
 		const tutorSessions = this.sessions.filter(session => tutorID === session.tutorUID).filter(session => session.date);
@@ -368,13 +385,16 @@ export default class CalendarController {
 				const color = this.ColorFinder(session, index);
 
 				sessionData.push({
-					student: session.student,
+					studentName: session.student.firstName + " " + session.student.lastName,
+					isTertiary: session.student.isTertiary,
+					grade: session.student.grade,
+					subjects: session.student.subjects,
 					time: formattedTime,
 					isEmpty: false,
 					basicTime,
 					date: formattedDate,
 					sessionDate,
-					color,
+					color
 				});
 
 			});
@@ -417,7 +437,7 @@ export default class CalendarController {
 						isEmpty: true,
 						date: datePresent,
 						time: formattedTime,
-						sessionDate,
+						sessionDate
 					});
 				}
 			})
@@ -441,51 +461,206 @@ export default class CalendarController {
 			}
 
 			return 0;
-		});
+		}).filter(session => !session.isEmpty);
 
-		var html = '<ul>';
-		sessionData.forEach(session => {
-			if (session.isEmpty) {
-				if (isWeek) {
-					var time = `${session.date}, ${session.time}`;
-				} else {
-					var time = `${session.time}`;
-				}
-				html += `<li>${time} - No Student</li>`;
-				return;
-			}
 
-			if (isWeek) {
-				var time = `${session.date}, ${session.time}`;
-			} else {
-				var time = `${session.time}`;
-			}
 
-			if (session.student.isTertiary) {
-				var grade = '(Uni Student)';
-			} else {
-				var grade = `(Year ${session.student.grade})`;
-			}
 
-			html += `<li>${time} - ${session.student.firstName} ${session.student.lastName} ${grade}`;
+		var dates = new Set(sessionData.map(session => session.sessionDate));
+		
+		var tutorWeek = [];
 
-			if (isWeek) {
-				html += ' ' + session.color;
-			}
-
-			html += '</li>';
-
+		dates.forEach(date => {
+			var sessionsOnDay = sessionData.filter(session => session.sessionDate == date);
+			var thisDate = (new Date(date)).toLocaleDateString('en-AU', { weekday: 'long' });
+			console.log(sessionsOnDay);
+			tutorWeek.push({
+				[thisDate]:sessionsOnDay
+			});
 		})
 
-		html += '</ul>';
+
+		var schedule='<ul>';
+
+		tutorWeek.forEach(day=> {
+			
+			for (const [key, value] of Object.entries(day)) {
+				schedule += `\t<li>${key}<ul>`;
+				value.forEach(studentSession => {
+
+					if (studentSession.isTertiary) {
+						var grade = '(Uni Student)';
+					} else {
+						var grade = `(Year ${studentSession.grade})`;
+					}
+
+					if(withSubjects && studentSession.subjects){
+						var subjects =  ` ${studentSession.subjects}`;
+					} else{
+						var subjects = "";
+					}
+				
+					schedule += `<li>${studentSession.time} - ${studentSession.studentName} ${grade}${subjects}</li>\n`;
+
+				});
+				
+				schedule +=`</ul></li>\n`;
+			}
+		});
+
+		schedule +='</ul>';
+
+		
+		var month = ("0" + (start.getMonth() + 1)).slice(-2);
+		var date = ("0" + start.getDate()).slice(-2);
+		var subjectDate = date+"/"+month
 
 		this.$http.post('/api/tutors/send-email/day', {
-			content: html,
-			range: isWeek ? 'Week' : 'Day',
+			content: schedule,
+			range: isWeek ? `Week Commencing (${subjectDate})` : `DAY (${subjectDate})`,
 			tutor: tutor.firstName + ' ' + tutor.lastName,
+			emailAddress: tutor.email
 		});
 
 	}
+  sendEmailScheduleNotif(id, date) {
+
+
+    var start = new Date(this.term.startDate);
+	var end = new Date(this.term.endDate);
+	var termNo = this.term.termNo 
+	var sixthSunday = this.term.sixthSunday;
+
+    var weekEnderResults = [];
+    var day = 0;
+    var current = new Date(start);
+
+    current.setDate(current.getDate() + (day - current.getDay() + 7) % 7);
+    end.setDate(end.getDate() + ((7 - end.getDay()) % 7));
+
+    while (current <= end) {
+	  var weekEnder = new Date(+current);
+      weekEnderResults.push({
+		  value : weekEnder,
+		  duration :0
+		});
+      current.setDate(current.getDate() + 7);
+	}
+
+    var studentId = this.sessions.find(session => id == session._id).clientUID;
+    var student = this.sessions.find(session => id == session._id).student;
+
+    
+    var sessionData = [];
+    var sessions = this.sessions.filter( session => session.clientUID == studentId);
+
+    sessions.forEach(session => {
+      const validIndexes = this.ValidIndexes(session, start, end);
+
+      validIndexes.forEach(index => {
+
+		const sessionDate = this.DateFinder(session, index);
+		const formattedDate = this.$filter('toDateString')(sessionDate);
+		const parsedDate = this.$filter('reparseDate')(formattedDate);
+		const color = this.ColorFinder(session, index);
+        sessionData.push({
+          duration: session.duration / 60,
+		  sessionDate,
+		  date: parsedDate,
+		  color
+        });
+ 
+      });
+	});
+
+	sessionData = sessionData.filter(session => {
+		var acceptedColors = ['blue', 'dark blue', 'green', 'dark green', 'purple', 'dark purple'];
+		var color = session.color.toLowerCase();
+		return acceptedColors.includes(color);
+	  });
+	
+	sessionData = sessionData.sort((a, b) => {
+		if (a.sessionDate < b.sessionDate) {
+			return -1;
+		}
+
+		if (a.sessionDate > b.sessionDate) {
+			return 1;
+		}
+
+		if (a.basicTime < b.basicTime) {
+			return -1;
+		}
+
+		if (a.basicTime > b.basicTime) {
+			return 1;
+		}
+
+		return 0;
+	});
+
+
+
+    var hoursCompleted = 0;
+	var weekList = []
+
+	 weekEnderResults.forEach((weekend, i, weekends) => {
+		var weekendDate = new Date(weekend.value);
+		
+		sessionData.forEach(session => {
+			let sessionDate = new Date(session.date);
+			if(i==0 && sessionDate <= weekendDate){
+				weekend.duration += session.duration;
+			} else if(i>0){
+				var weekendStart = new Date(weekends[i-1].value);
+				if(sessionDate >= weekendStart && sessionDate <= weekendDate){
+					weekend.duration += session.duration;
+				}
+			}
+		});
+		
+	
+		var month = ("0" + (weekendDate.getMonth() + 1)).slice(-2);
+		var date = ("0" + weekendDate.getDate()).slice(-2);
+
+		var status = i > 4 ? `Scheduled` : `Completed`; 
+		var toBeRescheduled = false;
+		if (i >= 0 && i <= 4) {
+			hoursCompleted += weekend.duration;
+			if(weekend.duration ==0){
+				status  += " (To Be Rescheduled)";
+				toBeRescheduled = true;
+			}
+		} else if (i == 9) {
+			status += `  (Does This Session Need To Be Rescheduled?)`;
+		}
+		weekList.push({
+			value:	`Week Ending ${date}/${month} - ${weekend.duration} Hour ${status}`,
+			toBeRescheduled
+		}); 
+
+	}); 
+ 
+	var studentInfo = {
+		clientEmailAddress: student.clientEmail,
+		clientName: student.clientFirstName,
+		studentName: student.firstName,
+		termNo,
+		sixthSunday: sixthSunday,
+		hoursCompleted,
+		hoursToFinish : 10- hoursCompleted,
+		weekList
+	  };
+
+	console.log(studentInfo);
+
+    this.$http.post('/api/students/send-email-notif', {
+	  subject: `Tuition Schedule to Finish Term ${termNo}`,
+	  studentInfo: [studentInfo]
+    });
+     
+    
+  }
 
 	sendSMS(id, instance, time, isTutor) {
 		var session = this.sessions.find(session => id == session._id);
@@ -624,7 +799,7 @@ export default class CalendarController {
 
 	finishedLoad() {
 		this.loaded++;
-		if (this.loaded === 4) {
+		if (this.loaded === 5) {
 			this.updateCal();
 		}
 	}
@@ -1043,15 +1218,17 @@ export default class CalendarController {
 			compiledNotes += `Contact Name: ${session.student.clientFirstName} ${session.student.clientLastName}\n`;
 		}
 		//Add contact number
-		if (session.student.clientPh)
+		if (session.student.clientPh){
 			compiledNotes += `Contact Number: ${session.student.clientPh}\n`;
-
+		}
 		//Add contact number
-		if (session.tutor && session.tutor.phone)
-			compiledNotes += `Tutor Number: ${session.tutor.phone}\n`;
-
-		//Add grade
-		compiledNotes += `Student Year: ${session.student.grade}`;
+		if (session.student.grade){
+		compiledNotes += `Student Year: ${session.student.grade}\n`;
+		}
+		//Add subjects
+		if(session.student.subjects){
+		compiledNotes += `Subjects: ${session.student.subjects}`;
+		}
 
 		//Add title notes
 		_div.setAttribute('title', compiledNotes);
@@ -1070,8 +1247,22 @@ export default class CalendarController {
 			_icons += `<i class="fa fa-${this.icons.fifth} norm-icon" aria-hidden="true"></i>`;
 		if (session.overwriteVar6 && session.overwriteVar6[instance] === true)
 			_icons += `<i class="fa fa-${this.icons.sixth} norm-icon" aria-hidden="true"></i>`;
+		if (session.overwriteVar7 && session.overwriteVar7[instance] === true)
+			_icons += `<i class="fa fa-${this.icons._tempUnknown} norm-icon" aria-hidden="true"></i>`;
+		if (session.student.var8)
+			_icons += '<i class="fa fa-' + this.icons._permUnknown + ' norm-icon" aria-hidden="true"></i>';
+		if (session.student.var9)
+			_icons += '<i class="fa fa-' + this.icons._perm2Unknown + ' norm-icon" aria-hidden="true"></i>';
 		if (session.student.grade == 12)
 			_icons += '<i class="fa fa-' + this.icons.year12 + ' grade-12" aria-hidden="true"></i>';
+		if (session.overwriteNotes)
+			_icons += '<i class="fa fa-' + this.icons._note + ' norm-icon" aria-hidden="true"></i>';
+		if (session.student.price == '$60')
+			_icons +='<i class="fa"><strong>60</strong></i>';
+		if (session.student.price == '$70')
+			_icons +='<i class="fa"><strong>70</strong></i>';
+		if (session.student.price == '$80')
+			_icons +='<i class="fa"><strong>80</strong></i>';
 		if (_icons)
 			_div.innerHTML += '<div class="icon-row">' + _icons + '</div>';
 

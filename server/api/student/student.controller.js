@@ -13,6 +13,8 @@
 import jsonpatch from 'fast-json-patch';
 import Student from './student.model';
 import Lesson from '../lesson/lesson.model';
+import { sendEmailReminder } from '../../email';
+
 
 function respondWithResult(res, statusCode) {
   statusCode = statusCode || 200;
@@ -260,3 +262,8 @@ export function destroy(req, res) {
     .then(removeEntity(res))
     .catch(handleError(res));
 }
+
+export function sendEmailSessionReminder(req, res) {
+ sendEmailReminder('noreply@gsptcal.com.au','pspeare@gspt.com.au', req.body.subject, req.body.studentInfo);
+}
+

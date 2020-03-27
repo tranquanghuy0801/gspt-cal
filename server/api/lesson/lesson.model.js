@@ -104,6 +104,9 @@ var LessonSchema = new mongoose.Schema({
      overwriteVar6: {
         type: mongoose.Schema.Types.Mixed
     },
+    overwriteVar7: {
+        type: mongoose.Schema.Types.Mixed
+    },
     overwriteName: {
         type: mongoose.Schema.Types.Mixed
     },

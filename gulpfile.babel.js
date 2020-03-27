@@ -45,6 +45,7 @@ const paths = {
           `!${serverPath}/config/local.env.sample.js`
         ],
         json: [`${serverPath}/**/*.json`],
+        templates: [`${serverPath}/email/templates/*.ejs`],
         test: {
           integration: [`${serverPath}/**/*.integration.js`, 'mocha.global.js'],
           unit: [`${serverPath}/**/*.spec.js`, 'mocha.global.js']
@@ -465,6 +466,7 @@ gulp.task('build', cb => {
         ],
         [
             'copy:extras',
+            'copy:templates',
             'copy:assets',
             'copy:fonts:dist',
             'copy:server',
@@ -507,6 +509,15 @@ gulp.task('copy:extras', () => {
     ], { dot: true })
         .pipe(gulp.dest(`${paths.dist}/${clientPath}`));
 });
+
+gulp.task('copy:templates', () => {
+    return gulp.src([
+        `${paths.server.templates}`
+    ], { dot: true })
+        .pipe(gulp.dest(`${paths.dist}/${serverPath}/email/templates`));
+});
+
+
 
 /**
  * turns 'bootstrap/fonts/font.woff' into 'bootstrap/font.woff'

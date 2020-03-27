@@ -28,6 +28,7 @@ export default class StudentController {
           year12: ''
         };
       });
+      this.prices = ['$60','$70','$80'];
   }
 
   export(data) {
@@ -43,6 +44,7 @@ export default class StudentController {
         'Email': student.clientEmail || ' ',
         'Phone': student.clientPh || ' ',
         'Grade': student.grade || ' ',
+        'Subjects': student.subjects || ' ',
         'CRM ID': student.crmID || ' ',
         'Is Active': student.isActive || 'false',
         'Is Tertiary': student.isTertiary || 'false',
