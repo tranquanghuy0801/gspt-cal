@@ -27,6 +27,9 @@ var StudentSchema = new mongoose.Schema({
   		return !this.isTertiary;
     }
   },
+  price:{
+    type: String
+  },
   subjects:{
     type: String,
     required: true
@@ -42,6 +45,8 @@ var StudentSchema = new mongoose.Schema({
   studentNotes: String,
   var3: Boolean,
   var4: Boolean,
+  var8: Boolean,
+  var9: Boolean,
   backupLink: {
   	type: mongoose.Schema.Types.ObjectId
   },

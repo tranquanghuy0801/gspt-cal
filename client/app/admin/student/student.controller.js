@@ -28,6 +28,7 @@ export default class StudentController {
           year12: ''
         };
       });
+      this.prices = ['$60','$70','$80'];
   }
 
   export(data) {

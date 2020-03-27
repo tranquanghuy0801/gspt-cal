@@ -25,7 +25,12 @@ export default class {
 	        	fourth: '',
 	        	fifth: '',
 	        	sixth: '',
-	        	year12: '',
+				year12: '',
+				_note:'',
+				_tempUnknown:'',	// no proper labels given as this is for futre use
+				_permUnknown:'', 
+				_perm2Unknown:''
+
 	        };
 		  });
 		  

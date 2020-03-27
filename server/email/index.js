@@ -13,13 +13,27 @@ var auth = {
 var nodemail = nodemailer.createTransport(mg(auth));
 
   
-export function sendEmail(from, to, subject, html){
-	nodemail.sendMail({
-		from,
-		to, 
-		subject,
-		html,
-	}); 
+export function sendEmail(from, to, subject, schedule, content, tutor, emailAddress){
+
+	ejs.renderFile(__dirname + '\/templates\/tutor-schedule.ejs', {schedule, content, tutor, emailAddress}, function (err, data) {
+		if (err) {
+			console.log("Error rendering e-mail template");
+			console.log(err);
+		} else {
+			var mainOptions = {
+				from,
+				to,
+				subject,
+				html: data
+			};
+			nodemail.sendMail(mainOptions, function (err, info) {
+				if (err) {
+					console.log(err);
+				} 
+			});
+		}		
+	});
+
 }
 
 export async function sendEmailReminder(from, to, subject, studentsInfo){
