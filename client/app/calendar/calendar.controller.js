@@ -1258,11 +1258,11 @@ export default class CalendarController {
 		if (session.overwriteNotes)
 			_icons += '<i class="fa fa-' + this.icons._note + ' norm-icon" aria-hidden="true"></i>';
 		if (session.student.price == '$60')
-			_icons += '<i class="fa fa-' + this.icons._sixty + ' norm-icon" aria-hidden="true"></i>';
+			_icons +='<i class="fa"><strong>60</strong></i>';
 		if (session.student.price == '$70')
-			_icons += '<i class="fa fa-' + this.icons._seventy + ' norm-icon" aria-hidden="true"></i>';
+			_icons +='<i class="fa"><strong>70</strong></i>';
 		if (session.student.price == '$80')
-			_icons += '<i class="fa fa-' + this.icons._eighty + ' norm-icon" aria-hidden="true"></i>';
+			_icons +='<i class="fa"><strong>80</strong></i>';
 		if (_icons)
 			_div.innerHTML += '<div class="icon-row">' + _icons + '</div>';
 
