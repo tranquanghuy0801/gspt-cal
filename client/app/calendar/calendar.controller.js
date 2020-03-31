@@ -1217,11 +1217,12 @@ export default class CalendarController {
 		if (session.student.clientFirstName || session.student.clientLastName) {
 			compiledNotes += `Contact Name: ${session.student.clientFirstName} ${session.student.clientLastName}\n`;
 		}
+
 		//Add contact number
 		if (session.student.clientPh){
 			compiledNotes += `Contact Number: ${session.student.clientPh}\n`;
 		}
-		//Add contact number
+		//Add grade
 		if (session.student.grade){
 		compiledNotes += `Student Year: ${session.student.grade}\n`;
 		}
@@ -1230,6 +1231,10 @@ export default class CalendarController {
 		compiledNotes += `Subjects: ${session.student.subjects}`;
 		}
 
+		//Add tutor number
+		if(session.tutor && session.tutor.phone){
+			compiledNotes += `Tutor Number: ${session.tutor.phone}\n`;
+		}
 		//Add title notes
 		_div.setAttribute('title', compiledNotes);
 
@@ -1255,7 +1260,7 @@ export default class CalendarController {
 			_icons += '<i class="fa fa-' + this.icons._perm2Unknown + ' norm-icon" aria-hidden="true"></i>';
 		if (session.student.grade == 12)
 			_icons += '<i class="fa fa-' + this.icons.year12 + ' grade-12" aria-hidden="true"></i>';
-		if (session.overwriteNotes)
+		if (specificNotes)
 			_icons += '<i class="fa fa-' + this.icons._note + ' norm-icon" aria-hidden="true"></i>';
 		if (session.student.price == '$60')
 			_icons +='<i class="fa"><strong>60</strong></i>';
