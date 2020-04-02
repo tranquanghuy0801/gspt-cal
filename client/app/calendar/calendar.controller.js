@@ -57,7 +57,7 @@ export default class CalendarController {
 		this.rooms = {
 			'paddington': this.createArray(7), // from 9 changed to 7
 			'cannon hill': this.createArray(6),
-      		//'mt. gravatt': this.createArray(6) // might need this soon
+      		'online': this.createArray(12)
 
 		};
 		//creates segments for the days
