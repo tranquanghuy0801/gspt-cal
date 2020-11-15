@@ -430,5 +430,9 @@ navbar .navbar-default {
 
 /* Component styles are injected through gulp*/
 /* inject:scss */
+@import 'fonts';
+@import 'admin/admin';
+@import 'calendar/calendar';
+@import 'calendar/colors';
 @import '../components/modal/modal';
 /* endinject */

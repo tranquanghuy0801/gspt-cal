@@ -22,6 +22,10 @@ var TutorSchema = new mongoose.Schema({
   },
   email: String,
   phone: String,
+  crmID: {
+		type: String,
+		trim: true,
+	},
   backupLink:{
   	type: mongoose.Schema.Types.ObjectId
   },

@@ -66,6 +66,12 @@
     </tr>
   </thead>
   <tbody>
+    <div class="alert alert-danger" ng-show="error" ng-bind="error" style="margin-top: 20px"></div>
+    <div class="a-success-wrap" ng-show="success">
+      <div class="a-success-circle"><i class="fa fa-check" aria-hidden="true"></i></div>
+      <div class="a-success-message">Export to Timesheet successfully</div>
+    </div>
+    <button type="button" class="btn btn-success" ng-if="admin.less.length > 0" ng-click="admin.exportTimeSheet(admin.less,admin.search.tutor,admin.search.end)">Export TimeSheet</button>
     <tr ng-repeat="lesson in admin.less">
       <td>{{lesson.student.fullName}}</td>
       <td>{{lesson.totalTime}}</td>

@@ -2,20 +2,20 @@
 	<div class="row calendar-grey">
 		<div class="col-lg-9">
 			<div class="input-group date-group">
-	         	<input type="text" class="form-control date-input" ng-change="vm.changingDay = true; vm.clearCal()" uib-datepicker-popup="EEEE, MMMM d, y" ng-model="vm.calendarDate" is-open="opened" close-text="Close" style="pointer-events: none" />
-	         	<span class="input-group-btn">
-	            	<button type="button" class="btn btn-default" ng-click="opened = true"><i class="glyphicon glyphicon-calendar"></i></button>
-	          	</span>
-	        </div>
-	        <div class="input-group search-group">
-	         	<input type="text" class="form-control" ng-model="vm.searchFilter" ng-change="vm.clearCal()" placeholder="Search here..." />
-	         	<span class="input-group-btn">
-	            	<button type="button" class="btn btn-default" ng-click="vm.searchFilter = ''; vm.clearCal()"><i class="fa fa-close"></i></button>
-	          	</span>
-	        </div>
-	        <span class="btn-group" style="margin-right: 20px">
-	        	<button class="btn btn-default" ng-repeat="day in ['M', 'T', 'W', 'T', 'F', 'S', 'S'] track by $index" ng-click="vm.setDayOfWeek($index)" ng-disabled="vm.isCurrentDay(($index + 1) % 7)">{{day}}</button>
-	        </span>
+			 	<input type="text" class="form-control date-input" ng-change="vm.changingDay = true; vm.clearCal()" uib-datepicker-popup="EEEE, MMMM d, y" ng-model="vm.calendarDate" is-open="opened" close-text="Close" style="pointer-events: none" />
+			 	<span class="input-group-btn">
+					<button type="button" class="btn btn-default" ng-click="opened = true"><i class="glyphicon glyphicon-calendar"></i></button>
+			  	</span>
+			</div>
+			<div class="input-group search-group">
+			 	<input type="text" class="form-control" ng-model="vm.searchFilter" ng-change="vm.clearCal()" placeholder="Search here..." />
+			 	<span class="input-group-btn">
+					<button type="button" class="btn btn-default" ng-click="vm.searchFilter = ''; vm.clearCal()"><i class="fa fa-close"></i></button>
+			  	</span>
+			</div>
+			<span class="btn-group" style="margin-right: 20px">
+				<button class="btn btn-default" ng-repeat="day in ['M', 'T', 'W', 'T', 'F', 'S', 'S'] track by $index" ng-click="vm.setDayOfWeek($index)" ng-disabled="vm.isCurrentDay(($index + 1) % 7)">{{day}}</button>
+			</span>
 			<span class="btn-group">
 				<button class="btn btn-default" ng-click="vm.addDays(-7)"><i class="fa fa-angle-double-left" aria-hidden="true"></i></button>
 				<button class="btn btn-default" ng-click="vm.addDays(-1)"><i class="fa fa-angle-left" aria-hidden="true"></i></button>
@@ -34,14 +34,15 @@
 				</button>
 			</span>
 		</div>
-    <div class="col-lg-3 text-right">
-      <button class="btn btn-default" style="margin-right: 30px" type="button" ng-click="vm.colourCountModal()">
-        <span>Colour Count</span>
-      </button>
-      <button class="btn btn-default" ng-class="{'btn-primary': vm.location == 'paddington'}" ng-click="vm.changeLocation('paddington')">Paddington</button>
-      <button class="btn btn-default" ng-class="{'btn-primary': vm.location == 'cannon hill'}" ng-click="vm.changeLocation('cannon hill')">Cannon Hill</button>
-      <button class="btn btn-default" ng-class="{'btn-primary': vm.location == 'online'}" ng-click="vm.changeLocation('online')">Online</button>
-    </div>
+	<div class="col-lg-3 text-right">
+	  <button class="btn btn-default" style="margin-right: 30px" type="button" ng-click="vm.colourCountModal()">
+		<span>Colour Count</span>
+	  </button>
+	  <button class="btn btn-default" ng-class="{'btn-primary': vm.location == 'paddington'}" ng-click="vm.changeLocation('paddington')">Paddington</button>
+	  <button class="btn btn-default" ng-class="{'btn-primary': vm.location == 'cannon hill'}" ng-click="vm.changeLocation('cannon hill')">Cannon Hill</button>
+	  <button class="btn btn-default" ng-class="{'btn-primary': vm.location == 'online'}" ng-click="vm.changeLocation('online')">Online</button>
+	  <button class="btn btn-default" ng-class="{'btn-primary': vm.location == 'mt-gravatt'}" ng-click="vm.changeLocation('mt-gravatt')">Mt Gravatt</button>
+	</div>
 	</div>
 	<div class="row">
 		<table class="table table-striped a-calendar" ng-class="{'loading': vm.loading}">
@@ -72,6 +73,6 @@
 </div>
 <div class="loading-wrap" ng-show="vm.loading">
 	<svg id="load" x="0px" y="0px" viewBox="0 0 150 150">
-	    <circle id="loading-inner" cx="75" cy="75" r="60"/>
+		<circle id="loading-inner" cx="75" cy="75" r="60"/>
 	</svg>
 </div>

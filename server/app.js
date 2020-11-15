@@ -5,6 +5,7 @@
 'use strict';
 
 import express from 'express';
+import cors from 'cors';
 import mongoose from 'mongoose';
 mongoose.Promise = require('bluebird');
 import config from './config/environment';
@@ -20,6 +21,7 @@ mongoose.connection.on('error', function(err) {
 
 // Setup server
 var app = express();
+app.use(cors());
 app.use(bodyParser.json({ limit: '50mb' }))
 var server = http.createServer(app);
 require('./config/express').default(app);

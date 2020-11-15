@@ -9,6 +9,8 @@ var router = express.Router();
 router.get('/', auth.hasRole('admin'), controller.index);
 router.get('/dump-all', controller.dumpAll);
 router.get('/:id', auth.hasRole('admin'), controller.show);
+router.get('/crmID/:id',auth.hasRole('admin'), controller.getTutorID);
+router.post('/addTimeSheet',auth.hasRole('admin'), controller.addTutorTimeSheet);
 router.post('/', auth.hasRole('admin'), controller.create);
 router.post('/send-email/day', auth.hasRole('admin'), controller.sendEmailDay);
 router.put('/:id', auth.hasRole('admin'), controller.upsert);

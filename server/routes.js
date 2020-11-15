@@ -16,6 +16,7 @@ export default function(app) {
   app.use('/api/students', require('./api/student'));
   app.use('/api/users', require('./api/user'));
   app.use('/api/termsettings', require('./api/term-settings'));
+  app.use('/api/sms', require('./api/sms'));
 
   app.use('/auth', require('./auth').default);
 

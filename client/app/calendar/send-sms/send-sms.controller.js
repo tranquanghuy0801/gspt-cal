@@ -65,12 +65,30 @@ export default class {
 
 	postSMS(phone, callback){
 		var message = decodeURI(this.message);
-		this.$http.post(`http://api.smsbroadcast.com.au/api-adv.php?username=pspeare&password=GSPT2011&to=${phone}&from=0414504002&message=${message}`)
-		.then(res =>{
-			callback(this.saveType);
-		}).catch(res =>{
-			this.error = "Something went wrong."
-		})
+		if (this.message == undefined){
+			this.error = "Cannot exceed 150 characters";
+		}
+		else{
+			this.$http({
+				method: 'POST',
+				url: '/api/sms',
+				data: {
+					phone: phone,
+					message: message
+				},
+				headers: {'Content-Type': 'application/json'}
+			})
+			.then(res =>{
+				if (res.status == 200){
+					callback(this.saveType);
+				}
+				else{
+					this.error = "Something went wrong."
+				}
+			}).catch(res =>{
+				this.error = "Something went wrong."
+			})
+		}
 	}
 
 	submit(callback){

@@ -33,6 +33,12 @@
         <input type="email" class="form-control" ng-model="newTutor.email" placeholder="Email Address">
       </div>
     </div>
+    <div class="col-sm-6">
+      <div class="form-group">
+        <label>CRM ID</label>
+        <input type="text" class="form-control" ng-model="newTutor.crmID" placeholder="CRM ID">
+      </div>
+    </div>
   </div>
   <div class="row">
     <div class="col-sm-12">
@@ -68,6 +74,7 @@
     <tr>
       <th>#</th>
       <th>Name</th>
+      <th>CRM ID</th>
       <th>Email</th>
       <th>Phone</th>
       <th>Date Added</th>
@@ -78,6 +85,7 @@
     <tr ng-repeat="tutor in admin.tutors | filter: admin.search | startFrom:currentPage*pageSize | limitTo:pageSize | orderBy: 'dateCreated'">
       <th scope="row">{{$index + 1}}</th>
       <td>{{tutor.firstName + ' ' + tutor.lastName}}</td>
+      <td>{{tutor.crmID}}</td>
       <td>{{tutor.email}}</td>
       <td>{{tutor.phone}}</td>
       <td>{{tutor.dateCreated | date:'dd/MM/yyyy'}}</td>
